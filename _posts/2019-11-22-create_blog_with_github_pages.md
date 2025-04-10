@@ -4,7 +4,7 @@ title: "新的网站，新的开始"
 date:   2025-4-10
 tags: [geek]
 comments: true
-author: lemonchann
+author: ldz
 ---
 先介绍下我自己，我是一个网络安全专业的学生，目前就读于bupt在学pwn，目前的身份还是作为一个小登&&菜鸡。
 我原本的网站域名是leidongzheng.com，我改换github.io作为我的新网站的原因可能因为平时很少花时间网站维护，并且也很少会更新博客了。
