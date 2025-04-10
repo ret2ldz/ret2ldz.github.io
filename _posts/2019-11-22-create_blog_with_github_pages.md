@@ -2,7 +2,7 @@
 layout: post
 title: "新的网站，新的开始"
 date:   2025-4-10
-tags: [geek]
+tags: [life]
 comments: true
 author: ldz
 ---
