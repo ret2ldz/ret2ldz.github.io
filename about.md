@@ -10,8 +10,8 @@ web手&&科研卷勾&&隔壁寝室的：[https:jarenl.com](https://jarenl.com/)<
 
 ## 关于我
 CTF noob, single, average grades, not handsome. Writing code faster than my coffee disappears. ☕💻 
-爱打csgo
-![logo](../image/csgo.png)
+爱打csgo<br>
+![logo](../image/csgo.jpg)
 
 ## 关于博客
 仅为记录生活和记录学习、ctf的【秘密基地】。
