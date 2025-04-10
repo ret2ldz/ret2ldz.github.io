@@ -9,9 +9,9 @@ web手&&科研卷勾&&隔壁寝室的：[https:jarenl.com](https://jarenl.com/)<
 超级无敌的pwn学长纯真：[zqy.ink](zqy.ink)
 
 ## 关于我
-CTF noob, single, average grades, not handsome. Writing code faster than my coffee disappears. ☕💻 
+CTF noob, single, average grades, not handsome. Writing code faster than my coffee disappears. ☕💻 <br>
 爱打csgo<br>
-![logo](../image/csgo.jpg)
+![logo](../images/csgo.jpg)
 
 ## 关于博客
 仅为记录生活和记录学习、ctf的【秘密基地】。
