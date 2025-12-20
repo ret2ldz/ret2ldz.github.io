@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script type="application/javascript" src='http://localhost:1313/js/theme-mode.js'></script>
+    <link rel="stylesheet" href='http://localhost:1313/css/frameworks.min.css' />
+    <link rel="stylesheet" href='http://localhost:1313/css/github.min.css' />
+    <link rel="stylesheet" href='http://localhost:1313/css/github-style.css' />
+    <link rel="stylesheet" href='http://localhost:1313/css/light.css' />
+    <link rel="stylesheet" href='http://localhost:1313/css/dark.css' />
+    <link rel="stylesheet" href='http://localhost:1313/css/syntax.css' />
+    <title> - ldz&#39;s blog</title>
+    
+    <link rel="icon" type="image/x-icon" href='/images/github-mark.png'>
+    
+    <meta name="theme-color" content="#1e2327">
+
+    
+    
+
+    
+    <meta name="description"
+  content="0x0 前言&amp;amp;LibFuzzer 源码审计 前言 1988年秋天的黑暗和暴风雨的夜晚中， 巴顿·米勒教授坐在麦迪逊威斯康星州的公寓里，通过一条1200波特的电话线连接到他的大学计算机。 雷暴在线路上造成噪音，而该噪音又导致两端的UNIX命令获得错误的输入并崩溃。 频繁的崩溃让他感到惊讶，他思考到，程序应该比这更强大吗？ 作为一名科学家，他想调查问题的严重程度及其原因。 因此，他为威斯康星大学麦迪逊分校的学生编写了编程练习&amp;ndash;该练习将使他的学生创建第一个模糊测试器。
+许多年后，一个叫AFL的模糊测试器横空出世，一举成为这个星球上最热门的Fuzzer，能够检测到 1000 多种不同类型的软件错误。由于原始 AFL 存储库的开发长期停滞，社区于 2019 年创建了一个名为 AFL&#43;&#43;的分支（被笔者拿去水了一次网安实践课的汇报，源码审计这一块、）
+读者可能会问为什么要创建一个新的模糊测试器？答案是，AFL 无法处理不同类型的覆盖率，例如跟踪比较指令的求值（在 C 语言中==，&amp;gt;、&amp;lt;、!=等）。其次，AFL 无法跟踪根据输入返回特定值的标准（和非标准）函数的求值，例如用于比较字符串的函数（在 C 语言中strcmp()，strncmp()、 等）。最后，AFL 不够灵活，无法集成到接受来自不同来源输入的环境中standard input。
+概览libfuzzer extern &amp;#34;C&amp;#34; { // This function should be defined by the user. int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size); } // extern &amp;#34;C&amp;#34; ATTRIBUTE_INTERFACE int main(int argc, char **argv) { return fuzzer::FuzzerDriver(&amp;amp;argc, &amp;amp;argv, LLVMFuzzerTestOneInput); } //FuzzerMain.c int FuzzerDriver(int *argc, char ***argv, UserCallback Callback) { using namespace fuzzer; assert(argc &amp;amp;&amp;amp; argv &amp;amp;&amp;amp; &amp;#34;Argument pointers cannot be nullptr&amp;#34;); std::string Argv0((*argv)[0]); EF = new ExternalFunctions(); ." />
+<meta name="keywords"
+  content='blog, google analytics' />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="http://localhost:1313/post/%E5%88%9D%E6%8E%A2libfuzzer/" />
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content=" - ldz&#39;s blog" />
+<meta name="twitter:description"
+  content="0x0 前言&amp;amp;LibFuzzer 源码审计 前言 1988年秋天的黑暗和暴风雨的夜晚中， 巴顿·米勒教授坐在麦迪逊威斯康星州的公寓里，通过一条1200波特的电话线连接到他的大学计算机。 雷暴在线路上造成噪音，而该噪音又导致两端的UNIX命令获得错误的输入并崩溃。 频繁的崩溃让他感到惊讶，他思考到，程序应该比这更强大吗？ 作为一名科学家，他想调查问题的严重程度及其原因。 因此，他为威斯康星大学麦迪逊分校的学生编写了编程练习&amp;ndash;该练习将使他的学生创建第一个模糊测试器。
+许多年后，一个叫AFL的模糊测试器横空出世，一举成为这个星球上最热门的Fuzzer，能够检测到 1000 多种不同类型的软件错误。由于原始 AFL 存储库的开发长期停滞，社区于 2019 年创建了一个名为 AFL&#43;&#43;的分支（被笔者拿去水了一次网安实践课的汇报，源码审计这一块、）
+读者可能会问为什么要创建一个新的模糊测试器？答案是，AFL 无法处理不同类型的覆盖率，例如跟踪比较指令的求值（在 C 语言中==，&amp;gt;、&amp;lt;、!=等）。其次，AFL 无法跟踪根据输入返回特定值的标准（和非标准）函数的求值，例如用于比较字符串的函数（在 C 语言中strcmp()，strncmp()、 等）。最后，AFL 不够灵活，无法集成到接受来自不同来源输入的环境中standard input。
+概览libfuzzer extern &amp;#34;C&amp;#34; { // This function should be defined by the user. int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size); } // extern &amp;#34;C&amp;#34; ATTRIBUTE_INTERFACE int main(int argc, char **argv) { return fuzzer::FuzzerDriver(&amp;amp;argc, &amp;amp;argv, LLVMFuzzerTestOneInput); } //FuzzerMain.c int FuzzerDriver(int *argc, char ***argv, UserCallback Callback) { using namespace fuzzer; assert(argc &amp;amp;&amp;amp; argv &amp;amp;&amp;amp; &amp;#34;Argument pointers cannot be nullptr&amp;#34;); std::string Argv0((*argv)[0]); EF = new ExternalFunctions(); ." />
+<meta name="twitter:site" content="http://localhost:1313/" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image"
+  content="http://localhost:1313/">
+
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content=" - ldz&#39;s blog">
+<meta property="og:description"
+  content="0x0 前言&amp;amp;LibFuzzer 源码审计 前言 1988年秋天的黑暗和暴风雨的夜晚中， 巴顿·米勒教授坐在麦迪逊威斯康星州的公寓里，通过一条1200波特的电话线连接到他的大学计算机。 雷暴在线路上造成噪音，而该噪音又导致两端的UNIX命令获得错误的输入并崩溃。 频繁的崩溃让他感到惊讶，他思考到，程序应该比这更强大吗？ 作为一名科学家，他想调查问题的严重程度及其原因。 因此，他为威斯康星大学麦迪逊分校的学生编写了编程练习&amp;ndash;该练习将使他的学生创建第一个模糊测试器。
+许多年后，一个叫AFL的模糊测试器横空出世，一举成为这个星球上最热门的Fuzzer，能够检测到 1000 多种不同类型的软件错误。由于原始 AFL 存储库的开发长期停滞，社区于 2019 年创建了一个名为 AFL&#43;&#43;的分支（被笔者拿去水了一次网安实践课的汇报，源码审计这一块、）
+读者可能会问为什么要创建一个新的模糊测试器？答案是，AFL 无法处理不同类型的覆盖率，例如跟踪比较指令的求值（在 C 语言中==，&amp;gt;、&amp;lt;、!=等）。其次，AFL 无法跟踪根据输入返回特定值的标准（和非标准）函数的求值，例如用于比较字符串的函数（在 C 语言中strcmp()，strncmp()、 等）。最后，AFL 不够灵活，无法集成到接受来自不同来源输入的环境中standard input。
+概览libfuzzer extern &amp;#34;C&amp;#34; { // This function should be defined by the user. int LLVMFuzzerTestOneInput(const uint8_t *Data, size_t Size); } // extern &amp;#34;C&amp;#34; ATTRIBUTE_INTERFACE int main(int argc, char **argv) { return fuzzer::FuzzerDriver(&amp;amp;argc, &amp;amp;argv, LLVMFuzzerTestOneInput); } //FuzzerMain.c int FuzzerDriver(int *argc, char ***argv, UserCallback Callback) { using namespace fuzzer; assert(argc &amp;amp;&amp;amp; argv &amp;amp;&amp;amp; &amp;#34;Argument pointers cannot be nullptr&amp;#34;); std::string Argv0((*argv)[0]); EF = new ExternalFunctions(); ." />
+<meta property="og:url" content="http://localhost:1313/post/%E5%88%9D%E6%8E%A2libfuzzer/" />
+<meta property="og:site_name" content="" />
+<meta property="og:image"
+  content="http://localhost:1313/">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body>
+  <div style="position: relative">
+  <header class="Header js-details-container Details px-3 px-md-4 px-lg-5 flex-wrap flex-md-nowrap open Details--on">
+    <div class="Header-item mobile-none" style="margin-top: -4px; margin-bottom: -4px;">
+      <a class="Header-link" href="http://localhost:1313/">
+        <img class="octicon" height="32" width="32" src="/images/github-mark-white.png">
+      </a>
+    </div>
+    <div class="Header-item d-md-none">
+      <button class="Header-link btn-link js-details-target" type="button"
+        onclick="document.querySelector('#header-search').style.display = document.querySelector('#header-search').style.display == 'none'? 'block': 'none'">
+        <svg height="24" class="octicon octicon-three-bars" viewBox="0 0 16 16" version="1.1" width="24">
+          <path fill-rule="evenodd" d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 7.75zM1.75 12a.75.75 0 100 1.5h12.5a.75.75 0 100-1.5H1.75z">
+          </path>
+        </svg>
+      </button>
+    </div>
+    <div style="display: none;" id="header-search"
+      class="Header-item Header-item--full flex-column flex-md-row width-full flex-order-2 flex-md-order-none mr-0 mr-md-3 mt-3 mt-md-0 Details-content--hidden-not-important d-md-flex">
+      <div
+        class="Header-search header-search flex-auto js-site-search position-relative flex-self-stretch flex-md-self-auto mb-3 mb-md-0 mr-0 mr-md-3 scoped-search site-scoped-search js-jump-to">
+        <div class="position-relative">
+          
+          <form target="_blank" id="search-form" action="" accept-charset="UTF-8" method="get"
+            autocomplete="off">
+            <label
+              class="Header-search-label form-control input-sm header-search-wrapper p-0 js-chromeless-input-container header-search-wrapper-jump-to position-relative d-flex flex-justify-between flex-items-center">
+              <input type="text"
+                class="Header-search-input form-control input-sm header-search-input jump-to-field js-jump-to-field js-site-search-focus js-site-search-field is-clearable"
+                name="q" value="" placeholder="Search" autocomplete="off">
+            </label>
+          </form>
+          
+        </div>
+      </div>
+    </div>
+
+    <div class="Header-item Header-item--full flex-justify-center d-md-none position-relative">
+      <a class="Header-link " href="http://localhost:1313/">
+        <img class="octicon octicon-mark-github v-align-middle" height="32" width="32" src="/images/github-mark-white.png">
+      </a>
+    </div>
+    <div class="Header-item" style="margin-right: 0;">
+      <a href="javascript:void(0)" class="Header-link no-select" onclick="switchTheme()">
+        <svg style="fill: var(--color-profile-color-modes-toggle-moon);" class="no-select" viewBox="0 0 16 16"
+          version="1.1" width="16" height="16">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M4.52208 7.71754C7.5782 7.71754 10.0557 5.24006 10.0557 2.18394C10.0557 1.93498 10.0392 1.68986 10.0074 1.44961C9.95801 1.07727 10.3495 0.771159 10.6474 0.99992C12.1153 2.12716 13.0615 3.89999 13.0615 5.89383C13.0615 9.29958 10.3006 12.0605 6.89485 12.0605C3.95334 12.0605 1.49286 10.001 0.876728 7.24527C0.794841 6.87902 1.23668 6.65289 1.55321 6.85451C2.41106 7.40095 3.4296 7.71754 4.52208 7.71754Z">
+          </path>
+        </svg>
+      </a>
+    </div>
+  </header>
+</div>
+
+  <div id="search-result" class="container-lg px-3 new-discussion-timeline" style="display: none;">
+</div>
+
+  
+<div class="application-main">
+  <div>
+  <main>
+    <div class="gisthead pagehead bg-gray-light pb-0 pt-3 mb-4">
+      <div class="px-0">
+        <div class="mb-3 d-flex px-3 px-md-3 px-lg-5">
+          <div class="flex-auto min-width-0 width-fit mr-3">
+            <div class="d-flex">
+              <div class="d-none d-md-block">
+                <a class="avatar mr-2 flex-shrink-0" href="http://localhost:1313/">
+                  <img class=" avatar-user"
+                    src="/images/avatar.png"
+                    width="32" height="32"></a>
+              </div>
+              <div class="d-flex flex-column">
+                <h1 class="break-word f3 text-normal mb-md-0 mb-1">
+                  <span class="author">
+                    <a href="http://localhost:1313/">ldz</a>
+                  </span>
+                  <span class="path-divider">/</span>
+                  <strong class="css-truncate css-truncate-target mr-1" style="max-width: 410px">
+                    <a href="http://localhost:1313/post/%E5%88%9D%E6%8E%A2libfuzzer/"></a>
+                  </strong>
+                </h1>
+                <div class="note m-0">
+                  Created <relative-time datetime="Mon, 01 Jan 0001 00:00:00 &#43;0000"
+                    class="no-wrap">
+                    Mon, 01 Jan 0001 00:00:00 &#43;0000</relative-time>
+
+                  
+                  <span class="file-info-divider"></span>
+                  Modified <relative-time datetime="Sat, 20 Dec 2025 22:41:06 &#43;0800"
+                    class="no-wrap">
+                    Sat, 20 Dec 2025 22:41:06 &#43;0800</relative-time>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-lg px-3 new-discussion-timeline">
+      <div class="repository-content gist-content">
+        <div>
+          <div class="js-gist-file-update-container js-task-list-container file-box">
+            <div id="file-pytest" class="file my-2">
+              <div id="post-header" class="file-header d-flex flex-md-items-center flex-items-start sticky-header" style="z-index: 2">
+                <div class="file-info d-flex flex-md-items-center flex-items-start flex-order-1 flex-auto">
+                  <div class="text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1 mt-2 mt-md-0">
+                    
+                    <summary id="toc-toggle" onclick="clickToc()" class="btn btn-octicon m-0 mr-2 p-2">
+                      <svg aria-hidden="true" viewBox="0 0 16 16" height="16" width="16" class="octicon octicon-list-unordered">
+                        <path fill-rule="evenodd" d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z"></path>
+                      </svg>
+                    </summary>
+                    <details-menu class="SelectMenu" id="toc-details" style="display: none;">
+                      <div class="SelectMenu-modal rounded-3 mt-1" style="max-height: 340px;">
+                        <div class="SelectMenu-list SelectMenu-list--borderless p-2" style="overscroll-behavior: contain;" id="toc-list">
+                        </div>
+                      </div>
+                    </details-menu>
+                      5015 Words
+                    
+
+                  </div>
+                  <div class="file-actions flex-order-2 pt-0">
+                    
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="Box-body px-5 pb-5" style="z-index: 1">
+                <article class="markdown-body entry-content container-lg"><!-- raw HTML omitted -->
+<h1 id="0x0-前言libfuzzer-源码审计">0x0 前言&amp;LibFuzzer 源码审计</h1>
+<p><img src="../images/fuzz0.png" alt=""></p>
+<h3 id="前言">前言</h3>
+<p>1988年秋天的黑暗和暴风雨的夜晚中， 巴顿·米勒教授坐在麦迪逊威斯康星州的公寓里，通过一条1200波特的电话线连接到他的大学计算机。 雷暴在线路上造成噪音，而该噪音又导致两端的UNIX命令获得错误的输入并崩溃。 频繁的崩溃让他感到惊讶，他思考到，程序应该比这更强大吗？ 作为一名科学家，他想调查问题的严重程度及其原因。 因此，他为威斯康星大学麦迪逊分校的学生编写了编程练习&ndash;该练习将使他的学生创建第一个模糊测试器。</p>
+<p>许多年后，一个叫AFL的模糊测试器横空出世，一举成为这个星球上最热门的Fuzzer，能够检测到 1000 多种不同类型的软件错误。由于原始 AFL 存储库的开发长期停滞，社区于 2019 年创建了一个名为 AFL++的分支（被笔者拿去水了一次网安实践课的汇报，源码审计这一块、）</p>
+<p>读者可能会问为什么要创建一个新的模糊测试器？答案是，AFL 无法处理不同类型的覆盖率，例如跟踪比较指令的求值（在 C 语言中<code>==</code>，<code>&gt;</code>、<code>&lt;</code>、<code>!=</code>等）。其次，AFL 无法跟踪根据输入返回特定值的标准（和非标准）函数的求值，例如用于比较字符串的函数（在 C 语言中<code>strcmp()</code>，<code>strncmp()</code>、 等）。最后，AFL 不够灵活，无法集成到接受来自不同来源输入的环境中<code>standard input</code>。</p>
+<hr>
+<h3 id="概览libfuzzer">概览libfuzzer</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c++" data-lang="c++"><span class="line"><span class="cl"><span class="k">extern</span> <span class="s">&#34;C&#34;</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// This function should be defined by the user.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kt">int</span> <span class="nf">LLVMFuzzerTestOneInput</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">Data</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">Size</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>  <span class="c1">// extern &#34;C&#34;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">ATTRIBUTE_INTERFACE</span> <span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">fuzzer</span><span class="o">::</span><span class="n">FuzzerDriver</span><span class="p">(</span><span class="o">&amp;</span><span class="n">argc</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">argv</span><span class="p">,</span> <span class="n">LLVMFuzzerTestOneInput</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="c1">//FuzzerMain.c
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">FuzzerDriver</span><span class="p">(</span><span class="kt">int</span> <span class="o">*</span><span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">***</span><span class="n">argv</span><span class="p">,</span> <span class="n">UserCallback</span> <span class="n">Callback</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">using</span> <span class="k">namespace</span> <span class="n">fuzzer</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">assert</span><span class="p">(</span><span class="n">argc</span> <span class="o">&amp;&amp;</span> <span class="n">argv</span> <span class="o">&amp;&amp;</span> <span class="s">&#34;Argument pointers cannot be nullptr&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">Argv0</span><span class="p">((</span><span class="o">*</span><span class="n">argv</span><span class="p">)[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">EF</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ExternalFunctions</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">....</span>
+</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="n">Vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">Args</span><span class="p">(</span><span class="o">*</span><span class="n">argv</span><span class="p">,</span> <span class="o">*</span><span class="n">argv</span> <span class="o">+</span> <span class="o">*</span><span class="n">argc</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">assert</span><span class="p">(</span><span class="o">!</span><span class="n">Args</span><span class="p">.</span><span class="n">empty</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ProgName</span> <span class="o">=</span> <span class="k">new</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="n">Args</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">Argv0</span> <span class="o">!=</span> <span class="o">*</span><span class="n">ProgName</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Printf</span><span class="p">(</span><span class="s">&#34;ERROR: argv[0] has been modified in LLVMFuzzerInitialize</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ParseFlags</span><span class="p">(</span><span class="n">Args</span><span class="p">,</span> <span class="n">EF</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">Flags</span><span class="p">.</span><span class="n">help</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">PrintHelp</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="c1">//前面主要是参数配置和检查完整性
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">...</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Random</span> <span class="n">Rand</span><span class="p">(</span><span class="n">Seed</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="o">*</span><span class="n">MD</span> <span class="o">=</span> <span class="k">new</span> <span class="n">MutationDispatcher</span><span class="p">(</span><span class="n">Rand</span><span class="p">,</span> <span class="n">Options</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="o">*</span><span class="n">Corpus</span> <span class="o">=</span> <span class="k">new</span> <span class="n">InputCorpus</span><span class="p">(</span><span class="n">Options</span><span class="p">.</span><span class="n">OutputCorpus</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="o">*</span><span class="n">F</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Fuzzer</span><span class="p">(</span><span class="n">Callback</span><span class="p">,</span> <span class="o">*</span><span class="n">Corpus</span><span class="p">,</span> <span class="o">*</span><span class="n">MD</span><span class="p">,</span> <span class="n">Options</span><span class="p">);</span><span class="c1">//Fuzz对象配置
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="nl">U</span><span class="p">:</span> <span class="n">Dictionary</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">U</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">Word</span><span class="o">::</span><span class="n">GetMaxSize</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">    <span class="n">MD</span><span class="o">-&gt;</span><span class="n">AddWordToManualDictionary</span><span class="p">(</span><span class="n">Word</span><span class="p">(</span><span class="n">U</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span> <span class="n">U</span><span class="p">.</span><span class="n">size</span><span class="p">()));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">StartRssThread</span><span class="p">(</span><span class="n">F</span><span class="p">,</span> <span class="n">Flags</span><span class="p">.</span><span class="n">rss_limit_mb</span><span class="p">);</span> <span class="c1">//后台监控内存占用, 如果超了自动把进程杀掉
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">...</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SetSignalHandler</span><span class="p">(</span><span class="n">Options</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">...</span>
+</span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="n">CorporaFiles</span> <span class="o">=</span> <span class="n">ReadCorpora</span><span class="p">(</span><span class="o">*</span><span class="n">Inputs</span><span class="p">,</span> <span class="n">ParseSeedInuts</span><span class="p">(</span><span class="n">Flags</span><span class="p">.</span><span class="n">seed_inputs</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">F</span><span class="o">-&gt;</span><span class="n">Loop</span><span class="p">(</span><span class="n">CorporaFiles</span><span class="p">);</span> <span class="c1">//主逻辑
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span> <span class="nf">StartRssThread</span><span class="p">(</span><span class="n">Fuzzer</span> <span class="o">*</span><span class="n">F</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">RssLimitMb</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">RssLimitMb</span><span class="p">)</span> <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="kr">thread</span> <span class="n">T</span><span class="p">(</span><span class="n">RssThread</span><span class="p">,</span> <span class="n">F</span><span class="p">,</span> <span class="n">RssLimitMb</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">T</span><span class="p">.</span><span class="n">detach</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>重要的数据结构</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="k">namespace</span> <span class="n">fuzzer</span> <span class="p">{</span> <span class="c1">//fuzzer域
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">class</span> <span class="nc">Fuzzer</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">public</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="n">Fuzzer</span><span class="p">(</span><span class="n">UserCallback</span> <span class="n">CB</span><span class="p">,</span> <span class="n">InputCorpus</span> <span class="o">&amp;</span><span class="n">Corpus</span><span class="p">,</span> <span class="n">MutationDispatcher</span> <span class="o">&amp;</span><span class="n">MD</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">             <span class="n">FuzzingOptions</span> <span class="n">Options</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="o">~</span><span class="n">Fuzzer</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">void</span> <span class="nf">Loop</span><span class="p">(</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">SizedFile</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">CorporaFiles</span><span class="p">);</span> <span class="c1">// 循环
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="kt">void</span> <span class="nf">ReadAndExecuteSeedCorpora</span><span class="p">(</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">SizedFile</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">CorporaFiles</span><span class="p">);</span> <span class="c1">// 执行提供的输入样本
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="kt">void</span> <span class="nf">MinimizeCrashLoop</span><span class="p">(</span><span class="k">const</span> <span class="n">Unit</span> <span class="o">&amp;</span><span class="n">U</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">void</span> <span class="nf">RereadOutputCorpus</span><span class="p">(</span><span class="n">size_t</span> <span class="n">MaxSize</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="n">size_t</span> <span class="nf">getTotalNumberOfRuns</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">TotalNumberOfRuns</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">void</span> <span class="nf">ExecuteCallback</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">Data</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">Size</span><span class="p">);</span> <span class="c1">// 调用CallBack
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="kt">bool</span> <span class="nf">RunOne</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">Data</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">Size</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">MayDeleteFile</span> <span class="o">=</span> <span class="nb">false</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                  <span class="n">InputInfo</span> <span class="o">*</span><span class="n">II</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">,</span> <span class="kt">bool</span> <span class="o">*</span><span class="n">FoundUniqFeatures</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">);</span> <span class="c1">// ExecuteCallback父函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// Merge Corpora[1:] into Corpora[0].
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="kt">void</span> <span class="nf">Merge</span><span class="p">(</span><span class="k">const</span> <span class="n">Vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">Corpora</span><span class="p">);</span> <span class="c1">// 合并
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="kt">void</span> <span class="nf">CrashResistantMergeInternalStep</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">ControlFilePath</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">MutationDispatcher</span> <span class="o">&amp;</span><span class="n">GetMD</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">MD</span><span class="p">;</span> <span class="p">}</span> <span class="c1">// 变异类
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="p">...</span>
+</span></span><span class="line"><span class="cl">      <span class="k">static</span> <span class="kt">void</span> <span class="n">MaybeExitGracefully</span><span class="p">();</span> <span class="c1">// 退出
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">WriteToOutputCorpus</span><span class="p">(</span><span class="k">const</span> <span class="n">Unit</span> <span class="o">&amp;</span><span class="n">U</span><span class="p">);</span> <span class="c1">// 记录
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="k">private</span><span class="o">:</span>
+</span></span><span class="line"><span class="cl">      <span class="p">...</span>
+</span></span><span class="line"><span class="cl">      <span class="n">system_clock</span><span class="o">::</span><span class="n">time_point</span> <span class="n">LastAllocatorPurgeAttemptTime</span> <span class="o">=</span> <span class="n">system_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="n">UserCallback</span> <span class="n">CB</span><span class="p">;</span> <span class="c1">//目标函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">InputCorpus</span> <span class="o">&amp;</span><span class="n">Corpus</span><span class="p">;</span> <span class="c1">//测试样本
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">MutationDispatcher</span> <span class="o">&amp;</span><span class="n">MD</span><span class="p">;</span> <span class="c1">//变异策略
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">FuzzingOptions</span> <span class="n">Options</span><span class="p">;</span> <span class="c1">//fuzz选项
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">DataFlowTrace</span> <span class="n">DFT</span><span class="p">;</span> <span class="c1">//coverage-guided fuzzing增强，追踪数据流
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">      <span class="n">system_clock</span><span class="o">::</span><span class="n">time_point</span> <span class="n">ProcessStartTime</span> <span class="o">=</span> <span class="n">system_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">      <span class="n">system_clock</span><span class="o">::</span><span class="n">time_point</span> <span class="n">UnitStartTime</span><span class="p">,</span> <span class="n">UnitStopTime</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">long</span> <span class="n">TimeOfLongestUnitInSeconds</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="kt">long</span> <span class="n">EpochOfLastReadOfOutputCorpus</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="n">size_t</span> <span class="n">MaxInputLen</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">size_t</span> <span class="n">MaxMutationLen</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">size_t</span> <span class="n">TmpMaxMutationLen</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">      <span class="n">Vector</span><span class="o">&lt;</span><span class="kt">uint32_t</span><span class="o">&gt;</span> <span class="n">UniqFeatureSetTmp</span><span class="p">;</span> <span class="c1">//临时存储本次执行输入触发的新 coverage features
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// Need to know our own thread.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="k">static</span> <span class="k">thread_local</span> <span class="kt">bool</span> <span class="n">IsMyThread</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl">    <span class="p">};</span>
+</span></span></code></pre></div><h3 id="fuzzmutation">Fuzz&amp;Mutation</h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">Fuzzer</span><span class="o">::</span><span class="n">Loop</span><span class="p">(</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">SizedFile</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">CorporaFiles</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="n">FocusFunctionOrAuto</span> <span class="o">=</span> <span class="n">Options</span><span class="p">.</span><span class="n">FocusFunction</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">DFT</span><span class="p">.</span><span class="n">Init</span><span class="p">(</span><span class="n">Options</span><span class="p">.</span><span class="n">DataFlowTrace</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">FocusFunctionOrAuto</span><span class="p">,</span> <span class="n">CorporaFiles</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">             <span class="n">MD</span><span class="p">.</span><span class="n">GetRand</span><span class="p">());</span> <span class="c1">//数据流追踪初始化
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">TPC</span><span class="p">.</span><span class="n">SetFocusFunction</span><span class="p">(</span><span class="n">FocusFunctionOrAuto</span><span class="p">);</span> <span class="c1">//覆盖率追踪初始化
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">ReadAndExecuteSeedCorpora</span><span class="p">(</span><span class="n">CorporaFiles</span><span class="p">);</span> <span class="c1">//读取种子语料库文件（CorporaFiles），并对目标程序执行这些输入
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">DFT</span><span class="p">.</span><span class="n">Clear</span><span class="p">();</span>  <span class="c1">// 清除数据流跟踪数据，表示 DFT 仅用于处理初始种子语料库
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">TPC</span><span class="p">.</span><span class="n">SetPrintNewPCs</span><span class="p">(</span><span class="n">Options</span><span class="p">.</span><span class="n">PrintNewCovPcs</span><span class="p">);</span> <span class="c1">//根据options决定是否打印新触发的ip地址
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">TPC</span><span class="p">.</span><span class="n">SetPrintNewFuncs</span><span class="p">(</span><span class="n">Options</span><span class="p">.</span><span class="n">PrintNewCovFuncs</span><span class="p">);</span> <span class="c1">//根据options决定是否打印新遍历的Func名称
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">system_clock</span><span class="o">::</span><span class="n">time_point</span> <span class="n">LastCorpusReload</span> <span class="o">=</span> <span class="n">system_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span> <span class="c1">//记录当前时间
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="n">TmpMaxMutationLen</span> <span class="o">=</span><span class="n">Min</span><span class="p">(</span><span class="n">MaxMutationLen</span><span class="p">,</span> <span class="n">Max</span><span class="p">(</span><span class="n">size_t</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="n">Corpus</span><span class="p">.</span><span class="n">MaxInputSize</span><span class="p">()));</span> <span class="c1">//初始化变异长度，默认为4
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">//检查终止条件
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">auto</span> <span class="n">Now</span> <span class="o">=</span> <span class="n">system_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">Options</span><span class="p">.</span><span class="n">StopFile</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span> <span class="o">&amp;&amp;</span>
+</span></span><span class="line"><span class="cl">            <span class="o">!</span><span class="n">FileToVector</span><span class="p">(</span><span class="n">Options</span><span class="p">.</span><span class="n">StopFile</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">false</span><span class="p">).</span><span class="n">empty</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">duration_cast</span><span class="o">&lt;</span><span class="n">seconds</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Now</span> <span class="o">-</span> <span class="n">LastCorpusReload</span><span class="p">).</span><span class="n">count</span><span class="p">()</span> <span class="o">&gt;=</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Options</span><span class="p">.</span><span class="n">ReloadIntervalSec</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">RereadOutputCorpus</span><span class="p">(</span><span class="n">MaxInputLen</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">            <span class="n">LastCorpusReload</span> <span class="o">=</span> <span class="n">system_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">TotalNumberOfRuns</span> <span class="o">&gt;=</span> <span class="n">Options</span><span class="p">.</span><span class="n">MaxNumberOfRuns</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">TimedOut</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c1">// 动态调整变异长度 -- 这一机制在早期使用较小的变异以探索代码路径，后期逐渐增加变异长度以进行更深入的测试
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">Options</span><span class="p">.</span><span class="n">LenControl</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="p">(</span><span class="n">TmpMaxMutationLen</span> <span class="o">&lt;</span> <span class="n">MaxMutationLen</span> <span class="o">&amp;&amp;</span>
+</span></span><span class="line"><span class="cl">                <span class="n">TotalNumberOfRuns</span> <span class="o">-</span> <span class="n">LastCorpusUpdateRun</span> <span class="o">&gt;</span>
+</span></span><span class="line"><span class="cl">                <span class="n">Options</span><span class="p">.</span><span class="n">LenControl</span> <span class="o">*</span> <span class="n">Log</span><span class="p">(</span><span class="n">TmpMaxMutationLen</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="n">TmpMaxMutationLen</span> <span class="o">=</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">Min</span><span class="p">(</span><span class="n">MaxMutationLen</span><span class="p">,</span> <span class="n">TmpMaxMutationLen</span> <span class="o">+</span> <span class="n">Log</span><span class="p">(</span><span class="n">TmpMaxMutationLen</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">                <span class="n">LastCorpusUpdateRun</span> <span class="o">=</span> <span class="n">TotalNumberOfRuns</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">TmpMaxMutationLen</span> <span class="o">=</span> <span class="n">MaxMutationLen</span><span class="p">;</span> <span class="c1">// 不动态调整，那就直接最大数量变异
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c1">// 进行变异然后运行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">MutateAndTestOne</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">PurgeAllocator</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">PrintStats</span><span class="p">(</span><span class="s">&#34;DONE  &#34;</span><span class="p">,</span> <span class="s">&#34;</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">MD</span><span class="p">.</span><span class="n">PrintRecommendedDictionary</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h4 id="dftinit先鸽着x没细看"><strong>DFT.Init</strong>（先鸽着x，没细看）</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">bool</span> <span class="n">DataFlowTrace</span><span class="o">::</span><span class="n">Init</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">DirPath</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">*</span><span class="n">FocusFunction</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                         <span class="n">Vector</span><span class="o">&lt;</span><span class="n">SizedFile</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">CorporaFiles</span><span class="p">,</span> <span class="n">Random</span> <span class="o">&amp;</span><span class="n">Rand</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">DirPath</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span> <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Printf</span><span class="p">(</span><span class="s">&#34;INFO: DataFlowTrace: reading from &#39;%s&#39;</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">DirPath</span><span class="p">.</span><span class="n">c_str</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Vector</span><span class="o">&lt;</span><span class="n">SizedFile</span><span class="o">&gt;</span> <span class="n">Files</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">GetSizedFilesFromDir</span><span class="p">(</span><span class="n">DirPath</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">Files</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">L</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">size_t</span> <span class="n">FocusFuncIdx</span> <span class="o">=</span> <span class="n">SIZE_MAX</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">FunctionNames</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// Collect the hashes of the corpus files.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="nl">SF</span> <span class="p">:</span> <span class="n">CorporaFiles</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">CorporaHashes</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">Hash</span><span class="p">(</span><span class="n">FileToVector</span><span class="p">(</span><span class="n">SF</span><span class="p">.</span><span class="n">File</span><span class="p">)));</span> <span class="c1">// 储存文件的hash
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// Read functions.txt
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">std</span><span class="o">::</span><span class="n">ifstream</span> <span class="n">IF</span><span class="p">(</span><span class="n">DirPlusFile</span><span class="p">(</span><span class="n">DirPath</span><span class="p">,</span> <span class="n">kFunctionsTxt</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="n">size_t</span> <span class="n">NumFunctions</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">IF</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="sc">&#39;\n&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">FunctionNames</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">L</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">NumFunctions</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="n">FocusFunction</span> <span class="o">==</span> <span class="n">L</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">FocusFuncIdx</span> <span class="o">=</span> <span class="n">NumFunctions</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">NumFunctions</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="n">FocusFunction</span> <span class="o">==</span> <span class="s">&#34;auto&#34;</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 自动计算得出焦点函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="c1">// AUTOFOCUS works like this:
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// * 从 DFT 文件中读取覆盖率数据。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// * 根据覆盖率给函数分配权重。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="c1">// * 根据权重选择一个随机函数。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">ReadCoverage</span><span class="p">(</span><span class="n">DirPath</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="n">Weights</span> <span class="o">=</span> <span class="n">Coverage</span><span class="p">.</span><span class="n">FunctionWeights</span><span class="p">(</span><span class="n">NumFunctions</span><span class="p">);</span> <span class="c1">// 给函数计算权重
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">Vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">Intervals</span><span class="p">(</span><span class="n">NumFunctions</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">std</span><span class="o">::</span><span class="n">iota</span><span class="p">(</span><span class="n">Intervals</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">Intervals</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="mi">0</span><span class="p">);</span> <span class="c1">// 区间数组
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">auto</span> <span class="n">Distribution</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">piecewise_constant_distribution</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Intervals</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">Intervals</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">Weights</span><span class="p">.</span><span class="n">begin</span><span class="p">());</span> <span class="c1">// 根据权重排序
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">FocusFuncIdx</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">size_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Distribution</span><span class="p">(</span><span class="n">Rand</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">FocusFunction</span> <span class="o">=</span> <span class="n">FunctionNames</span><span class="p">[</span><span class="n">FocusFuncIdx</span><span class="p">];</span> <span class="c1">// 随机选择焦点函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">assert</span><span class="p">(</span><span class="n">FocusFuncIdx</span> <span class="o">&lt;</span> <span class="n">NumFunctions</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Printf</span><span class="p">(</span><span class="s">&#34;INFO: AUTOFOCUS: %zd %s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">FocusFuncIdx</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="n">FunctionNames</span><span class="p">[</span><span class="n">FocusFuncIdx</span><span class="p">].</span><span class="n">c_str</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NumFunctions</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">Weights</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">Printf</span><span class="p">(</span><span class="s">&#34;  [%zd] W %g</span><span class="se">\t</span><span class="s">BB-tot %u</span><span class="se">\t</span><span class="s">BB-cov %u</span><span class="se">\t</span><span class="s">EntryFreq %u:</span><span class="se">\t</span><span class="s">%s</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">             <span class="n">Weights</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">Coverage</span><span class="p">.</span><span class="n">GetNumberOfBlocks</span><span class="p">(</span><span class="n">i</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">             <span class="n">Coverage</span><span class="p">.</span><span class="n">GetNumberOfCoveredBlocks</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">Coverage</span><span class="p">.</span><span class="n">GetCounter</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">             <span class="n">FunctionNames</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">c_str</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">NumFunctions</span> <span class="o">||</span> <span class="n">FocusFuncIdx</span> <span class="o">==</span> <span class="n">SIZE_MAX</span> <span class="o">||</span> <span class="n">Files</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// Read traces.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">size_t</span> <span class="n">NumTraceFiles</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">size_t</span> <span class="n">NumTracesWithFocusFunction</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="nl">SF</span> <span class="p">:</span> <span class="n">Files</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="n">Name</span> <span class="o">=</span> <span class="n">Basename</span><span class="p">(</span><span class="n">SF</span><span class="p">.</span><span class="n">File</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">Name</span> <span class="o">==</span> <span class="n">kFunctionsTxt</span><span class="p">)</span> <span class="k">continue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">CorporaHashes</span><span class="p">.</span><span class="n">count</span><span class="p">(</span><span class="n">Name</span><span class="p">))</span> <span class="k">continue</span><span class="p">;</span>  <span class="c1">// not in the corpus.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">NumTraceFiles</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// Printf(&#34;=== %s\n&#34;, Name.c_str());
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">std</span><span class="o">::</span><span class="n">ifstream</span> <span class="n">IF</span><span class="p">(</span><span class="n">SF</span><span class="p">.</span><span class="n">File</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">getline</span><span class="p">(</span><span class="n">IF</span><span class="p">,</span> <span class="n">L</span><span class="p">,</span> <span class="sc">&#39;\n&#39;</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">size_t</span> <span class="n">FunctionNum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">DFTString</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">ParseDFTLine</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">FunctionNum</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">DFTString</span><span class="p">)</span> <span class="o">&amp;&amp;</span>
+</span></span><span class="line"><span class="cl">          <span class="n">FunctionNum</span> <span class="o">==</span> <span class="n">FocusFuncIdx</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">NumTracesWithFocusFunction</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">FunctionNum</span> <span class="o">&gt;=</span> <span class="n">NumFunctions</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">          <span class="k">return</span> <span class="n">ParseError</span><span class="p">(</span><span class="s">&#34;N is greater than the number of functions&#34;</span><span class="p">,</span> <span class="n">L</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Traces</span><span class="p">[</span><span class="n">Name</span><span class="p">]</span> <span class="o">=</span> <span class="n">DFTStringToVector</span><span class="p">(</span><span class="n">DFTString</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// Print just a few small traces.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">NumTracesWithFocusFunction</span> <span class="o">&lt;=</span> <span class="mi">3</span> <span class="o">&amp;&amp;</span> <span class="n">DFTString</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mi">16</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">          <span class="n">Printf</span><span class="p">(</span><span class="s">&#34;%s =&gt; |%s|</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">Name</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="p">(</span><span class="n">DFTString</span><span class="p">).</span><span class="n">c_str</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">        <span class="k">break</span><span class="p">;</span> <span class="c1">// No need to parse the following lines.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Printf</span><span class="p">(</span><span class="s">&#34;INFO: DataFlowTrace: %zd trace files, %zd functions, &#34;</span>
+</span></span><span class="line"><span class="cl">         <span class="s">&#34;%zd traces with focus function</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">         <span class="n">NumTraceFiles</span><span class="p">,</span> <span class="n">NumFunctions</span><span class="p">,</span> <span class="n">NumTracesWithFocusFunction</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="n">NumTraceFiles</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h4 id="readandexecuteseedcorpora"><strong>ReadAndExecuteSeedCorpora</strong></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">Fuzzer</span><span class="o">::</span><span class="n">ReadAndExecuteSeedCorpora</span><span class="p">(</span><span class="n">Vector</span><span class="o">&lt;</span><span class="n">SizedFile</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">CorporaFiles</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">const</span> <span class="n">size_t</span> <span class="n">kMaxSaneLen</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">20</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">const</span> <span class="n">size_t</span> <span class="n">kMinDefaultLen</span> <span class="o">=</span> <span class="mi">4096</span><span class="p">;</span> <span class="c1">// 默认4096
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">size_t</span> <span class="n">MaxSize</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">size_t</span> <span class="n">MinSize</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">size_t</span> <span class="n">TotalSize</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="nl">File</span> <span class="p">:</span> <span class="n">CorporaFiles</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">MaxSize</span> <span class="o">=</span> <span class="n">Max</span><span class="p">(</span><span class="n">File</span><span class="p">.</span><span class="n">Size</span><span class="p">,</span> <span class="n">MaxSize</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">MinSize</span> <span class="o">=</span> <span class="n">Min</span><span class="p">(</span><span class="n">File</span><span class="p">.</span><span class="n">Size</span><span class="p">,</span> <span class="n">MinSize</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">TotalSize</span> <span class="o">+=</span> <span class="n">File</span><span class="p">.</span><span class="n">Size</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">Options</span><span class="p">.</span><span class="n">MaxLen</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SetMaxInputLen</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">min</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">max</span><span class="p">(</span><span class="n">kMinDefaultLen</span><span class="p">,</span> <span class="n">MaxSize</span><span class="p">),</span> <span class="n">kMaxSaneLen</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="n">assert</span><span class="p">(</span><span class="n">MaxInputLen</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// Test the callback with empty input and never try it again.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">uint8_t</span> <span class="n">dummy</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">ExecuteCallback</span><span class="p">(</span><span class="o">&amp;</span><span class="n">dummy</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span> <span class="c1">//执行Fuzzer-&gt;CB, 输入为空
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">CorporaFiles</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Printf</span><span class="p">(</span><span class="s">&#34;INFO: A corpus is not provided, starting from an empty corpus</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Unit</span> <span class="nf">U</span><span class="p">({</span><span class="sc">&#39;\n&#39;</span><span class="p">});</span> <span class="c1">// Valid ASCII input.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">RunOne</span><span class="p">(</span><span class="n">U</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span> <span class="n">U</span><span class="p">.</span><span class="n">size</span><span class="p">());</span> <span class="c1">//发一个换行符试试
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Printf</span><span class="p">(</span><span class="s">&#34;INFO: seed corpus: files: %zd min: %zdb max: %zdb total: %zdb&#34;</span>
+</span></span><span class="line"><span class="cl">           <span class="s">&#34; rss: %zdMb</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="n">CorporaFiles</span><span class="p">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">MinSize</span><span class="p">,</span> <span class="n">MaxSize</span><span class="p">,</span> <span class="n">TotalSize</span><span class="p">,</span> <span class="n">GetPeakRSSMb</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">Options</span><span class="p">.</span><span class="n">ShuffleAtStartUp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">shuffle</span><span class="p">(</span><span class="n">CorporaFiles</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">CorporaFiles</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">MD</span><span class="p">.</span><span class="n">GetRand</span><span class="p">());</span> <span class="c1">// 重组CorporaFiles?
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">Options</span><span class="p">.</span><span class="n">PreferSmall</span><span class="p">)</span> <span class="p">{</span> 
+</span></span><span class="line"><span class="cl">      <span class="n">std</span><span class="o">::</span><span class="n">stable_sort</span><span class="p">(</span><span class="n">CorporaFiles</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">CorporaFiles</span><span class="p">.</span><span class="n">end</span><span class="p">());</span> <span class="c1">//从小往大开始变异corporaFiles
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">assert</span><span class="p">(</span><span class="n">CorporaFiles</span><span class="p">.</span><span class="n">front</span><span class="p">().</span><span class="n">Size</span> <span class="o">&lt;=</span> <span class="n">CorporaFiles</span><span class="p">.</span><span class="n">back</span><span class="p">().</span><span class="n">Size</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 逐个执行测试用例
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="p">(</span><span class="k">auto</span> <span class="o">&amp;</span><span class="nl">SF</span> <span class="p">:</span> <span class="n">CorporaFiles</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">auto</span> <span class="n">U</span> <span class="o">=</span> <span class="n">FileToVector</span><span class="p">(</span><span class="n">SF</span><span class="p">.</span><span class="n">File</span><span class="p">,</span> <span class="n">MaxInputLen</span><span class="p">,</span> <span class="cm">/*ExitOnError=*/</span><span class="nb">false</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">assert</span><span class="p">(</span><span class="n">U</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">MaxInputLen</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">RunOne</span><span class="p">(</span><span class="n">U</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span> <span class="n">U</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">      <span class="n">CheckExitOnSrcPosOrItem</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">      <span class="n">TryDetectingAMemoryLeak</span><span class="p">(</span><span class="n">U</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span> <span class="n">U</span><span class="p">.</span><span class="n">size</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">                              <span class="cm">/*DuringInitialCorpusExecution*/</span> <span class="nb">true</span><span class="p">);</span> <span class="c1">// 尝试检查是否有内存非法访问
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">PrintStats</span><span class="p">(</span><span class="s">&#34;INITED&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">Options</span><span class="p">.</span><span class="n">FocusFunction</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Printf</span><span class="p">(</span><span class="s">&#34;INFO: %zd/%zd inputs touch the focus function</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="n">Corpus</span><span class="p">.</span><span class="n">NumInputsThatTouchFocusFunction</span><span class="p">(),</span> <span class="n">Corpus</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">Options</span><span class="p">.</span><span class="n">DataFlowTrace</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Printf</span><span class="p">(</span><span class="s">&#34;INFO: %zd/%zd inputs have the Data Flow Trace</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="n">Corpus</span><span class="p">.</span><span class="n">NumInputsWithDataFlowTrace</span><span class="p">(),</span> <span class="n">Corpus</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">Corpus</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="n">Options</span><span class="p">.</span><span class="n">MaxNumberOfRuns</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Printf</span><span class="p">(</span><span class="s">&#34;ERROR: no interesting inputs were found. &#34;</span>
+</span></span><span class="line"><span class="cl">           <span class="s">&#34;Is the code instrumented for coverage? Exiting.</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h4 id="fuzzermutateandtestone-主要逻辑"><strong>Fuzzer::MutateAndTestOne 主要逻辑</strong></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">Fuzzer</span><span class="o">::</span><span class="n">MutateAndTestOne</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">MD</span><span class="p">.</span><span class="n">StartMutationSequence</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="o">&amp;</span><span class="n">II</span> <span class="o">=</span> <span class="n">Corpus</span><span class="p">.</span><span class="n">ChooseUnitToMutate</span><span class="p">(</span><span class="n">MD</span><span class="p">.</span><span class="n">GetRand</span><span class="p">());</span> <span class="c1">// 选择一个Unit作为输入进行变异
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">Options</span><span class="p">.</span><span class="n">DoCrossOver</span><span class="p">)</span> <span class="c1">// 交叉编译--多选一个Unit作为种子一起变异
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">MD</span><span class="p">.</span><span class="n">SetCrossOverWith</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Corpus</span><span class="p">.</span><span class="n">ChooseUnitToMutate</span><span class="p">(</span><span class="n">MD</span><span class="p">.</span><span class="n">GetRand</span><span class="p">()).</span><span class="n">U</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="k">auto</span> <span class="o">&amp;</span><span class="n">U</span> <span class="o">=</span> <span class="n">II</span><span class="p">.</span><span class="n">U</span><span class="p">;</span> <span class="c1">// U是数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">memcpy</span><span class="p">(</span><span class="n">BaseSha1</span><span class="p">,</span> <span class="n">II</span><span class="p">.</span><span class="n">Sha1</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">BaseSha1</span><span class="p">));</span> <span class="c1">// 存储hash值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">assert</span><span class="p">(</span><span class="n">CurrentUnitData</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">size_t</span> <span class="n">Size</span> <span class="o">=</span> <span class="n">U</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">assert</span><span class="p">(</span><span class="n">Size</span> <span class="o">&lt;=</span> <span class="n">MaxInputLen</span> <span class="o">&amp;&amp;</span> <span class="s">&#34;Oversized Unit&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">memcpy</span><span class="p">(</span><span class="n">CurrentUnitData</span><span class="p">,</span> <span class="n">U</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span> <span class="n">Size</span><span class="p">);</span> <span class="c1">// CurrentUnitData当前数据作为变异的基础，也用于存储变异后的数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">    <span class="n">assert</span><span class="p">(</span><span class="n">MaxMutationLen</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">size_t</span> <span class="n">CurrentMaxMutationLen</span> <span class="o">=</span> <span class="n">Min</span><span class="p">(</span><span class="n">MaxMutationLen</span><span class="p">,</span> <span class="n">Max</span><span class="p">(</span><span class="n">U</span><span class="p">.</span><span class="n">size</span><span class="p">(),</span> <span class="n">TmpMaxMutationLen</span><span class="p">));</span> <span class="c1">// 最大变异长度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">assert</span><span class="p">(</span><span class="n">CurrentMaxMutationLen</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">Options</span><span class="p">.</span><span class="n">MutateDepth</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 对选中的输入进行最多 Options.MutateDepth 次变异和测试
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">TotalNumberOfRuns</span> <span class="o">&gt;=</span> <span class="n">Options</span><span class="p">.</span><span class="n">MaxNumberOfRuns</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">MaybeExitGracefully</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="n">size_t</span> <span class="n">NewSize</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">II</span><span class="p">.</span><span class="n">HasFocusFunction</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">II</span><span class="p">.</span><span class="n">DataFlowTraceForFocusFunction</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span> <span class="o">&amp;&amp;</span>
+</span></span><span class="line"><span class="cl">            <span class="n">Size</span> <span class="o">&lt;=</span> <span class="n">CurrentMaxMutationLen</span><span class="p">)</span> <span class="c1">// 优先使用数据流引导的变异（如果可用），否则使用默认变异。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">NewSize</span> <span class="o">=</span> <span class="n">MD</span><span class="p">.</span><span class="n">MutateWithMask</span><span class="p">(</span><span class="n">CurrentUnitData</span><span class="p">,</span> <span class="n">Size</span><span class="p">,</span> <span class="n">Size</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                        <span class="n">II</span><span class="p">.</span><span class="n">DataFlowTraceForFocusFunction</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">NewSize</span><span class="p">)</span> <span class="c1">// 默认变异
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="n">NewSize</span> <span class="o">=</span> <span class="n">MD</span><span class="p">.</span><span class="n">Mutate</span><span class="p">(</span><span class="n">CurrentUnitData</span><span class="p">,</span> <span class="n">Size</span><span class="p">,</span> <span class="n">CurrentMaxMutationLen</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">assert</span><span class="p">(</span><span class="n">NewSize</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="s">&#34;Mutator returned empty unit&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">assert</span><span class="p">(</span><span class="n">NewSize</span> <span class="o">&lt;=</span> <span class="n">CurrentMaxMutationLen</span> <span class="o">&amp;&amp;</span> <span class="s">&#34;Mutator return oversized unit&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Size</span> <span class="o">=</span> <span class="n">NewSize</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">II</span><span class="p">.</span><span class="n">NumExecutedMutations</span><span class="o">++</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="kt">bool</span> <span class="n">FoundUniqFeatures</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="kt">bool</span> <span class="n">NewCov</span> <span class="o">=</span> <span class="n">RunOne</span><span class="p">(</span><span class="n">CurrentUnitData</span><span class="p">,</span> <span class="n">Size</span><span class="p">,</span> <span class="cm">/*MayDeleteFile=*/</span><span class="nb">true</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">II</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                             <span class="o">&amp;</span><span class="n">FoundUniqFeatures</span><span class="p">);</span> <span class="c1">//
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">TryDetectingAMemoryLeak</span><span class="p">(</span><span class="n">CurrentUnitData</span><span class="p">,</span> <span class="n">Size</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                <span class="cm">/*DuringInitialCorpusExecution*/</span> <span class="nb">false</span><span class="p">);</span> <span class="c1">//尝试查找内存错误访问
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="p">(</span><span class="n">NewCov</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="n">ReportNewCoverage</span><span class="p">(</span><span class="o">&amp;</span><span class="n">II</span><span class="p">,</span> <span class="p">{</span><span class="n">CurrentUnitData</span><span class="p">,</span> <span class="n">CurrentUnitData</span> <span class="o">+</span> <span class="n">Size</span><span class="p">});</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span>  <span class="c1">// We will mutate this input more in the next rounds.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="p">}</span> 
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">Options</span><span class="p">.</span><span class="n">ReduceDepth</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="n">FoundUniqFeatures</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h4 id="mutate">Mutate</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">MutationDispatcher</span><span class="o">::</span><span class="n">MutationDispatcher</span><span class="p">(</span><span class="n">Random</span> <span class="o">&amp;</span><span class="n">Rand</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                       <span class="k">const</span> <span class="n">FuzzingOptions</span> <span class="o">&amp;</span><span class="n">Options</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="o">:</span> <span class="n">Rand</span><span class="p">(</span><span class="n">Rand</span><span class="p">),</span> <span class="n">Options</span><span class="p">(</span><span class="n">Options</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">DefaultMutators</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">      <span class="n">DefaultMutators</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="p">{</span><span class="o">&amp;</span><span class="n">MutationDispatcher</span><span class="o">::</span><span class="n">Mutate_EraseBytes</span><span class="p">,</span> <span class="s">&#34;EraseBytes&#34;</span><span class="p">},</span> <span class="c1">// 去除Bytes
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="p">{</span><span class="o">&amp;</span><span class="n">MutationDispatcher</span><span class="o">::</span><span class="n">Mutate_InsertByte</span><span class="p">,</span> <span class="s">&#34;InsertByte&#34;</span><span class="p">},</span> <span class="c1">// 插入Bytes
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="p">{</span><span class="o">&amp;</span><span class="n">MutationDispatcher</span><span class="o">::</span><span class="n">Mutate_InsertRepeatedBytes</span><span class="p">,</span> <span class="c1">//插入重复Bytes
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>           <span class="s">&#34;InsertRepeatedBytes&#34;</span><span class="p">},</span>
+</span></span><span class="line"><span class="cl">          <span class="p">{</span><span class="o">&amp;</span><span class="n">MutationDispatcher</span><span class="o">::</span><span class="n">Mutate_ChangeByte</span><span class="p">,</span> <span class="s">&#34;ChangeByte&#34;</span><span class="p">},</span> <span class="c1">//改变Bytes
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="p">{</span><span class="o">&amp;</span><span class="n">MutationDispatcher</span><span class="o">::</span><span class="n">Mutate_ChangeBit</span><span class="p">,</span> <span class="s">&#34;ChangeBit&#34;</span><span class="p">},</span> <span class="c1">//改变Bit
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="p">{</span><span class="o">&amp;</span><span class="n">MutationDispatcher</span><span class="o">::</span><span class="n">Mutate_ShuffleBytes</span><span class="p">,</span> <span class="s">&#34;ShuffleBytes&#34;</span><span class="p">},</span> <span class="c1">// 打乱某一段字节
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="p">{</span><span class="o">&amp;</span><span class="n">MutationDispatcher</span><span class="o">::</span><span class="n">Mutate_ChangeASCIIInteger</span><span class="p">,</span> <span class="s">&#34;ChangeASCIIInt&#34;</span><span class="p">},</span> <span class="c1">// 修改 ASCII 数字串
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="p">{</span><span class="o">&amp;</span><span class="n">MutationDispatcher</span><span class="o">::</span><span class="n">Mutate_ChangeBinaryInteger</span><span class="p">,</span> <span class="s">&#34;ChangeBinInt&#34;</span><span class="p">},</span> <span class="c1">// 修改二进制整数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="p">{</span><span class="o">&amp;</span><span class="n">MutationDispatcher</span><span class="o">::</span><span class="n">Mutate_CopyPart</span><span class="p">,</span> <span class="s">&#34;CopyPart&#34;</span><span class="p">},</span> <span class="c1">// 复制一部分到另一部分
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="p">{</span><span class="o">&amp;</span><span class="n">MutationDispatcher</span><span class="o">::</span><span class="n">Mutate_CrossOver</span><span class="p">,</span> <span class="s">&#34;CrossOver&#34;</span><span class="p">},</span> <span class="c1">// 交换位置
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="p">{</span><span class="o">&amp;</span><span class="n">MutationDispatcher</span><span class="o">::</span><span class="n">Mutate_AddWordFromManualDictionary</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="s">&#34;ManualDict&#34;</span><span class="p">},</span> <span class="c1">// 从手动字典里取一个词加入输入
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="p">{</span><span class="o">&amp;</span><span class="n">MutationDispatcher</span><span class="o">::</span><span class="n">Mutate_AddWordFromPersistentAutoDictionary</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="s">&#34;PersAutoDict&#34;</span><span class="p">},</span> <span class="c1">// 从自动字典里取一个词加入输入
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="p">});</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span><span class="p">(</span><span class="n">Options</span><span class="p">.</span><span class="n">UseCmp</span><span class="p">)</span> <span class="c1">// 用程序里比较指令（cmp/strcmp/memcmp）的信息，指导输入修改，更快的绕过if(strcmp(a,b))
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">DefaultMutators</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="o">&amp;</span><span class="n">MutationDispatcher</span><span class="o">::</span><span class="n">Mutate_AddWordFromTORC</span><span class="p">,</span> <span class="s">&#34;CMP&#34;</span><span class="p">});</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">EF</span><span class="o">-&gt;</span><span class="n">LLVMFuzzerCustomMutator</span><span class="p">)</span> <span class="c1">// 支持用户定义 LLVMFuzzerCustomMutator() 函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">Mutators</span><span class="p">.</span><span class="n">push_back</span><span class="p">({</span><span class="o">&amp;</span><span class="n">MutationDispatcher</span><span class="o">::</span><span class="n">Mutate_Custom</span><span class="p">,</span> <span class="s">&#34;Custom&#34;</span><span class="p">});</span>
+</span></span><span class="line"><span class="cl">  <span class="k">else</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Mutators</span> <span class="o">=</span> <span class="n">DefaultMutators</span><span class="p">;</span> <span class="c1">// 否则默认
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">EF</span><span class="o">-&gt;</span><span class="n">LLVMFuzzerCustomCrossOver</span><span class="p">)</span> <span class="c1">// LLVMFuzzerCustomCrossOver()逻辑，交叉输入
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">Mutators</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span><span class="o">&amp;</span><span class="n">MutationDispatcher</span><span class="o">::</span><span class="n">Mutate_CustomCrossOver</span><span class="p">,</span> <span class="s">&#34;CustomCrossOver&#34;</span><span class="p">});</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="nc">Mutator</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">size_t</span> <span class="p">(</span><span class="n">MutationDispatcher</span><span class="o">::*</span><span class="n">Fn</span><span class="p">)(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">Data</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">Size</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">Max</span><span class="p">);</span> <span class="c1">// 指向vtable里函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">Name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><p>emmm&hellip;.0_o</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">size_t</span> <span class="n">MutationDispatcher</span><span class="o">::</span><span class="n">Mutate</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">Data</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">Size</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">MaxSize</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nf">MutateImpl</span><span class="p">(</span><span class="n">Data</span><span class="p">,</span> <span class="n">Size</span><span class="p">,</span> <span class="n">MaxSize</span><span class="p">,</span> <span class="n">Mutators</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">size_t</span> <span class="n">MutationDispatcher</span><span class="o">::</span><span class="n">MutateImpl</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">Data</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">Size</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                      <span class="n">size_t</span> <span class="n">MaxSize</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                      <span class="n">Vector</span><span class="o">&lt;</span><span class="n">Mutator</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">Mutators</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">assert</span><span class="p">(</span><span class="n">MaxSize</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// Some mutations may fail (e.g. can&#39;t insert more bytes if Size == MaxSize),
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// in which case they will return 0.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// Try several times before returning un-mutated data.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">Iter</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">Iter</span> <span class="o">&lt;</span> <span class="mi">100</span><span class="p">;</span> <span class="n">Iter</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="n">M</span> <span class="o">=</span> <span class="n">Mutators</span><span class="p">[</span><span class="n">Rand</span><span class="p">(</span><span class="n">Mutators</span><span class="p">.</span><span class="n">size</span><span class="p">())];</span> <span class="c1">// 随机选一个变异方法
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">size_t</span> <span class="n">NewSize</span> <span class="o">=</span> <span class="p">(</span><span class="k">this</span><span class="o">-&gt;*</span><span class="p">(</span><span class="n">M</span><span class="p">.</span><span class="n">Fn</span><span class="p">))(</span><span class="n">Data</span><span class="p">,</span> <span class="n">Size</span><span class="p">,</span> <span class="n">MaxSize</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">NewSize</span> <span class="o">&amp;&amp;</span> <span class="n">NewSize</span> <span class="o">&lt;=</span> <span class="n">MaxSize</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span><span class="n">Options</span><span class="p">.</span><span class="n">OnlyASCII</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">ToASCII</span><span class="p">(</span><span class="n">Data</span><span class="p">,</span> <span class="n">NewSize</span><span class="p">);</span> <span class="c1">// 如果配置了 OnlyASCII，就把数据转成 ASCII（避免不可打印字符）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">CurrentMutatorSequence</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">M</span><span class="p">);</span> <span class="c1">// 把这个 mutator 记录到 CurrentMutatorSequence（方便调试或复现）
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="k">return</span> <span class="n">NewSize</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">*</span><span class="n">Data</span> <span class="o">=</span> <span class="sc">&#39; &#39;</span><span class="p">;</span> 
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>   <span class="c1">// Fallback, should not happen frequently.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">}</span>
+</span></span></code></pre></div><p>还有另一个</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="n">size_t</span> <span class="n">MutationDispatcher</span><span class="o">::</span><span class="n">MutateWithMask</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">Data</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">Size</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                          <span class="n">size_t</span> <span class="n">MaxSize</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                          <span class="k">const</span> <span class="n">Vector</span><span class="o">&lt;</span><span class="kt">uint8_t</span><span class="o">&gt;</span> <span class="o">&amp;</span><span class="n">Mask</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">size_t</span> <span class="n">MaskedSize</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">min</span><span class="p">(</span><span class="n">Size</span><span class="p">,</span> <span class="n">Mask</span><span class="p">.</span><span class="n">size</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 采用写回法，先复制出要变异的数据，然后变异后写回
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">auto</span> <span class="o">&amp;</span><span class="n">T</span> <span class="o">=</span> <span class="n">MutateWithMaskTemp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">T</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">Size</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">T</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">Size</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">size_t</span> <span class="n">OneBits</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">I</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">I</span> <span class="o">&lt;</span> <span class="n">MaskedSize</span><span class="p">;</span> <span class="n">I</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">Mask</span><span class="p">[</span><span class="n">I</span><span class="p">])</span> <span class="c1">// 只对mask标记为1的进行变异
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">T</span><span class="p">[</span><span class="n">OneBits</span><span class="o">++</span><span class="p">]</span> <span class="o">=</span> <span class="n">Data</span><span class="p">[</span><span class="n">I</span><span class="p">];</span> 
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">OneBits</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">assert</span><span class="p">(</span><span class="o">!</span><span class="n">T</span><span class="p">.</span><span class="n">empty</span><span class="p">());</span> 
+</span></span><span class="line"><span class="cl">  <span class="n">size_t</span> <span class="n">NewSize</span> <span class="o">=</span> <span class="n">Mutate</span><span class="p">(</span><span class="n">T</span><span class="p">.</span><span class="n">data</span><span class="p">(),</span> <span class="n">OneBits</span><span class="p">,</span> <span class="n">OneBits</span><span class="p">);</span> 
+</span></span><span class="line"><span class="cl">  <span class="n">assert</span><span class="p">(</span><span class="n">NewSize</span> <span class="o">&lt;=</span> <span class="n">OneBits</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">NewSize</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// Even if NewSize &lt; OneBits we still use all OneBits bytes.
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">for</span> <span class="p">(</span><span class="n">size_t</span> <span class="n">I</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">J</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">I</span> <span class="o">&lt;</span> <span class="n">MaskedSize</span><span class="p">;</span> <span class="n">I</span><span class="o">++</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">Mask</span><span class="p">[</span><span class="n">I</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">      <span class="n">Data</span><span class="p">[</span><span class="n">I</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="n">J</span><span class="o">++</span><span class="p">];</span> <span class="c1">// 写回
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">return</span> <span class="n">Size</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h4 id="run">Run</h4>
+<p>run的代码可能有点乱，审计前我们首先要意识到所有的覆盖率信息都是由编译插桩后的代码生成的，如下执行后带入ida进行反编译</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">┌──<span class="o">(</span>kali㉿kali<span class="o">)</span>-<span class="o">[</span>~/Desktop/libfuzz<span class="o">]</span>
+</span></span><span class="line"><span class="cl">└─$ clang -g -O1 -fsanitize<span class="o">=</span>fuzzer -fsanitize-coverage<span class="o">=</span>trace-pc fuzz.cpp -o fuzz_test
+</span></span></code></pre></div><p><img src="../images/fuzz1.png" alt=""></p>
+<p>其中我们可以看到程序被插入了很多Sanitizer Coverage call gadget，这些插入的调用会在每次执行的时候记录信息，那么，这些信息是如何被记录的呢？别忘了，libfuzzer的本质是让Fuzzer和program跑在同一个进程，那么相应的信息应该会直接被记录到特征结构体等等&hellip;(猜的，但估计八九不离十)</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="kt">bool</span> <span class="n">Fuzzer</span><span class="o">::</span><span class="n">RunOne</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">Data</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">Size</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">MayDeleteFile</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">InputInfo</span> <span class="o">*</span><span class="n">II</span><span class="p">,</span> <span class="kt">bool</span> <span class="o">*</span><span class="n">FoundUniqFeatures</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">Size</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="n">ExecuteCallback</span><span class="p">(</span><span class="n">Data</span><span class="p">,</span> <span class="n">Size</span><span class="p">);</span> <span class="c1">// 执行
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="n">UniqFeatureSetTmp</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span> 
+</span></span><span class="line"><span class="cl">  <span class="n">size_t</span> <span class="n">FoundUniqFeaturesOfII</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="c1">// 初始化计数器，用来记录当前输入 Data 覆盖了多少 已知输入 II 的特征
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">size_t</span> <span class="n">NumUpdatesBefore</span> <span class="o">=</span> <span class="n">Corpus</span><span class="p">.</span><span class="n">NumFeatureUpdates</span><span class="p">();</span> <span class="c1">// 记录 corpus 中已有的特征数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">TPC</span><span class="p">.</span><span class="n">CollectFeatures</span><span class="p">([</span><span class="o">&amp;</span><span class="p">](</span><span class="n">size_t</span> <span class="n">Feature</span><span class="p">)</span> <span class="p">{</span> <span class="c1">// 调用 TPC（Trace PC Collector）去收集覆盖特征
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">Corpus</span><span class="p">.</span><span class="n">AddFeature</span><span class="p">(</span><span class="n">Feature</span><span class="p">,</span> <span class="n">Size</span><span class="p">,</span> <span class="n">Options</span><span class="p">.</span><span class="n">Shrink</span><span class="p">))</span> <span class="c1">// 增加特征
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">UniqFeatureSetTmp</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">Feature</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">Options</span><span class="p">.</span><span class="n">ReduceInputs</span> <span class="o">&amp;&amp;</span> <span class="n">II</span><span class="p">)</span> <span class="c1">// 如果设置了精简已有输入
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="k">if</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">binary_search</span><span class="p">(</span><span class="n">II</span><span class="o">-&gt;</span><span class="n">UniqFeatureSet</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">                             <span class="n">II</span><span class="o">-&gt;</span><span class="n">UniqFeatureSet</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span> <span class="n">Feature</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">        <span class="n">FoundUniqFeaturesOfII</span><span class="o">++</span><span class="p">;</span> <span class="c1">// 计数器计算
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">});</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">FoundUniqFeatures</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">FoundUniqFeatures</span> <span class="o">=</span> <span class="n">FoundUniqFeaturesOfII</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">PrintPulseAndReportSlowInput</span><span class="p">(</span><span class="n">Data</span><span class="p">,</span> <span class="n">Size</span><span class="p">);</span> <span class="c1">// 打印一些运行时的调试信息
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">size_t</span> <span class="n">NumNewFeatures</span> <span class="o">=</span> <span class="n">Corpus</span><span class="p">.</span><span class="n">NumFeatureUpdates</span><span class="p">()</span> <span class="o">-</span> <span class="n">NumUpdatesBefore</span><span class="p">;</span> <span class="c1">// 新的特征个数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">if</span> <span class="p">(</span><span class="n">NumNewFeatures</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">TPC</span><span class="p">.</span><span class="n">UpdateObservedPCs</span><span class="p">();</span> <span class="c1">// 不为0的话更新PC记录
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">auto</span> <span class="n">NewII</span> <span class="o">=</span> <span class="n">Corpus</span><span class="p">.</span><span class="n">AddToCorpus</span><span class="p">({</span><span class="n">Data</span><span class="p">,</span> <span class="n">Data</span> <span class="o">+</span> <span class="n">Size</span><span class="p">},</span> <span class="n">NumNewFeatures</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                    <span class="n">MayDeleteFile</span><span class="p">,</span> <span class="n">TPC</span><span class="p">.</span><span class="n">ObservedFocusFunction</span><span class="p">(),</span>
+</span></span><span class="line"><span class="cl">                                    <span class="n">UniqFeatureSetTmp</span><span class="p">,</span> <span class="n">DFT</span><span class="p">,</span> <span class="n">II</span><span class="p">);</span> <span class="c1">// 把这个新输入加入 corpus
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">WriteFeatureSetToFile</span><span class="p">(</span><span class="n">Options</span><span class="p">.</span><span class="n">FeaturesDir</span><span class="p">,</span> <span class="n">Sha1ToString</span><span class="p">(</span><span class="n">NewII</span><span class="o">-&gt;</span><span class="n">Sha1</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">                          <span class="n">NewII</span><span class="o">-&gt;</span><span class="n">UniqFeatureSet</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">II</span> <span class="o">&amp;&amp;</span> <span class="n">FoundUniqFeaturesOfII</span> <span class="o">&amp;&amp;</span> <span class="c1">// 当前输入是尝试替换已有输入
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">II</span><span class="o">-&gt;</span><span class="n">DataFlowTraceForFocusFunction</span><span class="p">.</span><span class="n">empty</span><span class="p">()</span> <span class="o">&amp;&amp;</span> <span class="c1">// 没有数据流约束
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">FoundUniqFeaturesOfII</span> <span class="o">==</span> <span class="n">II</span><span class="o">-&gt;</span><span class="n">UniqFeatureSet</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&amp;&amp;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">II</span><span class="o">-&gt;</span><span class="n">U</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="n">Size</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">auto</span> <span class="n">OldFeaturesFile</span> <span class="o">=</span> <span class="n">Sha1ToString</span><span class="p">(</span><span class="n">II</span><span class="o">-&gt;</span><span class="n">Sha1</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Corpus</span><span class="p">.</span><span class="n">Replace</span><span class="p">(</span><span class="n">II</span><span class="p">,</span> <span class="p">{</span><span class="n">Data</span><span class="p">,</span> <span class="n">Data</span> <span class="o">+</span> <span class="n">Size</span><span class="p">});</span> <span class="c1">// 直接替换
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">RenameFeatureSetFile</span><span class="p">(</span><span class="n">Options</span><span class="p">.</span><span class="n">FeaturesDir</span><span class="p">,</span> <span class="n">OldFeaturesFile</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                         <span class="n">Sha1ToString</span><span class="p">(</span><span class="n">II</span><span class="o">-&gt;</span><span class="n">Sha1</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="n">Fuzzer</span><span class="o">::</span><span class="n">ExecuteCallback</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">Data</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">Size</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">TPC</span><span class="p">.</span><span class="n">RecordInitialStack</span><span class="p">();</span> <span class="c1">// 记录当前线程的栈底
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">TotalNumberOfRuns</span><span class="o">++</span><span class="p">;</span> <span class="c1">// 统计Fuzz执行次数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">assert</span><span class="p">(</span><span class="n">InFuzzingThread</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 将输入拷贝到堆上，避免直接在原始缓冲区上操作。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">DataCopy</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">uint8_t</span><span class="p">[</span><span class="n">Size</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">  <span class="n">memcpy</span><span class="p">(</span><span class="n">DataCopy</span><span class="p">,</span> <span class="n">Data</span><span class="p">,</span> <span class="n">Size</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">EF</span><span class="o">-&gt;</span><span class="n">__msan_unpoison</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">EF</span><span class="o">-&gt;</span><span class="n">__msan_unpoison</span><span class="p">(</span><span class="n">DataCopy</span><span class="p">,</span> <span class="n">Size</span><span class="p">);</span> <span class="c1">// 如果启用了 MemorySanitizer，这里会把 DataCopy 标记为“已初始化”
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">if</span> <span class="p">(</span><span class="n">EF</span><span class="o">-&gt;</span><span class="n">__msan_unpoison_param</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">EF</span><span class="o">-&gt;</span><span class="n">__msan_unpoison_param</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="n">CurrentUnitData</span> <span class="o">&amp;&amp;</span> <span class="n">CurrentUnitData</span> <span class="o">!=</span> <span class="n">Data</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">memcpy</span><span class="p">(</span><span class="n">CurrentUnitData</span><span class="p">,</span> <span class="n">Data</span><span class="p">,</span> <span class="n">Size</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">CurrentUnitSize</span> <span class="o">=</span> <span class="n">Size</span><span class="p">;</span> <span class="c1">// 跟踪当前输入
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ScopedEnableMsanInterceptorChecks</span> <span class="n">S</span><span class="p">;</span> <span class="c1">// 作用域内启用 MSan interceptor 检查，自动检测未初始化内存访问
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">AllocTracer</span><span class="p">.</span><span class="n">Start</span><span class="p">(</span><span class="n">Options</span><span class="p">.</span><span class="n">TraceMalloc</span><span class="p">);</span> <span class="c1">// 启动堆分配追踪，记录 malloc/free 的匹配情况 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">UnitStartTime</span> <span class="o">=</span> <span class="n">system_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span> 
+</span></span><span class="line"><span class="cl">    <span class="n">TPC</span><span class="p">.</span><span class="n">ResetMaps</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">RunningUserCallback</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">Res</span> <span class="o">=</span> <span class="n">CB</span><span class="p">(</span><span class="n">DataCopy</span><span class="p">,</span> <span class="n">Size</span><span class="p">);</span> <span class="c1">// 调用
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">RunningUserCallback</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">UnitStopTime</span> <span class="o">=</span> <span class="n">system_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">Res</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">assert</span><span class="p">(</span><span class="n">Res</span> <span class="o">==</span> <span class="mi">0</span><span class="p">);</span> <span class="c1">// 正常返回
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">HasMoreMallocsThanFrees</span> <span class="o">=</span> <span class="n">AllocTracer</span><span class="p">.</span><span class="n">Stop</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">LooseMemeq</span><span class="p">(</span><span class="n">DataCopy</span><span class="p">,</span> <span class="n">Data</span><span class="p">,</span> <span class="n">Size</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">CrashOnOverwrittenData</span><span class="p">();</span> <span class="c1">// 检查堆溢出 / 数据是否被篡改
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">CurrentUnitSize</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">delete</span><span class="p">[]</span> <span class="n">DataCopy</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="customize-ur-libfuzzer">Customize ur libFuzzer！</h3>
+<p>您可以参考下面的demo，我们可以通过自定义变异入口定制自己的Fuzzer</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">extern</span> <span class="s">&#34;C&#34;</span> <span class="kt">size_t</span> <span class="nf">LLVMFuzzerCustomMutator</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">Data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">Size</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                          <span class="kt">size_t</span> <span class="n">MaxSize</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">Seed</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 先用 libFuzzer 自带的变异逻辑生成一个基础变异
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">Size</span> <span class="o">=</span> <span class="nf">LLVMFuzzerMutate</span><span class="p">(</span><span class="n">Data</span><span class="p">,</span> <span class="n">Size</span><span class="p">,</span> <span class="n">MaxSize</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 在结果上叠加你自己的规则，比如强行插入一个特殊 header
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="p">(</span><span class="n">Size</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">&lt;</span> <span class="n">MaxSize</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">memmove</span><span class="p">(</span><span class="n">Data</span> <span class="o">+</span> <span class="mi">4</span><span class="p">,</span> <span class="n">Data</span><span class="p">,</span> <span class="n">Size</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">memcpy</span><span class="p">(</span><span class="n">Data</span><span class="p">,</span> <span class="s">&#34;MAGC&#34;</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Size</span> <span class="o">+=</span> <span class="mi">4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">Size</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h1 id="0x1-whats-more">0x1 What‘s more???</h1>
+<p>接下来笔者准备亲自以一个大型库为开端给大家演示（and自己练习）一下挖洞客们如何跑自己的Fuzzer的</p>
+<h3 id="项目内fuzz">项目内Fuzz</h3>
+<h3 id="example1">example1</h3>
+<p><img src="../images/fuzz6.png" alt=""></p>
+<p><a href="https://github.com/cisco/libsrtp">https://github.com/cisco/libsrtp</a>，这是思科自己实现的srtp流媒体协议库，我们以它为例进行分析与测试</p>
+<p>在(<a href="https://github.com/cisco/libsrtp/tree/main/fuzzer)%5Bhttps://github.com/cisco/libsrtp/tree/main/fuzzer%5D">https://github.com/cisco/libsrtp/tree/main/fuzzer)[https://github.com/cisco/libsrtp/tree/main/fuzzer]</a>这里，我们可以看到思科慷慨的提供了fuzzer目录，里面可以看到libfuzzer进行fuzz的方法以及它们已经开发完成的harness，<strong>这是典型的项目内Fuzz</strong>：将libFuzzer直接嵌入库里头生成一个可执行文件。</p>
+<blockquote>
+<h1 id="libsrt-fuzzer">libsrt fuzzer</h1>
+<p>By Guido Vranken <a href="mailto:guidovranken@gmail.com">guidovranken@gmail.com</a> &ndash; <a href="https://guidovranken.wordpress.com/">https://guidovranken.wordpress.com/</a></p>
+<p>This is an advanced fuzzer for libSRTP (<a href="https://github.com/cisco/libsrtp)">https://github.com/cisco/libsrtp)</a>. It implements several special techniques, described below, that are not often found in fuzzers or elsewhere. All are encouraged to transpose these ideas to their own fuzzers for the betterment of software security.</p>
+<p>Feel free to contact me for business enquiries.</p>
+<h2 id="building">Building</h2>
+<p>From the repository&rsquo;s root directory:</p>
+<pre tabindex="0"><code>CC=clang CXX=clang++ CXXFLAGS=&#34;-fsanitize=fuzzer-no-link,address,undefined -g -O3&#34; CFLAGS=&#34;-fsanitize=fuzzer-no-link,address,undefined -g -O3&#34; LDFLAGS=&#34;-fsanitize=fuzzer-no-link,address,undefined&#34; ./configure
+LIBFUZZER=&#34;-fsanitize=fuzzer&#34; make srtp-fuzzer
+</code></pre></blockquote>
+<p>运行后直接进入Fuzz目录启动strp_fuzzer，您可以看到如下场景：</p>
+<p><img src="../images/fuzz2.png" alt=""></p>
+<p>构建的时候是先插桩，不加入LibFuzzer Runtime</p>
+<pre tabindex="0"><code>CXXFLAGS = &#34;-fsanitize=fuzzer-no-link,address,undefined -g -O3&#34;
+</code></pre><pre tabindex="0"><code>LIBFUZZER=&#34;-fsanitize=fuzzer&#34; make srtp-fuzzer
+</code></pre><p>这时候才把LibFuzzer RunTime加入其中，我看了一下Makefile，它大概是这样整的</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">┌──<span class="o">(</span>kali㉿kali<span class="o">)</span>-<span class="o">[</span>~/Desktop/libsrtp<span class="o">]</span>
+</span></span><span class="line"><span class="cl">└─$ cat Makefile <span class="p">|</span> grep fuzz
+</span></span><span class="line"><span class="cl"><span class="nv">CFLAGS</span>  <span class="o">=</span> -fsanitize<span class="o">=</span>fuzzer-no-link,address,undefined -g -O3 -fPIC -Wno-language-extension-token 
+</span></span><span class="line"><span class="cl"><span class="nv">CXXFLAGS</span><span class="o">=</span> -fsanitize<span class="o">=</span>fuzzer-no-link,address,undefined -g -O3
+</span></span><span class="line"><span class="cl">srtp-fuzzer: <span class="nv">CFLAGS</span> <span class="o">+=</span> -g
+</span></span><span class="line"><span class="cl">srtp-fuzzer: <span class="nv">CXXFLAGS</span> <span class="o">+=</span> -g
+</span></span><span class="line"><span class="cl"><span class="nv">LDFLAGS</span> <span class="o">=</span> -L. -fsanitize<span class="o">=</span>fuzzer-no-link,address,undefined
+</span></span><span class="line"><span class="cl"><span class="c1"># fuzzer</span>
+</span></span><span class="line"><span class="cl">srtp-fuzzer: libsrtp3.a
+</span></span><span class="line"><span class="cl">        <span class="k">$(</span>MAKE<span class="k">)</span> -C fuzzer
+</span></span><span class="line"><span class="cl">        <span class="k">$(</span>MAKE<span class="k">)</span> -C fuzzer clean                                                                             
+</span></span></code></pre></div><p>所以这么做本质是防止如果你在全局 CFLAGS/CXXFLAGS 就加 <code>-fsanitize=fuzzer</code>，那么每个 <code>.o</code> 都会尝试“链接 libFuzzer runtime”。剩下的基本就是它如何写harness和fuzz了，这个因人而异，不同项目也会有各种区别，就不多赘述了。</p>
+<h3 id="example2">example2</h3>
+<p>找了一个CVE凑合看吧https://github.com/tarantool/tarantool/blob/master/test/fuzz/datetime_strptime_fuzzer.cc</p>
+<p>发现者好像还是隔壁北航的，先膜一波orzorz。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-cpp" data-lang="cpp"><span class="line"><span class="cl"><span class="cp">#!/bin/bash -eu
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="n">git</span> <span class="n">clone</span> <span class="nl">https</span><span class="p">:</span><span class="c1">//github.com/tarantool/tarantool.git --recursive
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">cd</span> <span class="n">tarantool</span>
+</span></span><span class="line"><span class="cl"><span class="n">git</span> <span class="n">submodule</span> <span class="n">update</span> <span class="o">--</span><span class="n">init</span> <span class="o">--</span><span class="n">recursive</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">export</span> <span class="n">CC</span><span class="o">=</span><span class="s">&#34;clang&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">export</span> <span class="n">CXX</span><span class="o">=</span><span class="s">&#34;clang++&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">export</span> <span class="n">CFLAGS</span><span class="o">=</span><span class="s">&#34;-fsanitize=address -g -O0 -fno-omit-frame-pointer&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">export</span> <span class="n">CXXFLAGS</span><span class="o">=</span><span class="s">&#34;-fsanitize=address -g -O0 -fno-omit-frame-pointer -stdlib=libc++&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="k">export</span> <span class="n">LIB_FUZZING_ENGINE</span><span class="o">=</span><span class="s">&#34;-fsanitize=fuzzer&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">export</span> <span class="n">LSAN_OPTIONS</span><span class="o">=</span><span class="s">&#34;verbosity=1:log_threads=1&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="o">:</span> <span class="err">$</span><span class="p">{</span><span class="nl">LD</span><span class="p">:</span><span class="o">=</span><span class="s">&#34;${CXX}&#34;</span><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">:</span> <span class="err">$</span><span class="p">{</span><span class="nl">LDFLAGS</span><span class="p">:</span><span class="o">=</span><span class="s">&#34;${CXXFLAGS}&#34;</span><span class="p">}</span>  
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">cmake_args</span><span class="o">=</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="o">-</span><span class="n">DENABLE_BACKTRACE</span><span class="o">=</span><span class="n">OFF</span>
+</span></span><span class="line"><span class="cl">    <span class="o">-</span><span class="n">DENABLE_FUZZER</span><span class="o">=</span><span class="n">ON</span>
+</span></span><span class="line"><span class="cl">    <span class="o">-</span><span class="n">DOSS_FUZZ</span><span class="o">=</span><span class="n">ON</span>
+</span></span><span class="line"><span class="cl">    <span class="o">-</span><span class="n">DLUA_USE_APICHECK</span><span class="o">=</span><span class="n">ON</span>
+</span></span><span class="line"><span class="cl">    <span class="o">-</span><span class="n">DLUA_USE_ASSERT</span><span class="o">=</span><span class="n">ON</span>
+</span></span><span class="line"><span class="cl">    <span class="o">-</span><span class="n">DLUAJIT_USE_SYSMALLOC</span><span class="o">=</span><span class="n">ON</span>
+</span></span><span class="line"><span class="cl">    <span class="o">-</span><span class="n">DLUAJIT_ENABLE_GC64</span><span class="o">=</span><span class="n">ON</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">-</span><span class="n">DCMAKE_C_COMPILER</span><span class="o">=</span><span class="s">&#34;${CC}&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">-</span><span class="n">DCMAKE_C_FLAGS</span><span class="o">=</span><span class="s">&#34;${CFLAGS} -Wno-error=unused-command-line-argument&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">-</span><span class="n">DCMAKE_CXX_COMPILER</span><span class="o">=</span><span class="s">&#34;${CXX}&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">-</span><span class="n">DCMAKE_CXX_FLAGS</span><span class="o">=</span><span class="s">&#34;${CXXFLAGS} -Wno-error=unused-command-line-argument&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">-</span><span class="n">DCMAKE_LINKER</span><span class="o">=</span><span class="s">&#34;${LD}&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">-</span><span class="n">DCMAKE_EXE_LINKER_FLAGS</span><span class="o">=</span><span class="s">&#34;${LDFLAGS}&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">-</span><span class="n">DCMAKE_MODULE_LINKER_FLAGS</span><span class="o">=</span><span class="s">&#34;${LDFLAGS}&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">-</span><span class="n">DCMAKE_SHARED_LINKER_FLAGS</span><span class="o">=</span><span class="s">&#34;${LDFLAGS}&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="o">-</span><span class="n">DENABLE_BUNDLED_ICU</span><span class="o">=</span><span class="n">ON</span>
+</span></span><span class="line"><span class="cl">    <span class="o">-</span><span class="n">DENABLE_BUNDLED_LIBUNWIND</span><span class="o">=</span><span class="n">OFF</span>
+</span></span><span class="line"><span class="cl">    <span class="o">-</span><span class="n">DENABLE_BUNDLED_ZSTD</span><span class="o">=</span><span class="n">OFF</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="na">[[ -e build ]]</span> <span class="o">&amp;&amp;</span> <span class="n">rm</span> <span class="o">-</span><span class="n">rf</span> <span class="n">build</span>
+</span></span><span class="line"><span class="cl"><span class="n">cmake</span> <span class="s">&#34;${cmake_args[@]}&#34;</span> <span class="o">-</span><span class="n">S</span> <span class="p">.</span> <span class="o">-</span><span class="n">B</span> <span class="n">build</span>
+</span></span><span class="line"><span class="cl"><span class="n">cmake</span> <span class="o">--</span><span class="n">build</span> <span class="n">build</span> <span class="o">--</span><span class="n">target</span> <span class="n">datetime_strptime_fuzzer</span> <span class="o">-</span><span class="n">j</span><span class="err">$</span><span class="p">(</span><span class="n">nproc</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">wget</span> <span class="nl">https</span><span class="p">:</span><span class="c1">//github.com/user-attachments/files/19613858/tarantool_crash.txt
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">.</span><span class="o">/</span><span class="n">build</span><span class="o">/</span><span class="n">test</span><span class="o">/</span><span class="n">fuzz</span><span class="o">/</span><span class="n">datetime_strptime_fuzzer</span> <span class="n">tarantool_crash</span><span class="p">.</span><span class="n">txt</span>
+</span></span></code></pre></div><p><img src="../images/fuzz3.png" alt=""></p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;fuzzer/FuzzedDataProvider.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stddef.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;datetime.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span>
+</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="s">&#34;C&#34;</span> <span class="kt">void</span>
+</span></span><span class="line"><span class="cl"><span class="nf">cord_on_yield</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="s">&#34;C&#34;</span> <span class="kt">int</span>
+</span></span><span class="line"><span class="cl"><span class="nf">LLVMFuzzerTestOneInput</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">size</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">	<span class="n">FuzzedDataProvider</span> <span class="nf">fdp</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">size</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">auto</span> <span class="n">buf</span> <span class="o">=</span> <span class="n">fdp</span><span class="p">.</span><span class="nf">ConsumeRandomLengthString</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">	<span class="k">auto</span> <span class="n">fmt</span> <span class="o">=</span> <span class="n">fdp</span><span class="p">.</span><span class="nf">ConsumeRandomLengthString</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">struct</span> <span class="n">datetime</span> <span class="n">date_expected</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">	<span class="nf">datetime_strptime</span><span class="p">(</span><span class="o">&amp;</span><span class="n">date_expected</span><span class="p">,</span> <span class="n">buf</span><span class="p">.</span><span class="nf">c_str</span><span class="p">(),</span> <span class="n">fmt</span><span class="p">.</span><span class="nf">c_str</span><span class="p">());</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>而且这个洞好像还没修（），</p>
+<p><img src="../images/fuzz5.png" alt=""></p>
+<p>而且这哥们儿好幸运，居然能跑出crash，我这边跑了半个小时啥也没出，，，</p>
+<p><img src="../images/fuzz4.png" alt=""></p>
+<h1 id="0x2-at-last">0x2 At Last</h1>
+<p>是时候学一下cmake了&hellip;</p>
+</article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script type="application/javascript" src='http://localhost:1313/js/toc.js'></script>
+<link rel="stylesheet" href='http://localhost:1313/css/toc.css' />
+
+  
+<div id="gitalk-container" class="gitalk-container"></div>
+<link rel="stylesheet" href='http://localhost:1313/css/gitalk.css'>
+<script src='http://localhost:1313/js/gitalk.min.js'></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: 'Your client ID',
+    clientSecret: 'Your client secret',
+    repo: 'ret2ldz.github.io',
+    owner: 'ventusoon',
+    admin: ['ventusoon'],
+    id: eval("location.pathname"), 
+    distractionFreeMode: false 
+  });
+  (function() {
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+</div>
+
+  <div class="footer container-xl width-full p-responsive">
+  <div
+    class="position-relative d-flex flex-row-reverse flex-lg-row flex-wrap flex-lg-nowrap flex-justify-center flex-lg-justify-between flex-sm-items-center pt-6 pb-2 mt-6 f6 text-gray border-top border-gray-light ">
+    <a aria-label="Homepage" title="GitHub" class="footer-octicon d-none d-lg-block mr-lg-4" href="http://localhost:1313/">
+      <svg height="24" class="octicon octicon-mark-github" viewBox="0 0 16 16" version="1.1" width="24">
+        <path fill-rule="evenodd"
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+        </path>
+      </svg>
+    </a>
+    <ul class="list-style-none d-flex flex-wrap col-12 flex-justify-center flex-lg-justify-between mb-2 mb-lg-0">
+      
+      <li class="mr-3 mr-lg-0">Theme by <a href='https://github.com/MeiK2333/github-style'>github-style</a></li>
+      
+      <li class="mr-3 mr-lg-0">GitHub and the Invertocat logo are trademarks of <a href="https://github.com/">GitHub, Inc.</a></li>
+    </ul>
+  </div>
+  <div class="d-flex flex-justify-center pb-6">
+    <span class="f6 text-gray-light"></span>
+  </div>
+
+
+</div>
+
+</body>
+
+<script type="application/javascript" src="http://localhost:1313/js/github-style.js"></script>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+<script type="application/javascript" src='http://localhost:1313/js/search.js'></script>
+
+
+
+</html>

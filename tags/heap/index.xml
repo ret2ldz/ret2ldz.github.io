@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Heap on ldz&#39;s blog</title>
+    <link>https://ret2ldz.github.io/tags/heap/</link>
+    <description>Recent content in Heap on ldz&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sat, 20 Dec 2025 22:49:08 +0800</lastBuildDate>
+    <atom:link href="https://ret2ldz.github.io/tags/heap/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Heap &amp; House</title>
+      <link>https://ret2ldz.github.io/post/heaphouse/</link>
+      <pubDate>Mon, 01 Jan 2024 00:00:00 +0000</pubDate>
+      <guid>https://ret2ldz.github.io/post/heaphouse/</guid>
+      <description>关于 House of 系列攻击的系统梳理与实战笔记。</description>
+    </item>
+  </channel>
+</rss>

