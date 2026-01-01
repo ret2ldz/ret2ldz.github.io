@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Life on ldz&#39;s blog</title>
+    <link>https://ret2ldz.github.io/tags/life/</link>
+    <description>Recent content in Life on ldz&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <atom:link href="https://ret2ldz.github.io/tags/life/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>pwnableByLdz</title>
+      <link>https://ret2ldz.github.io/post/pwnabletw_by_ldz/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://ret2ldz.github.io/post/pwnabletw_by_ldz/</guid>
+      <description>&lt;p&gt;pwnable是5年前的老题了，虽然和现在得题有一些区别但还是有很多可以学习的地方。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>独行日本</title>
+      <link>https://ret2ldz.github.io/post/%E7%8B%AC%E8%A1%8C%E6%97%A5%E6%9C%AC/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://ret2ldz.github.io/post/%E7%8B%AC%E8%A1%8C%E6%97%A5%E6%9C%AC/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>
