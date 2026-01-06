@@ -155,9 +155,9 @@
 
                   
                   <span class="file-info-divider"></span>
-                  Modified <relative-time datetime="Sat, 20 Dec 2025 22:51:52 &#43;0800"
+                  Modified <relative-time datetime="Tue, 06 Jan 2026 19:19:03 &#43;0800"
                     class="no-wrap">
-                    Sat, 20 Dec 2025 22:51:52 &#43;0800</relative-time>
+                    Tue, 06 Jan 2026 19:19:03 &#43;0800</relative-time>
                   
                 </div>
               </div>
@@ -221,7 +221,7 @@
               <div class="Box-body px-5 pb-5" style="z-index: 1">
                 <article class="markdown-body entry-content container-lg"><p>小白学kernel，还是得多做题啊&hellip;打算周更kernel刷题笔记，如果笔者一周没更一题出来要么是大成了、要么是寄了</p>
 <p>先以一道极其简单的题目开始我的kernel之旅</p>
-<p><img src="../images/my-banner/banner2.png" alt=""></p>
+<p><img src="http://ret2ldz.github.io/images/my-banner/banner2.png" alt=""></p>
 <h2 id="ccb-kylin_driver">ccb kylin_driver</h2>
 <p>描述：题目很怪，开了kaslr但是为了调试改成nokaslr就没法启动了，而且做的时候没发现start.sh里写了pti=on，于是兴高采烈地去做ret2usr后来打不通发现开了pti。</p>
 <p>总结：笔者把pti关了做了一遍ret2usr（就当练习了），然后又做了一遍kernel ROP，学会了gef的使用(果然pwndbg在kernel pwn还是功能还是太孱弱了，vmmap都报错)，</p>
@@ -831,7 +831,7 @@ slab_caches @ 0xffffffff824602c0
         freelist (slow path): (none)
     next: 0xffff888006c82400
 </code></pre><p>另外地，我们无法通过<code>cat /proc/kallsyms</code>来找到<code>modprobe_path</code>的地址。幸运的是，在<code>__request_module</code>中，存在一个对<code>modprobe_path</code>的引用。由此，我们可以从<code>/proc/kallsyms</code>中找到<code>__request_module</code>函数的地址，并使用<code>gdb</code>连接到<code>kernel</code>，查看该函数附近的汇编代码，即可找到<code>modprobe_path</code>的地址~</p>
-<p><img src="../images/image1.png" alt="image-20250722143155322"></p>
+<p><img src="http://ret2ldz.github.io/images/image1.png" alt="image-20250722143155322"></p>
 <p>最后成功通了，然而可惜的是，我的exp成功率低的可怜（实测只有30%左右）</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// gcc exp.c -static -masm=intel -g -o exp
 </span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="cp">#define _GNU_SOURCE
@@ -1296,7 +1296,7 @@ slab_caches @ 0xffffffff824602c0
 </span></span><span class="line"><span class="cl">    <span class="p">}</span>
 </span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p><img src="../images/kqueue.png" alt="image-20250722143155322"></p>
+</span></span></code></pre></div><p><img src="http://ret2ldz.github.io/images/kqueue.png" alt="image-20250722143155322"></p>
 <h2 id="hitcon-ctf-2023-wallrose-solution1">HITCON CTF 2023 WallRose [solution1]</h2>
 <p>附一下题目源码，因为这个题打算用多种打法分别打打。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;linux/atomic.h&gt;</span><span class="cp">
@@ -1525,7 +1525,7 @@ slab_caches @ 0xffffffff824602c0
 </span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;%s&#34;</span><span class="p">,</span> <span class="n">result</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="k">return</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p><img src="../images/wallrose1.png" alt="image-20250722143155322"></p>
+</span></span></code></pre></div><p><img src="http://ret2ldz.github.io/images/wallrose1.png" alt="image-20250722143155322"></p>
 <h2 id="hitcon-ctf-2023-wallrose-solution2">HITCON CTF 2023 WallRose [solution2]</h2>
 <p>sk_buff + pipebuffer</p>
 <p>还是sk_buff好用:)</p>
@@ -1996,7 +1996,7 @@ slab_caches @ 0xffffffff824602c0
 </span></span><span class="line"><span class="cl">    <span class="nf">system</span><span class="p">(</span><span class="s">&#34;/bin/sh&#34;</span><span class="p">);</span>
 </span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
-</span></span></code></pre></div><p><img src="../images/baby_kk.png" alt=""></p></article>
+</span></span></code></pre></div><p><img src="http://ret2ldz.github.io/images/baby_kk.png" alt=""></p></article>
               </div>
             </div>
           </div>

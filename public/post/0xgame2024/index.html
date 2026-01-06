@@ -152,9 +152,9 @@
 
                   
                   <span class="file-info-divider"></span>
-                  Modified <relative-time datetime="Sat, 20 Dec 2025 22:52:42 &#43;0800"
+                  Modified <relative-time datetime="Tue, 06 Jan 2026 19:16:48 &#43;0800"
                     class="no-wrap">
-                    Sat, 20 Dec 2025 22:52:42 &#43;0800</relative-time>
+                    Tue, 06 Jan 2026 19:16:48 &#43;0800</relative-time>
                   
                 </div>
               </div>
@@ -184,7 +184,7 @@
                         </div>
                       </div>
                     </details-menu>
-                      4274 Words
+                      4270 Words
                     
 
                   </div>
@@ -216,7 +216,7 @@
 
 
               <div class="Box-body px-5 pb-5" style="z-index: 1">
-                <article class="markdown-body entry-content container-lg"><p><img src="../images/0.png" alt="logo"></p>
+                <article class="markdown-body entry-content container-lg"><p><img src="http://ret2ldz.github.io/images/0.png" alt="logo"></p>
 <p>一个很不错的新生赛</p>
 <h1 id="0xgame-week1">0xgame week1</h1>
 <p>😊</p>
@@ -457,14 +457,11 @@ while True:
        h()
     except:
        io.close()
-</code></pre><p><img src="../images/14.png" alt="logo"></p>
+</code></pre><p><img src="http://ret2ldz.github.io/images/14.png" alt="logo"></p>
 <h4 id="week-2-srop">[Week 2] SROP</h4>
 <p>这题之后会放在SROP栏目里讲解</p>
 <h4 id="week-2-syscall-playground">[Week 2] Syscall playground</h4>
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p>如上图，直接把/bin/sh\x00写入buffer然后执行execve(buf_addr,0,0)即可</p>
+<p>直接把/bin/sh\x00写入buffer然后执行execve(buf_addr,0,0)即可</p>
 <pre tabindex="0"><code>from pwn import *
 #io = process(&#39;./syscall&#39;)
 io = remote(&#39;47.97.58.52&#39;,42010)
@@ -490,7 +487,7 @@ io.interactive()
 <p>让我想到了moe的travel of stack那题。所以临时翻了一下moe的题解，终于搞明白了,这题是关于多次栈迁移的。</p>
 <p>什么是多次栈迁移，如何多次栈迁移呢？我们需要利用read函数的汇编代码来分析：
 *<strong>多次栈迁移一般用于需要泄露libc地址或者只有一次输入的时候*</strong></p>
-<p><img src="../images/17.png" alt="logo"></p>
+<p><img src="http://ret2ldz.github.io/images/17.png" alt="logo"></p>
 <p>我们可以看到read的第二个参数rsi是由rax赋值的，rsi应该存储我们buf的地址，而这个buf地址是由***lea rax,[rbp + buf]***确定的，也就是说，*<strong>我们buf存储我们输入的地址是由rbp确定的！*</strong></p>
 <p>那么如果我们第一次传入payload0=padding + bss_fake_stack + read_addr</p>
 <p>我们的rbp会被移动到bss_fake_stack,而rsp依旧停留在栈内，接下来程序会调用read，而read存储我们输入的地址buf_addr又是由rbp决定，也就是说，我们的输入会被放在bss段内，接下来执行完read后还会执行leave_ret，而我们需要做的就是把rbp再次迁移到我们输入的代码中进行。下面放一个板子</p>
@@ -500,7 +497,7 @@ paylaod n = next_rbp(addr1) + shellcode + padding + read_addr + addr1(bss_addr) 
 <p>1.payload0会把rbp送到bss_addr,而rsp依旧停留在栈内</p>
 <p>2.执行完read函数后rbp被弹到我们输入到bss_addr处的addr1，而rsp被移动到bss_addr,紧接着执行我们传入的leave-ret-addr使rbp被移动到next_rbp，rsp又再次移动到之前rbp的位置+1即&amp;shellcode，然后执行我们的shellcode进而再通过read进行下一次跳转</p>
 <p>于是我们来看题，vuln函数如下：return read(0,buf,0x30uLL);</p>
-<p><img src="../images/18.png" alt="logo"></p>
+<p><img src="http://ret2ldz.github.io/images/18.png" alt="logo"></p>
 <p>这道题的难点主要在read只读入0x30字节</p>
 <p>按照正常泄露地址的流程：</p>
 <p>payload = next_rbp + pop_rdi_ret + puts_got + puts_plt + read_addr + bss-0x20 + leave_ret一共会有0x38个字节。</p>
@@ -544,7 +541,7 @@ io.interactive()
 <p>从这题看出来我的shellcode编写能力实在差劲。。。</p>
 <p>题目逻辑如下，输入的内容中不能包含\xf\x5也就是指令syscall。</p>
 <p>首先先考虑这题如何做，看到题目开了沙箱，只能使用ORW，但是10字节肯定不够执行ORW，所以要先构造一次read读入shellcode，shellcode就存在之后的buf里继续执行</p>
-<p><img src="../images/19.png" alt="logo"></p>
+<p><img src="http://ret2ldz.github.io/images/19.png" alt="logo"></p>
 <p>但是syscall被禁了，如何绕过呢？于是有以下方法：</p>
 <p>1.构造一个0xf05(通过运算得出），并将其储存在寄存器中，最后call 这个寄存器。</p>
 <p>2.利用mov byte ptr [addr],5将5写入buf之后的内存</p>
@@ -577,13 +574,13 @@ io.send(asm(payload1))
 io.interactive()               
 </code></pre><h4 id="week-3-fmt2orw">[Week 3] fmt2orw</h4>
 <p>主函数逻辑
-<img src="../images/21.png" alt="logo"></p>
+<img src="http://ret2ldz.github.io/images/21.png" alt="logo"></p>
 <p>say()：
-<img src="../images/22.png" alt="logo"></p>
+<img src="http://ret2ldz.github.io/images/22.png" alt="logo"></p>
 <p>seccomp规则：只允许open，read，write，mprotect</p>
 <p>所以这题该怎么打呢。。。原来是非栈上格式化字符串，具体知识点就不介绍了，非栈上格式化字符串还是很好理解的，就是没法任意地址写和任意地址读。</p>
 <p>这题需要做的是orw，但是buf又没执行权限，但是我们看到程序里有：</p>
-<p><img src="../images/23.png" alt="logo"></p>
+<p><img src="http://ret2ldz.github.io/images/23.png" alt="logo"></p>
 <p>但是这题开了pie，因此做题步骤就很清晰了：</p>
 <p>先搭链子==&gt;泄露main地址==&gt;把ret_addr改为what_addr==&gt;把下一个字节改为shellcode的地址，最后直接传入stop + shellcode达成攻击，exp如下：</p>
 <pre tabindex="0"><code>from pwn import *
@@ -634,9 +631,9 @@ io.interactive()
 </code></pre><p>总体来说，week3还是挺难的，但是还好就三道题，三天干掉嘿嘿嘿。</p>
 <h1 id="0xgame-week4">0xgame week4</h1>
 <h4 id="week-4-uaf">[Week 4] UAF</h4>
-<p><img src="../images/24.png" alt="logo"></p>
+<p><img src="http://ret2ldz.github.io/images/24.png" alt="logo"></p>
 <p>经典菜单题，没有后门函数，所以考虑用onegadget打malloc_hook</p>
-<p><img src="../images/26.png" alt="logo"></p>
+<p><img src="http://ret2ldz.github.io/images/26.png" alt="logo"></p>
 <p>dele函数有uaf漏洞</p>
 <p>直接通过unsorted bins泄露libc基址然后打uaf劫持malloc</p>
 <p>上代码</p>

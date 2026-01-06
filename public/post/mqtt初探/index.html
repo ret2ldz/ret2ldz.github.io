@@ -152,9 +152,9 @@
 
                   
                   <span class="file-info-divider"></span>
-                  Modified <relative-time datetime="Sat, 20 Dec 2025 22:54:52 &#43;0800"
+                  Modified <relative-time datetime="Tue, 06 Jan 2026 19:17:37 &#43;0800"
                     class="no-wrap">
-                    Sat, 20 Dec 2025 22:54:52 &#43;0800</relative-time>
+                    Tue, 06 Jan 2026 19:17:37 &#43;0800</relative-time>
                   
                 </div>
               </div>
@@ -207,7 +207,7 @@
 
 
               <div class="Box-body px-5 pb-5" style="z-index: 1">
-                <article class="markdown-body entry-content container-lg"><p><img src="../images/mqtt0.png" alt=""></p>
+                <article class="markdown-body entry-content container-lg"><p><img src="http://ret2ldz.github.io/images/mqtt0.png" alt=""></p>
 <h2 id="tldr">TL;DR</h2>
 <p>通过几道题目简单的入门了MQTT协议并且第一次逆向了GO语言写出的程序，了解了MQTT协议的相关原理和特点。</p>
 <h3 id="什么是-mqtt">什么是 MQTT？</h3>
@@ -328,12 +328,12 @@
 </span></span></code></pre></div><h4 id="whats-more">What&rsquo;s more</h4>
 <p>mqtt只定义了一种数据传输方式，你依然可以采用编解码对你的Payload进行加密：<a href="https://mqttx.app/zh/docs/advanced#%E4%BD%BF%E7%94%A8-protocol-buffers">使用 Protocol Buffers</a></p>
 <h2 id="challenge-1-强网杯车联网ezmqtt">challenge 1 强网杯车联网ezmqtt</h2>
-<p><img src="../images/mqtt1.png" alt=""></p>
+<p><img src="http://ret2ldz.github.io/images/mqtt1.png" alt=""></p>
 <p>题目给出了一个MQTT客户端用于向broker发送讯息，我们通过client订阅同样的主题并接受信息<strong>belike</strong>:</p>
 <p><img src="../images/mqtt2.png" alt=""></p>
 <p>我们也可以通过python作为client订阅相同的主题向broker发送讯息并接受讯息</p>
 <h4 id="漏洞">漏洞</h4>
-<p><img src="../images/mqtt3.png" alt=""></p>
+<p><img src="http://ret2ldz.github.io/images/mqtt3.png" alt=""></p>
 <h4 id="exp">Exp</h4>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="c1"># python 3.11</span>
 </span></span><span class="line"><span class="cl">
@@ -568,9 +568,9 @@
 <p>注意，我们的输入需要绕过WAF，即</p>
 <pre tabindex="0"><code>.rodata:0000000000720838 aCatawksedcutxx db &#39;catawksedcutxxdcmp&#39; ; DATA XREF: .rodat
 </code></pre><p>另外地，实际上使用“&gt;”也会被WAF报措</p>
-<p><img src="../images/mqtt4.png" alt=""></p>
+<p><img src="http://ret2ldz.github.io/images/mqtt4.png" alt=""></p>
 <p>最后语句执行</p>
-<p><img src="../images/mqtt5.png" alt=""></p>
+<p><img src="http://ret2ldz.github.io/images/mqtt5.png" alt=""></p>
 <p>因此，我们不妨构造<code>; A=c; B=at; C=fl; D=ag; $A$B $C$D;</code>截断echo便可以打印出flag。</p>
 <p>同时，在最后的代码里，输出的信息也会被重定向到CTF/send topic下，我们即可得到flag，十分可惜的是，我本想把flag内容重定向到version然后get_version输出的，但最终并没有找到合适的办法。最终exp如下：</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">random</span>
@@ -640,7 +640,7 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 </span></span><span class="line"><span class="cl">    <span class="n">run</span><span class="p">()</span>
-</span></span></code></pre></div><p><img src="../images/mqtt6.png" alt=""></p>
+</span></span></code></pre></div><p><img src="http://ret2ldz.github.io/images/mqtt6.png" alt=""></p>
 <h1 id="challenge-3-ciscn-mqtt">challenge 3 Ciscn mqtt</h1>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">void</span> <span class="o">*</span><span class="kr">__fastcall</span> <span class="nf">start_routine</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">a1</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl"><span class="p">{</span>
@@ -853,7 +853,7 @@ ldz@ldz-OMEN-by-HP-Gaming-Laptop-16-wf0xxx:~/Downloads/mqtt3$ patchelf --set-rpa
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
 </span></span><span class="line"><span class="cl">    <span class="n">run</span><span class="p">()</span>
-</span></span></code></pre></div><p><img src="../images/mqtt7.png" alt=""></p>
+</span></span></code></pre></div><p><img src="http://ret2ldz.github.io/images/mqtt7.png" alt=""></p>
 <p>至此，感觉理解的差不多了。</p></article>
               </div>
             </div>

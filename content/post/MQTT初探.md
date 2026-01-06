@@ -7,7 +7,7 @@ tags: ["pwn"]
 
 <!--more-->
 
-![](../images/mqtt0.png)
+![](http://ret2ldz.github.io/images/mqtt0.png)
 
 ## TL;DR
 
@@ -133,7 +133,7 @@ mqtt只定义了一种数据传输方式，你依然可以采用编解码对你�
 
 ## challenge 1 强网杯车联网ezmqtt
 
-![](../images/mqtt1.png)
+![](http://ret2ldz.github.io/images/mqtt1.png)
 
 题目给出了一个MQTT客户端用于向broker发送讯息，我们通过client订阅同样的主题并接受信息**belike**:
 
@@ -143,7 +143,7 @@ mqtt只定义了一种数据传输方式，你依然可以采用编解码对你�
 
 #### 漏洞
 
-![](../images/mqtt3.png)
+![](http://ret2ldz.github.io/images/mqtt3.png)
 
 #### Exp
 
@@ -396,11 +396,11 @@ void __fastcall main_main()
 
 另外地，实际上使用“>”也会被WAF报措
 
-![](../images/mqtt4.png)
+![](http://ret2ldz.github.io/images/mqtt4.png)
 
 最后语句执行
 
-![](../images/mqtt5.png)
+![](http://ret2ldz.github.io/images/mqtt5.png)
 
 因此，我们不妨构造`; A=c; B=at; C=fl; D=ag; $A$B $C$D;`截断echo便可以打印出flag。
 
@@ -476,7 +476,7 @@ if __name__ == '__main__':
     run()
 ```
 
-![](../images/mqtt6.png)
+![](http://ret2ldz.github.io/images/mqtt6.png)
 
 
 
@@ -708,7 +708,7 @@ if __name__ == '__main__':
     run()
 ```
 
-![](../images/mqtt7.png)
+![](http://ret2ldz.github.io/images/mqtt7.png)
 
 至此，感觉理解的差不多了。
 

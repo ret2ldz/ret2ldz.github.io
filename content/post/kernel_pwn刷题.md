@@ -12,7 +12,7 @@ tags: ["pwn","kernel"]
 
 先以一道极其简单的题目开始我的kernel之旅
 
-![](../images/my-banner/banner2.png)
+![](http://ret2ldz.github.io/images/my-banner/banner2.png)
 
 ## ccb kylin_driver
 
@@ -664,7 +664,7 @@ slab_caches @ 0xffffffff824602c0
 
 另外地，我们无法通过`cat /proc/kallsyms`来找到`modprobe_path`的地址。幸运的是，在`__request_module`中，存在一个对`modprobe_path`的引用。由此，我们可以从`/proc/kallsyms`中找到`__request_module`函数的地址，并使用`gdb`连接到`kernel`，查看该函数附近的汇编代码，即可找到`modprobe_path`的地址~
 
-![image-20250722143155322](../images/image1.png)
+![image-20250722143155322](http://ret2ldz.github.io/images/image1.png)
 
 最后成功通了，然而可惜的是，我的exp成功率低的可怜（实测只有30%左右）
 
@@ -1154,7 +1154,7 @@ int main()
     return 0;
 }
 ```
-![image-20250722143155322](../images/kqueue.png)
+![image-20250722143155322](http://ret2ldz.github.io/images/kqueue.png)
 
 
 ## HITCON CTF 2023 WallRose [solution1]
@@ -1404,7 +1404,7 @@ void Exploit(){
 }
 ```
 
-![image-20250722143155322](../images/wallrose1.png)
+![image-20250722143155322](http://ret2ldz.github.io/images/wallrose1.png)
 
 
 ## HITCON CTF 2023 WallRose [solution2]
@@ -1902,7 +1902,7 @@ int main(){
 }
 ```
 
-![](../images/baby_kk.png)
+![](http://ret2ldz.github.io/images/baby_kk.png)
 
 
 

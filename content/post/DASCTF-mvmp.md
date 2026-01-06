@@ -8,8 +8,6 @@ tags: ["pwn","vm","ctf"]
 
 <!--more-->
 
-![](../images/das0.png)
-
 
 ## TL;DR
 

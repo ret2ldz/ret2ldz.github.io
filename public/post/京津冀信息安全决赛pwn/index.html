@@ -152,9 +152,9 @@
 
                   
                   <span class="file-info-divider"></span>
-                  Modified <relative-time datetime="Sat, 20 Dec 2025 22:59:49 &#43;0800"
+                  Modified <relative-time datetime="Tue, 06 Jan 2026 19:13:44 &#43;0800"
                     class="no-wrap">
-                    Sat, 20 Dec 2025 22:59:49 &#43;0800</relative-time>
+                    Tue, 06 Jan 2026 19:13:44 &#43;0800</relative-time>
                   
                 </div>
               </div>
@@ -225,7 +225,7 @@
 
 
               <div class="Box-body px-5 pb-5" style="z-index: 1">
-                <article class="markdown-body entry-content container-lg"><p><img src="../images/jjj1.png" alt=""></p>
+                <article class="markdown-body entry-content container-lg"><p><img src="http://ret2ldz.github.io/images/jjj1.png" alt=""></p>
 <h1 id="lunch">lunch</h1>
 <p>本地2.23-0ubuntu3_amd64通，<strong>远程不通</strong>，出题人给的小众libc库根本配不了环境，而恰好我的exp又是libc强相关的(通过malloc hook附近的野生数据构造fake_fast chunk 去写 malloc_hook)，后来找隔壁做出来的兄弟请教了一下，他是通过fastbin attack打得，与libc的相关性更小。</p>
 <p>题目漏洞如下</p>
@@ -319,7 +319,7 @@
 </span></span><span class="line"><span class="cl"><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="n">io</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
-</span></span></code></pre></div><p><img src="../images/jjj2.png" alt=""></p>
+</span></span></code></pre></div><p><img src="http://ret2ldz.github.io/images/jjj2.png" alt=""></p>
 <hr>
 <h1 id="cosrole">cosrole</h1>
 <h3 id="漏洞1-1">漏洞1</h3>
@@ -449,7 +449,7 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="n">io</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span>
 </span></span></code></pre></div><p>最后成功getshell</p>
-<p><img src="../images/jjj3.png" alt=""></p>
+<p><img src="http://ret2ldz.github.io/images/jjj3.png" alt=""></p>
 <h3 id="漏洞2-1">漏洞2？</h3>
 <p>在edit函数存在overflow可以进行溢出，然后可惜的是fread几乎无法终止，所以溢出劫持<code>roleList[Cho] + 0x20LL</code>这种方式似乎行不通。</p>
 <div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">v0</span> <span class="o">=</span> <span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">roleList</span><span class="p">[</span><span class="n">Cho</span><span class="p">]</span> <span class="o">+</span> <span class="mi">48LL</span><span class="p">)</span> <span class="o">+</span> <span class="o">*</span><span class="p">(</span><span class="n">_QWORD</span> <span class="o">*</span><span class="p">)(</span><span class="n">roleList</span><span class="p">[</span><span class="n">Cho</span><span class="p">]</span> <span class="o">+</span> <span class="mi">40LL</span><span class="p">);</span>
@@ -468,7 +468,7 @@
 <p>所以也许这个漏洞的唯一利用方法是利用仅仅两次分配进行堆风水，从而上Description跑到Role堆块上方，而溢出的时候会溢出到Role Chunk本身，在<code>LODWORD(v0) = (*(__int64 (__fastcall **)(_QWORD))(roleList[Cho] + 0x20LL))(*(_QWORD *)(roleList[Cho] + 0x30LL));</code>直接getshell。</p>
 <h1 id="atlast">AtLast</h1>
 <p>虽然不尽如人意，但总归是一次有意义的旅程</p>
-<p><img src="../images/jjj4.png" alt=""></p></article>
+<p><img src="http://ret2ldz.github.io/images/jjj4.png" alt=""></p></article>
               </div>
             </div>
           </div>

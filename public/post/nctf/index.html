@@ -152,9 +152,9 @@
 
                   
                   <span class="file-info-divider"></span>
-                  Modified <relative-time datetime="Sat, 20 Dec 2025 22:53:03 &#43;0800"
+                  Modified <relative-time datetime="Tue, 06 Jan 2026 19:15:05 &#43;0800"
                     class="no-wrap">
-                    Sat, 20 Dec 2025 22:53:03 &#43;0800</relative-time>
+                    Tue, 06 Jan 2026 19:15:05 &#43;0800</relative-time>
                   
                 </div>
               </div>
@@ -234,9 +234,9 @@
 </ul>
 <p>*<strong>另外地*</strong>，在orw途中，由于标准输入0、标准输出1、标准错误2都被绑定在socket上面，因此如果直接打印到fd=0、1、2我们无法看见，最终做法是write(4,flag,len);，为什么呢？</p>
 <p>程序fork时，父进程中已使用的 FD 有 0, 1, 2 (标准流) 和 3 (<code>listen_fd</code>)。因此，<code>accept()</code> 返回的<strong>新的连接套接字 <code>conn_fd</code></strong> 得到的编号是 <strong>4</strong>，而子程序关闭listen_fd，因此编号为3的fd就空出来了作为之后open(flag)的fd，而write写向fd=4即socket我们就可以得到flag</p>
-<p><img src="../images/nctf1.png" alt="img"></p>
+<p><img src="http://ret2ldz.github.io/images/nctf1.png" alt="img"></p>
 <p>漏洞点在于malloc(len+1)</p>
-<p><img src="../images/nctf2.png" alt="img"></p>
+<p><img src="http://ret2ldz.github.io/images/nctf2.png" alt="img"></p>
 <p>如果Len为0xffffffff的话malloc会malloc(0)，<strong>而我们使用对应的Len进行堆溢出</strong></p>
 <p>***堆地址：***通过溢出一个0从而打印出堆地址。</p>
 <p>***libc地址：***通过申请一个0x2000000的堆块塞满bss和libc的地址，打印leak出libc</p>
@@ -368,7 +368,7 @@ arden.signed.so设置为飞地，因此漏洞多半在其内这题的漏洞点�
 </span></span><span class="line"><span class="cl"><span class="n">send_seal</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;?&#39;</span> <span class="o">*</span> <span class="mi">256</span> <span class="o">+</span> <span class="sa">b</span><span class="s1">&#39;!&#39;</span> <span class="o">*</span> <span class="mh">0x8</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">pop_rdi_ret</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">root_pwd</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span> <span class="o">+</span> <span class="n">p64</span><span class="p">(</span><span class="n">printf</span><span class="p">)</span><span class="o">+</span><span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl"><span class="n">io</span><span class="o">.</span><span class="n">interactive</span><span class="p">()</span> 
-</span></span></code></pre></div><p><img src="../images/nctf4.png" alt="img"></p></article>
+</span></span></code></pre></div><p><img src="http://ret2ldz.github.io/images/nctf4.png" alt="img"></p></article>
               </div>
             </div>
           </div>

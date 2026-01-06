@@ -7,7 +7,7 @@ tags: ["pwn","awd","ctf"]
 ---
 <!--more-->
 
-![](../images/awd0.png)
+![](http://ret2ldz.github.io/images/awd0.png)
 
 ## TL;DR
 
@@ -181,7 +181,7 @@ def exploit(host):
 exploit(0)
 ```
 
-![](../images/awd1.png)
+![](http://ret2ldz.github.io/images/awd1.png)
 
 
 

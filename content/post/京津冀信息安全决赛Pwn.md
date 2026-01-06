@@ -8,7 +8,7 @@ tags: ["pwn","ctf","awd"]
 
 <!--more-->
 
-![](../images/jjj1.png)
+![](http://ret2ldz.github.io/images/jjj1.png)
 
 # lunch
 
@@ -120,7 +120,7 @@ sleep(0.5)
 io.interactive()
 ```
 
-![](../images/jjj2.png)
+![](http://ret2ldz.github.io/images/jjj2.png)
 
 -----------------
 
@@ -269,7 +269,7 @@ io.interactive()
 
 最后成功getshell
 
-![](../images/jjj3.png)
+![](http://ret2ldz.github.io/images/jjj3.png)
 
 
 
@@ -306,4 +306,4 @@ io.shutdown
 
 虽然不尽如人意，但总归是一次有意义的旅程
 
-![](../images/jjj4.png)
+![](http://ret2ldz.github.io/images/jjj4.png)

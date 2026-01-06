@@ -9,7 +9,7 @@ tags: ["kernel"]
 
 <!--more-->
 
-![](../images/kerll.png)
+![](http://ret2ldz.github.io/images/kerll.png)
 
 
 # 内存管理
