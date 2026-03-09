@@ -1,6 +1,8 @@
 ---
 title: "kernel-pwn-challenges"
 draft: false
+date: 2025-06-01
+pin: true
 summary: "学习kernel pwn的笔记"
 tags: ["pwn","kernel"]
 ---

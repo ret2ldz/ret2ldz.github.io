@@ -2,6 +2,7 @@
 title: "NCTF"
 draft: false
 summary: "复现笔记"
+date: 2024-12-01
 tags: ["pwn","ctf"]
 ---
 <!--more-->

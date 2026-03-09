@@ -12,14 +12,14 @@ pygmentsUseClasses = true
   email = "2691605373@qq.com"
   url = "https://ret2ldz.github.io"
   keywords = "blog, google analytics"
-  rss = true
+  rss = false
   lastmod = true
   favicon = "/images/github-mark.png"
   avatar = "https://ret2ldz.github.io/images/images.png"
   headerIcon = "/images/github-mark-white.png"
   location = "China"
   userStatusEmoji = "😀"
-  enableGitalk = true
+  enableGitalk = false
   enableSearch = true
 
   [params.gitalk]
@@ -35,13 +35,6 @@ pygmentsUseClasses = true
     createIssueManually = true # 设置为true，如果是管理员登录，会自动创建issue，如果是false，需要管理员手动添加第一个评论(issue)
     distractionFreeMode = false # Enable hot key (cmd|ctrl + enter) submit comment.
     proxy = "https://cors-anywhere.azm.workers.dev/https://github.com/login/oauth/access_token" # 可以自行添加反向代理
-  [[params.links]]
-    title = "Link"
-    href = "https://github.com/ret2ldz"
-  [[params.links]]
-    title = "Link2"
-    href = "https://ret2ldz.github.io"
-    icon = "https://ret2ldz.github.io/images/images.png"
 
 [frontmatter]
   lastmod = ["lastmod", ":fileModTime", ":default"]

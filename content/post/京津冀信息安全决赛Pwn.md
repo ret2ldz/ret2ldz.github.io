@@ -3,6 +3,7 @@ title: "京津冀信息安全决赛"
 draft: false
 pin: true
 summary: "第二次打线下"
+date: 2025-10-02
 tags: ["pwn","ctf","awd"]
 ---
 

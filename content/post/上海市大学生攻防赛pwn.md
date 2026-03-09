@@ -3,6 +3,7 @@ title: "上海大学生攻防赛线下"
 draft: false
 pin: true
 summary: "第一次线下awd"
+date: 2025-08-20
 tags: ["pwn","awd","ctf"]
 ---
 <!--more-->

@@ -6,20 +6,21 @@
     <description>Recent content in Life on ldz&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
+    <lastBuildDate>Mon, 09 Mar 2026 14:12:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/life/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>独行日本</title>
+      <link>http://localhost:1313/post/%E7%8B%AC%E8%A1%8C%E6%97%A5%E6%9C%AC/</link>
+      <pubDate>Sun, 16 Feb 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/post/%E7%8B%AC%E8%A1%8C%E6%97%A5%E6%9C%AC/</guid>
+      <description></description>
+    </item>
     <item>
       <title>pwnableByLdz</title>
       <link>http://localhost:1313/post/pwnabletw_by_ldz/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/post/pwnabletw_by_ldz/</guid>
       <description>&lt;p&gt;pwnable是5年前的老题了，虽然和现在得题有一些区别但还是有很多可以学习的地方。&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>独行日本</title>
-      <link>http://localhost:1313/post/%E7%8B%AC%E8%A1%8C%E6%97%A5%E6%9C%AC/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/post/%E7%8B%AC%E8%A1%8C%E6%97%A5%E6%9C%AC/</guid>
-      <description></description>
     </item>
   </channel>
 </rss>

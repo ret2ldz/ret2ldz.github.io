@@ -1,6 +1,7 @@
 ---
 title: "pwn-tips"
 draft: false
+date: 2026-03-09
 summary: "一些小技巧"
 tags: ["pwn"]
 ---

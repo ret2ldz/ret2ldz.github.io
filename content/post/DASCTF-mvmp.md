@@ -2,6 +2,7 @@
 title: "DASCTF-mvmp"
 draft: false
 pin: true
+date: 2025-12-01
 summary: "一道有意思的vmpwn"
 tags: ["pwn","vm","ctf"]
 ---

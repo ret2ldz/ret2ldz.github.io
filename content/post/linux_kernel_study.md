@@ -1,6 +1,7 @@
 ---
 title: "kernel学习"
 draft: false
+date: 2025-10-01
 summary: "linux kernel学习笔记"
 tags: ["kernel"]
 ---

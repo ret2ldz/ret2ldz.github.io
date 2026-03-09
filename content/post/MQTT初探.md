@@ -1,6 +1,7 @@
 ---
 title: "MQTT"
 draft: false
+date: 2025-12-10
 summary: "初探mqtt pwn"
 tags: ["pwn"]
 ---
