@@ -1,5 +1,5 @@
 ---
-title: "$whoami"
+title: "README"
 draft: false
 pin: true
 summary: "一个小小pwn手"

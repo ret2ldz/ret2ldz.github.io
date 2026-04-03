@@ -8,7 +8,7 @@ tags: ["pwn","kernel"]
 ---
 
 
-小白学kernel，还是得多做题啊...打算周更kernel刷题笔记，如果笔者一周没更一题出来要么是大成了、要么是寄了
+一些 kernel pwn 刷题笔记
 
 <!--more-->
 
