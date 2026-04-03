@@ -1,5 +1,5 @@
 ---
-title: "MQTT"
+title: "MQTT初探"
 draft: false
 date: 2025-12-10
 summary: "初探mqtt pwn"

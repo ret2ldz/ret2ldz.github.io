@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Vuln on ldz&#39;s blog</title>
+    <link>http://localhost:1313/tags/vuln/</link>
+    <description>Recent content in Vuln on ldz&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Fri, 03 Apr 2026 14:46:13 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/vuln/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>my-cve-repo</title>
+      <link>http://localhost:1313/post/cve-list/</link>
+      <pubDate>Thu, 08 Jan 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/post/cve-list/</guid>
+      <description>记录挖到的漏洞与分析</description>
+    </item>
+  </channel>
+</rss>
