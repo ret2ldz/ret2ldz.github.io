@@ -2,107 +2,107 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Home on ldz&#39;s blog</title>
-    <link>https://ret2ldz.github.io/</link>
+    <link>http://localhost:1313/</link>
     <description>Recent content in Home on ldz&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <atom:link href="https://ret2ldz.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>pwn-tips</title>
-      <link>https://ret2ldz.github.io/post/pwn_tips/</link>
+      <link>http://localhost:1313/post/pwn_tips/</link>
       <pubDate>Mon, 09 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>https://ret2ldz.github.io/post/pwn_tips/</guid>
+      <guid>http://localhost:1313/post/pwn_tips/</guid>
       <description>一些小技巧</description>
     </item>
     <item>
       <title>CVE REPO</title>
-      <link>https://ret2ldz.github.io/post/cve-list/</link>
+      <link>http://localhost:1313/post/cve-list/</link>
       <pubDate>Thu, 08 Jan 2026 00:00:00 +0000</pubDate>
-      <guid>https://ret2ldz.github.io/post/cve-list/</guid>
+      <guid>http://localhost:1313/post/cve-list/</guid>
       <description>记录挖到的漏洞与分析</description>
     </item>
     <item>
       <title>MQTT初探</title>
-      <link>https://ret2ldz.github.io/post/mqtt%E5%88%9D%E6%8E%A2/</link>
+      <link>http://localhost:1313/post/mqtt%E5%88%9D%E6%8E%A2/</link>
       <pubDate>Wed, 10 Dec 2025 00:00:00 +0000</pubDate>
-      <guid>https://ret2ldz.github.io/post/mqtt%E5%88%9D%E6%8E%A2/</guid>
+      <guid>http://localhost:1313/post/mqtt%E5%88%9D%E6%8E%A2/</guid>
       <description>初探mqtt pwn</description>
     </item>
     <item>
       <title>DASCTF-mvmp</title>
-      <link>https://ret2ldz.github.io/post/dasctf-mvmp/</link>
+      <link>http://localhost:1313/post/dasctf-mvmp/</link>
       <pubDate>Mon, 01 Dec 2025 00:00:00 +0000</pubDate>
-      <guid>https://ret2ldz.github.io/post/dasctf-mvmp/</guid>
+      <guid>http://localhost:1313/post/dasctf-mvmp/</guid>
       <description>一道有意思的vmpwn</description>
     </item>
     <item>
       <title>京津冀信息安全决赛</title>
-      <link>https://ret2ldz.github.io/post/%E4%BA%AC%E6%B4%A5%E5%86%80%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E5%86%B3%E8%B5%9Bpwn/</link>
+      <link>http://localhost:1313/post/%E4%BA%AC%E6%B4%A5%E5%86%80%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E5%86%B3%E8%B5%9Bpwn/</link>
       <pubDate>Thu, 02 Oct 2025 00:00:00 +0000</pubDate>
-      <guid>https://ret2ldz.github.io/post/%E4%BA%AC%E6%B4%A5%E5%86%80%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E5%86%B3%E8%B5%9Bpwn/</guid>
+      <guid>http://localhost:1313/post/%E4%BA%AC%E6%B4%A5%E5%86%80%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E5%86%B3%E8%B5%9Bpwn/</guid>
       <description>第二次打线下</description>
     </item>
     <item>
       <title>kernel学习</title>
-      <link>https://ret2ldz.github.io/post/linux_kernel_study/</link>
+      <link>http://localhost:1313/post/linux_kernel_study/</link>
       <pubDate>Wed, 01 Oct 2025 00:00:00 +0000</pubDate>
-      <guid>https://ret2ldz.github.io/post/linux_kernel_study/</guid>
+      <guid>http://localhost:1313/post/linux_kernel_study/</guid>
       <description>&lt;p&gt;成为kernel高手的道路还很漫长&amp;hellip;，吾将上下而求索:)&lt;/p&gt;</description>
     </item>
     <item>
       <title>上海大学生攻防赛线下</title>
-      <link>https://ret2ldz.github.io/post/%E4%B8%8A%E6%B5%B7%E5%B8%82%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%94%BB%E9%98%B2%E8%B5%9Bpwn/</link>
+      <link>http://localhost:1313/post/%E4%B8%8A%E6%B5%B7%E5%B8%82%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%94%BB%E9%98%B2%E8%B5%9Bpwn/</link>
       <pubDate>Wed, 20 Aug 2025 00:00:00 +0000</pubDate>
-      <guid>https://ret2ldz.github.io/post/%E4%B8%8A%E6%B5%B7%E5%B8%82%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%94%BB%E9%98%B2%E8%B5%9Bpwn/</guid>
+      <guid>http://localhost:1313/post/%E4%B8%8A%E6%B5%B7%E5%B8%82%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%94%BB%E9%98%B2%E8%B5%9Bpwn/</guid>
       <description>第一次线下awd</description>
     </item>
     <item>
       <title>kernel-pwn-challenges</title>
-      <link>https://ret2ldz.github.io/post/kernel_pwn%E5%88%B7%E9%A2%98/</link>
+      <link>http://localhost:1313/post/kernel_pwn%E5%88%B7%E9%A2%98/</link>
       <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
-      <guid>https://ret2ldz.github.io/post/kernel_pwn%E5%88%B7%E9%A2%98/</guid>
+      <guid>http://localhost:1313/post/kernel_pwn%E5%88%B7%E9%A2%98/</guid>
       <description>&lt;p&gt;一些 kernel pwn 刷题笔记&lt;/p&gt;</description>
     </item>
     <item>
       <title>独行日本</title>
-      <link>https://ret2ldz.github.io/post/%E7%8B%AC%E8%A1%8C%E6%97%A5%E6%9C%AC/</link>
+      <link>http://localhost:1313/post/%E7%8B%AC%E8%A1%8C%E6%97%A5%E6%9C%AC/</link>
       <pubDate>Sun, 16 Feb 2025 00:00:00 +0000</pubDate>
-      <guid>https://ret2ldz.github.io/post/%E7%8B%AC%E8%A1%8C%E6%97%A5%E6%9C%AC/</guid>
+      <guid>http://localhost:1313/post/%E7%8B%AC%E8%A1%8C%E6%97%A5%E6%9C%AC/</guid>
       <description></description>
     </item>
     <item>
       <title>NCTF</title>
-      <link>https://ret2ldz.github.io/post/nctf/</link>
+      <link>http://localhost:1313/post/nctf/</link>
       <pubDate>Sun, 01 Dec 2024 00:00:00 +0000</pubDate>
-      <guid>https://ret2ldz.github.io/post/nctf/</guid>
+      <guid>http://localhost:1313/post/nctf/</guid>
       <description>复现笔记</description>
     </item>
     <item>
       <title>0xgame2024</title>
-      <link>https://ret2ldz.github.io/post/0xgame2024/</link>
+      <link>http://localhost:1313/post/0xgame2024/</link>
       <pubDate>Tue, 02 Jan 2024 00:00:00 +0000</pubDate>
-      <guid>https://ret2ldz.github.io/post/0xgame2024/</guid>
+      <guid>http://localhost:1313/post/0xgame2024/</guid>
       <description>菜鸟的第一场ctf比赛</description>
     </item>
     <item>
       <title>Heap &amp; House</title>
-      <link>https://ret2ldz.github.io/post/heaphouse/</link>
+      <link>http://localhost:1313/post/heaphouse/</link>
       <pubDate>Mon, 01 Jan 2024 00:00:00 +0000</pubDate>
-      <guid>https://ret2ldz.github.io/post/heaphouse/</guid>
+      <guid>http://localhost:1313/post/heaphouse/</guid>
       <description>关于 House of 系列攻击的系统梳理与实战笔记。</description>
     </item>
     <item>
       <title>pwnableByLdz</title>
-      <link>https://ret2ldz.github.io/post/pwnabletw_by_ldz/</link>
+      <link>http://localhost:1313/post/pwnabletw_by_ldz/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://ret2ldz.github.io/post/pwnabletw_by_ldz/</guid>
+      <guid>http://localhost:1313/post/pwnabletw_by_ldz/</guid>
       <description>&lt;p&gt;pwnable是5年前的老题了，虽然和现在得题有一些区别但还是有很多可以学习的地方。&lt;/p&gt;</description>
     </item>
     <item>
       <title>README</title>
-      <link>https://ret2ldz.github.io/post/readme/</link>
+      <link>http://localhost:1313/post/readme/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>https://ret2ldz.github.io/post/readme/</guid>
+      <guid>http://localhost:1313/post/readme/</guid>
       <description>一个小小pwn手</description>
     </item>
   </channel>

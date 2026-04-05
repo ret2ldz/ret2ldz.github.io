@@ -2,10 +2,13 @@ baseURL = "https://ret2ldz.github.io/"
 languageCode = "zh-cn"
 title = "ldz's blog"
 theme = "academic"
-# 列表页（/post/、/posts/、标签等）每页文章条数，默认 10
-paginate = 20
 pygmentsCodeFences = true
 pygmentsUseClasses = true
+
+# 列表页每页条数：旧版读 paginate；v0.128+ 须同时有 pagination.pagerSize，否则固定为 10
+paginate = 30
+[pagination]
+pagerSize = 30
 
 [params]
   author = "ldz"

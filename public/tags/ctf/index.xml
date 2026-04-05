@@ -2,45 +2,45 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Ctf on ldz&#39;s blog</title>
-    <link>https://ret2ldz.github.io/tags/ctf/</link>
+    <link>http://localhost:1313/tags/ctf/</link>
     <description>Recent content in Ctf on ldz&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Mon, 09 Mar 2026 14:10:45 +0000</lastBuildDate>
-    <atom:link href="https://ret2ldz.github.io/tags/ctf/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/tags/ctf/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>DASCTF-mvmp</title>
-      <link>https://ret2ldz.github.io/post/dasctf-mvmp/</link>
+      <link>http://localhost:1313/post/dasctf-mvmp/</link>
       <pubDate>Mon, 01 Dec 2025 00:00:00 +0000</pubDate>
-      <guid>https://ret2ldz.github.io/post/dasctf-mvmp/</guid>
+      <guid>http://localhost:1313/post/dasctf-mvmp/</guid>
       <description>一道有意思的vmpwn</description>
     </item>
     <item>
       <title>京津冀信息安全决赛</title>
-      <link>https://ret2ldz.github.io/post/%E4%BA%AC%E6%B4%A5%E5%86%80%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E5%86%B3%E8%B5%9Bpwn/</link>
+      <link>http://localhost:1313/post/%E4%BA%AC%E6%B4%A5%E5%86%80%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E5%86%B3%E8%B5%9Bpwn/</link>
       <pubDate>Thu, 02 Oct 2025 00:00:00 +0000</pubDate>
-      <guid>https://ret2ldz.github.io/post/%E4%BA%AC%E6%B4%A5%E5%86%80%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E5%86%B3%E8%B5%9Bpwn/</guid>
+      <guid>http://localhost:1313/post/%E4%BA%AC%E6%B4%A5%E5%86%80%E4%BF%A1%E6%81%AF%E5%AE%89%E5%85%A8%E5%86%B3%E8%B5%9Bpwn/</guid>
       <description>第二次打线下</description>
     </item>
     <item>
       <title>上海大学生攻防赛线下</title>
-      <link>https://ret2ldz.github.io/post/%E4%B8%8A%E6%B5%B7%E5%B8%82%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%94%BB%E9%98%B2%E8%B5%9Bpwn/</link>
+      <link>http://localhost:1313/post/%E4%B8%8A%E6%B5%B7%E5%B8%82%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%94%BB%E9%98%B2%E8%B5%9Bpwn/</link>
       <pubDate>Wed, 20 Aug 2025 00:00:00 +0000</pubDate>
-      <guid>https://ret2ldz.github.io/post/%E4%B8%8A%E6%B5%B7%E5%B8%82%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%94%BB%E9%98%B2%E8%B5%9Bpwn/</guid>
+      <guid>http://localhost:1313/post/%E4%B8%8A%E6%B5%B7%E5%B8%82%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%94%BB%E9%98%B2%E8%B5%9Bpwn/</guid>
       <description>第一次线下awd</description>
     </item>
     <item>
       <title>NCTF</title>
-      <link>https://ret2ldz.github.io/post/nctf/</link>
+      <link>http://localhost:1313/post/nctf/</link>
       <pubDate>Sun, 01 Dec 2024 00:00:00 +0000</pubDate>
-      <guid>https://ret2ldz.github.io/post/nctf/</guid>
+      <guid>http://localhost:1313/post/nctf/</guid>
       <description>复现笔记</description>
     </item>
     <item>
       <title>0xgame2024</title>
-      <link>https://ret2ldz.github.io/post/0xgame2024/</link>
+      <link>http://localhost:1313/post/0xgame2024/</link>
       <pubDate>Tue, 02 Jan 2024 00:00:00 +0000</pubDate>
-      <guid>https://ret2ldz.github.io/post/0xgame2024/</guid>
+      <guid>http://localhost:1313/post/0xgame2024/</guid>
       <description>菜鸟的第一场ctf比赛</description>
     </item>
   </channel>
