@@ -6,24 +6,35 @@
       <span class="post-date">
         {{ .Date.Format "January 2, 2006" }}
       </span>
+
       {{ with .Params.tags }}
-      <span class="post-tags">
-        &middot;
-        {{ range . }}
-        <a class="tag" href="{{ "/tags/" | relLangURL }}{{ . | urlize }}/">#{{ . }}</a>
+        {{ $tags := . }}
+
+        {{/* 如果是 string，直接当成单 tag 处理 */}}
+        {{ if eq (printf "%T" $tags) "string" }}
+          {{ $tags = slice $tags }}
         {{ end }}
-      </span>
+
+        {{ if gt (len $tags) 0 }}
+        <span class="post-tags">
+          &middot;
+          {{ range $tags }}
+            <a class="tag" href="{{ "/tags/" | relLangURL }}{{ . | urlize }}/">#{{ . }}</a>
+          {{ end }}
+        </span>
+        {{ end }}
       {{ end }}
+
     </div>
   </header>
 
   {{ if .Params.toc | default true }}
-  {{ if .TableOfContents }}
-  <aside class="toc" id="toc">
-    <h4 class="toc-title">Table of Contents</h4>
-    {{ .TableOfContents }}
-  </aside>
-  {{ end }}
+    {{ if .TableOfContents }}
+    <aside class="toc" id="toc">
+      <h4 class="toc-title">Table of Contents</h4>
+      {{ .TableOfContents }}
+    </aside>
+    {{ end }}
   {{ end }}
 
   <div class="post-content">

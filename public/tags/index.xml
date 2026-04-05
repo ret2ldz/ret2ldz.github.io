@@ -6,7 +6,7 @@
     <description>Recent content in Tags on ldz&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Sun, 05 Apr 2026 07:46:07 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 05 Apr 2026 08:16:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Pwn</title>
@@ -16,31 +16,31 @@
       <description></description>
     </item>
     <item>
-      <title>Cve</title>
-      <link>http://localhost:1313/tags/cve/</link>
+      <title>\[&#34;Pwn&#34;, &#34;Vuln&#34;, &#34;Cve&#34;]</title>
+      <link>http://localhost:1313/tags/%5Cpwn-vuln-cve/</link>
       <pubDate>Thu, 08 Jan 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/cve/</guid>
-      <description></description>
-    </item>
-    <item>
-      <title>Vuln</title>
-      <link>http://localhost:1313/tags/vuln/</link>
-      <pubDate>Thu, 08 Jan 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/vuln/</guid>
+      <guid>http://localhost:1313/tags/%5Cpwn-vuln-cve/</guid>
       <description></description>
     </item>
     <item>
       <title>Ctf</title>
       <link>http://localhost:1313/tags/ctf/</link>
-      <pubDate>Mon, 01 Dec 2025 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 28 Dec 2025 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/tags/ctf/</guid>
       <description></description>
     </item>
     <item>
       <title>Vm</title>
       <link>http://localhost:1313/tags/vm/</link>
-      <pubDate>Mon, 01 Dec 2025 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 28 Dec 2025 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/tags/vm/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>\[&#34;Life&#34;]</title>
+      <link>http://localhost:1313/tags/%5Clife/</link>
+      <pubDate>Wed, 08 Oct 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/tags/%5Clife/</guid>
       <description></description>
     </item>
     <item>

@@ -6,7 +6,7 @@
     <description>Recent content in Pwn on ldz&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 03 Apr 2026 15:53:49 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 05 Apr 2026 08:16:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/pwn/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>pwn-tips</title>
@@ -16,11 +16,11 @@
       <description>一些小技巧</description>
     </item>
     <item>
-      <title>CVE REPO</title>
-      <link>http://localhost:1313/post/cve-list/</link>
-      <pubDate>Thu, 08 Jan 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/post/cve-list/</guid>
-      <description>记录挖到的漏洞与分析</description>
+      <title>DASCTF-mvmp</title>
+      <link>http://localhost:1313/post/dasctf-mvmp/</link>
+      <pubDate>Sun, 28 Dec 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/post/dasctf-mvmp/</guid>
+      <description>一道有意思的vmpwn</description>
     </item>
     <item>
       <title>MQTT初探</title>
@@ -28,13 +28,6 @@
       <pubDate>Wed, 10 Dec 2025 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/post/mqtt%E5%88%9D%E6%8E%A2/</guid>
       <description>初探mqtt pwn</description>
-    </item>
-    <item>
-      <title>DASCTF-mvmp</title>
-      <link>http://localhost:1313/post/dasctf-mvmp/</link>
-      <pubDate>Mon, 01 Dec 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/post/dasctf-mvmp/</guid>
-      <description>一道有意思的vmpwn</description>
     </item>
     <item>
       <title>京津冀信息安全决赛</title>
@@ -56,13 +49,6 @@
       <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/post/kernel_pwn%E5%88%B7%E9%A2%98/</guid>
       <description>&lt;p&gt;一些 kernel pwn 刷题笔记&lt;/p&gt;</description>
-    </item>
-    <item>
-      <title>NCTF</title>
-      <link>http://localhost:1313/post/nctf/</link>
-      <pubDate>Sun, 01 Dec 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/post/nctf/</guid>
-      <description>复现笔记</description>
     </item>
     <item>
       <title>0xgame2024</title>

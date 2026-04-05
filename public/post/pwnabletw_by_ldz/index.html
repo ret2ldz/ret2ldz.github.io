@@ -60,24 +60,35 @@
     <h1 class="post-title">pwnableByLdz</h1>
     <div class="post-meta">
       <span class="post-date">
-        January 1, 0001
+        October 8, 2025
       </span>
+
       
-      <span class="post-tags">
-        &middot;
         
-        <a class="tag" href="/tags/life/">#life</a>
+
         
-      </span>
+        
+          
+        
+
+        
+        <span class="post-tags">
+          &middot;
+          
+            <a class="tag" href="/tags/%5Clife/">#\[&#34;life&#34;]</a>
+          
+        </span>
+        
       
+
     </div>
   </header>
 
   
-  
-  <aside class="toc" id="toc">
-    <h4 class="toc-title">Table of Contents</h4>
-    <nav id="TableOfContents">
+    
+    <aside class="toc" id="toc">
+      <h4 class="toc-title">Table of Contents</h4>
+      <nav id="TableOfContents">
   <ul>
     <li>
       <ul>
@@ -86,16 +97,17 @@
     </li>
   </ul>
 </nav>
-  </aside>
-  
+    </aside>
+    
   
 
   <div class="post-content">
-    <p>pwnable是5年前的老题了，虽然和现在得题有一些区别但还是有很多可以学习的地方。</p>
+    <hr>
+<p>pwnable是5年前的老题了，虽然和现在得题有一些区别但还是有很多可以学习的地方。</p>
 <!-- raw HTML omitted -->
 <h3 id="3x17">3x17</h3>
-<p>由于扣了符号表，需要<em><strong>利用ida pro的flare功能识别静态链接函数签名</strong></em></p>
-<p><em><strong>csu(C_Start_Up)_fini</strong></em>的执行顺序是.fini.array[n]&ndash;&gt;.fini.array[n-1]-&hellip;-&gt;.fini.array[1]&ndash;&gt;.fini.array[0]</p>
+<p>由于扣了符号表，需要<strong>利用ida pro的flare功能识别静态链接函数签名</strong></p>
+<p><strong>csu(C_Start_Up)_fini</strong>的执行顺序是.fini.array[n]&ndash;&gt;.fini.array[n-1]-&hellip;-&gt;.fini.array[1]&ndash;&gt;.fini.array[0]</p>
 <h5 id="由于题目finiaray只有两项故可以改finiarray为main和__libc_csu_fini实现循环再通过栈迁移打rop">由于题目fini.aray只有两项，故可以改.fini.array为main和__libc_csu_fini实现循环，再通过栈迁移打ROP。</h5>
 <pre tabindex="0"><code>from pwn import *
 io = process(&#39;./3x17&#39;)
@@ -147,7 +159,7 @@ io.interactive()
 ┌──(kali㉿kali)-[~/Desktop/pwn/pwnable]
 └─$ file orw 
 orw: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, for GNU/Linux 2.6.32, BuildID[sha1]=e60ecccd9d01c8217387e8b77e9261a1f36b5030, not stripped
-</code></pre><h5 id="由于官方给的文件本地bss段没有执行权限遂止远程应该有权限所以贴出我的exp"><em><strong>由于官方给的文件本地bss段没有执行权限，遂止</strong></em>，远程应该有权限，所以贴出我的exp。</h5>
+</code></pre><h5 id="由于官方给的文件本地bss段没有执行权限遂止远程应该有权限所以贴出我的exp"><strong>由于官方给的文件本地bss段没有执行权限，遂止</strong>，远程应该有权限，所以贴出我的exp。</h5>
 <pre tabindex="0"><code>from pwn import *
 io = process(&#39;./orw&#39;)
 context.arch = &#39;i386&#39;
@@ -180,7 +192,8 @@ gdb.attach(io)
 io.send(asm(sc))
 io.interactive()
 </code></pre><h3 id="calc">calc</h3>
-<h3 id="dubble-sort">dubble sort*</h3>
+<p>undo</p>
+<h3 id="dubble-sort">dubble sort</h3>
 <p>很麻烦的栈题，由于未对输入长度作限制我们可以打溢出，但是需要考虑三件事，如何泄露libc地址、如何绕过canary、如何不被dubblesort将我们的输入排乱。</p>
 <p><strong>如何泄露libc地址</strong>：由于read不增加\x00，通过printf函数我们可以泄露一个libc内地址</p>
 <p><strong>如何绕过canary</strong>：输入__isoc99_scanf(&quot;%u&quot;, v4);不能解析的字符会导致缓冲区卡住之后的数据无法输入，而当输入为’+’ ‘-‘这两个字符时，由于他们可以定义数字的正负，因此不会被定义为非法字符。同时单独输入该字符又能达到不往栈上写入数据的目的。</p>
@@ -474,7 +487,7 @@ calc                exp3x17     expdubb  hacknote  script.py
 <p>程序可以实现任意读，但是唯独对flag文件做出了限制。</p>
 <h5 id="古早的io_file打法劫持对应的vtable即可">古早的IO_File打法，劫持对应的vtable即可。</h5>
 <p>这里补充一下我之前忘记的知识点：</p>
-<p>**伪文件系统：**在 Linux 系统中，/proc/self/ 是一个特殊的伪文件系统目录，指向当前进程的 /proc 信息。它包含了大量与当前进程相关的文件和子目录，用于提供进程的运行时状态、配置和资源使用情况。</p>
+<p>伪文件系统：在 Linux 系统中，/proc/self/ 是一个特殊的伪文件系统目录，指向当前进程的 /proc 信息。它包含了大量与当前进程相关的文件和子目录，用于提供进程的运行时状态、配置和资源使用情况。</p>
 <pre tabindex="0"><code>常见子目录
     maps/：题目中使用，可以读取内存的映射关系。
     fd/：如上所述，列出文件描述符。
@@ -693,7 +706,7 @@ gs             0x63                99
 <p>栈平衡，做法可以看这篇</p>
 <p><a href="https://github.com/0bs3rver/pwnable.tw/blob/main/babystack-strcpy%E6%A0%88%E6%BA%A2%E5%87%BA/babystack-WP.md">https://github.com/0bs3rver/pwnable.tw/blob/main/babystack-strcpy%E6%A0%88%E6%BA%A2%E5%87%BA/babystack-WP.md</a></p>
 <h3 id="mno2">MnO2</h3>
-<p>通过check函数检查输入的是否是一个<em>化合物</em>得形式，如果check成功则会跳转执行，考点也是<em><strong>alphanumeric shellcode</strong></em></p>
+<p>通过check函数检查输入的是否是一个<em>化合物</em>得形式，如果check成功则会跳转执行，考点也是<strong>alphanumeric shellcode</strong></p>
 <pre tabindex="0"><code>┌──(kali㉿kali)-[~/Desktop/pwn/pwnable]
 └─$ python3 exp                                        
 [+] Starting local process &#39;./mno2&#39;: pid 1745

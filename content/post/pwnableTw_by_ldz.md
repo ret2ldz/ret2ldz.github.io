@@ -1,10 +1,12 @@
-***
-
+---
 title: "pwnableByLdz"
 draft: false
 summary: ""
+date: 2025-10-08
 tags: \["life"]
----------------
+---
+
+----
 
 pwnable是5年前的老题了，虽然和现在得题有一些区别但还是有很多可以学习的地方。
 

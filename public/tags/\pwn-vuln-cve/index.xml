@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>\[&#34;Pwn&#34;, &#34;Vuln&#34;, &#34;Cve&#34;] on ldz&#39;s blog</title>
+    <link>http://localhost:1313/tags/%5Cpwn-vuln-cve/</link>
+    <description>Recent content in \[&#34;Pwn&#34;, &#34;Vuln&#34;, &#34;Cve&#34;] on ldz&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh-cn</language>
+    <lastBuildDate>Sun, 05 Apr 2026 08:11:09 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/%5Cpwn-vuln-cve/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CVE REPO</title>
+      <link>http://localhost:1313/post/cve-list/</link>
+      <pubDate>Thu, 08 Jan 2026 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/post/cve-list/</guid>
+      <description>记录挖到的漏洞与分析</description>
+    </item>
+  </channel>
+</rss>

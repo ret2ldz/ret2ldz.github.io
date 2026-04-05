@@ -6,12 +6,12 @@
     <description>Recent content in Ctf on ldz&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Mon, 09 Mar 2026 14:10:45 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 05 Apr 2026 08:16:00 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/tags/ctf/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>DASCTF-mvmp</title>
       <link>http://localhost:1313/post/dasctf-mvmp/</link>
-      <pubDate>Mon, 01 Dec 2025 00:00:00 +0000</pubDate>
+      <pubDate>Sun, 28 Dec 2025 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/post/dasctf-mvmp/</guid>
       <description>一道有意思的vmpwn</description>
     </item>
@@ -28,13 +28,6 @@
       <pubDate>Wed, 20 Aug 2025 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/post/%E4%B8%8A%E6%B5%B7%E5%B8%82%E5%A4%A7%E5%AD%A6%E7%94%9F%E6%94%BB%E9%98%B2%E8%B5%9Bpwn/</guid>
       <description>第一次线下awd</description>
-    </item>
-    <item>
-      <title>NCTF</title>
-      <link>http://localhost:1313/post/nctf/</link>
-      <pubDate>Sun, 01 Dec 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/post/nctf/</guid>
-      <description>复现笔记</description>
     </item>
     <item>
       <title>0xgame2024</title>
