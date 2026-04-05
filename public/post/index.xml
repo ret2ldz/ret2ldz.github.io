@@ -6,7 +6,7 @@
     <description>Recent content in Posts on ldz&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
-    <lastBuildDate>Fri, 03 Apr 2026 14:46:30 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 03 Apr 2026 15:53:49 +0000</lastBuildDate>
     <atom:link href="http://localhost:1313/post/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>pwn-tips</title>
@@ -16,14 +16,14 @@
       <description>一些小技巧</description>
     </item>
     <item>
-      <title>my-cve-repo</title>
+      <title>CVE REPO</title>
       <link>http://localhost:1313/post/cve-list/</link>
       <pubDate>Thu, 08 Jan 2026 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/post/cve-list/</guid>
       <description>记录挖到的漏洞与分析</description>
     </item>
     <item>
-      <title>mqtt</title>
+      <title>MQTT初探</title>
       <link>http://localhost:1313/post/mqtt%E5%88%9D%E6%8E%A2/</link>
       <pubDate>Wed, 10 Dec 2025 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/post/mqtt%E5%88%9D%E6%8E%A2/</guid>
@@ -62,7 +62,7 @@
       <link>http://localhost:1313/post/kernel_pwn%E5%88%B7%E9%A2%98/</link>
       <pubDate>Sun, 01 Jun 2025 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/post/kernel_pwn%E5%88%B7%E9%A2%98/</guid>
-      <description>&lt;p&gt;小白学kernel，还是得多做题啊&amp;hellip;打算周更kernel刷题笔记，如果笔者一周没更一题出来要么是大成了、要么是寄了&lt;/p&gt;</description>
+      <description>&lt;p&gt;一些 kernel pwn 刷题笔记&lt;/p&gt;</description>
     </item>
     <item>
       <title>独行日本</title>
@@ -93,18 +93,18 @@
       <description>关于 House of 系列攻击的系统梳理与实战笔记。</description>
     </item>
     <item>
-      <title>$whoami</title>
-      <link>http://localhost:1313/post/readme/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/post/readme/</guid>
-      <description>一个小小pwn手</description>
-    </item>
-    <item>
       <title>pwnableByLdz</title>
       <link>http://localhost:1313/post/pwnabletw_by_ldz/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       <guid>http://localhost:1313/post/pwnabletw_by_ldz/</guid>
       <description>&lt;p&gt;pwnable是5年前的老题了，虽然和现在得题有一些区别但还是有很多可以学习的地方。&lt;/p&gt;</description>
+    </item>
+    <item>
+      <title>README</title>
+      <link>http://localhost:1313/post/readme/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/post/readme/</guid>
+      <description>一个小小pwn手</description>
     </item>
   </channel>
 </rss>

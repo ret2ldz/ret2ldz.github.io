@@ -1,0 +1,12 @@
+name = "academic"
+license = "MIT"
+licenselink = "https://github.com/yourname/yourtheme/blob/master/LICENSE"
+description = "An academic style theme for Hugo"
+homepage = "http://example.com/"
+tags = ["blog", "academic", "minimal"]
+features = ["blog", "mathjax"]
+min_version = "0.123.0"
+
+[author]
+  name = "Author"
+  homepage = "http://example.com/"

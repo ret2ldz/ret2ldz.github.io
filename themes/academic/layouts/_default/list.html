@@ -1,0 +1,27 @@
+{{ define "main" }}
+<div class="list-page">
+  {{ with .Content }}
+  <header class="list-header">
+    <div class="list-content">
+      {{ . }}
+    </div>
+  </header>
+  {{ end }}
+
+  <ul class="post-list compact">
+    {{ range .Paginator.Pages }}
+    <li class="post-item-compact">
+      <div class="post-meta">
+        <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "2006/01/02" }}</time>
+      </div>
+      <div class="post-content-inline">
+        <a class="post-title-inline" href="{{ .Permalink }}">{{ .Title }}</a>
+        <span class="post-summary-inline"> {{ .Summary | plainify | truncate 120 }}</span>
+      </div>
+    </li>
+    {{ end }}
+  </ul>
+
+  {{ partial "pagination.html" . }}
+</div>
+{{ end }}

@@ -1,0 +1,12 @@
+<header class="header">
+  <a href="{{ site.Home.Permalink }}" class="site-title">{{ site.Title }}</a>
+  <nav class="site-nav">
+    {{ $url := .RelPermalink }}
+    <a href="{{ site.Home.Permalink }}" class="{{ if eq $url "/" }}active{{ end }}">Home</a>
+    <a href="{{ "/post/" | relURL }}" class="{{ if in $url "/post/" }}active{{ end }}">Posts</a>
+    <a href="{{ "/tags/" | relURL }}" class="{{ if in $url "/tags/" }}active{{ end }}">Tags</a>
+    {{ with site.Params.github }}
+    <a href="https://github.com/{{ . }}" target="_blank" rel="noopener">GitHub</a>
+    {{ end }}
+  </nav>
+</header>

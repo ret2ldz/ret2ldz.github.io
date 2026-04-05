@@ -1,0 +1,36 @@
+{{ define "main" }}
+<div class="home">
+  <div class="profile">
+    {{ with site.Params.avatar }}
+    <img src="{{ . | relURL }}" alt="Avatar" class="avatar">
+    {{ end }}
+    <h1 class="author-name">{{ site.Params.author }}</h1>
+    {{ with site.Params.description }}<p class="bio">{{ . }}</p>{{ end }}
+  </div>
+
+  <section class="recent-posts">
+    <h2>Pinned Publications</h2>
+    <ul class="post-list">
+      {{ $pinned := where (where site.RegularPages "Type" "in" (slice "post" "posts")) "Params.pin" true }}
+      {{ range first 10 $pinned }}
+      <li class="post-item">
+        <div class="post-meta">
+          <time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time>
+        </div>
+        <a class="post-title" href="{{ .Permalink }}">{{ .Title }}</a>
+        <div class="post-summary">
+          {{ .Summary | plainify | truncate 150 }}
+        </div>
+      </li>
+      {{ end }}
+      {{ if eq (len $pinned) 0 }}
+      <p style="color: var(--text-lighter); font-style: italic;">No pinned publications yet.</p>
+      {{ end }}
+    </ul>
+    
+    <div class="read-more">
+      <a href="{{ "/post/" | relURL }}">View All Posts &rarr;</a>
+    </div>
+  </section>
+</div>
+{{ end }}

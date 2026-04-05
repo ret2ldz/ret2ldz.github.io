@@ -1,13 +1,14 @@
 baseURL = "https://ret2ldz.github.io/"
 languageCode = "zh-cn"
 title = "ldz's blog"
-theme = "github-style"
+theme = "academic"
+# 列表页（/post/、/posts/、标签等）每页文章条数，默认 10
+paginate = 20
 pygmentsCodeFences = true
 pygmentsUseClasses = true
 
 [params]
   author = "ldz"
-  description = "woooooo"
   github = "ret2ldz"
   email = "2691605373@qq.com"
   url = "https://ret2ldz.github.io"
@@ -42,3 +43,9 @@ pygmentsUseClasses = true
 [services]
   [services.googleAnalytics]
     ID = "UA-123456-789"
+
+[markup.tableOfContents]
+  endLevel = 2
+  ordered = false
+  startLevel = 1
+
