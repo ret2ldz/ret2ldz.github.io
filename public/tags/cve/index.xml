@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Cve on ldz&#39;s blog</title>
-    <link>http://localhost:1313/tags/cve/</link>
+    <link>https://ret2ldz.github.io/tags/cve/</link>
     <description>Recent content in Cve on ldz&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Fri, 03 Apr 2026 14:47:40 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/cve/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://ret2ldz.github.io/tags/cve/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>CVE REPO</title>
-      <link>http://localhost:1313/post/cve-list/</link>
+      <link>https://ret2ldz.github.io/post/cve-list/</link>
       <pubDate>Thu, 08 Jan 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/post/cve-list/</guid>
+      <guid>https://ret2ldz.github.io/post/cve-list/</guid>
       <description>记录挖到的漏洞与分析</description>
     </item>
   </channel>

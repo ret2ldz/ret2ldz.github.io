@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Vm on ldz&#39;s blog</title>
-    <link>http://localhost:1313/tags/vm/</link>
+    <link>https://ret2ldz.github.io/tags/vm/</link>
     <description>Recent content in Vm on ldz&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Tue, 10 Feb 2026 07:37:07 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/vm/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://ret2ldz.github.io/tags/vm/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>DASCTF-mvmp</title>
-      <link>http://localhost:1313/post/dasctf-mvmp/</link>
+      <link>https://ret2ldz.github.io/post/dasctf-mvmp/</link>
       <pubDate>Mon, 01 Dec 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/post/dasctf-mvmp/</guid>
+      <guid>https://ret2ldz.github.io/post/dasctf-mvmp/</guid>
       <description>一道有意思的vmpwn</description>
     </item>
   </channel>

@@ -19,10 +19,11 @@ jobs:
           submodules: recursive
           fetch-depth: 0
 
+      # 与本地开发环境一致；若改用 hugo latest，需保证主题含 layouts/home.html（0.146+ 不再用 index.html 作为首页）
       - name: Setup Hugo
         uses: peaceiris/actions-hugo@v3
         with:
-          hugo-version: 'latest'
+          hugo-version: '0.123.7'
           extended: true
 
       - name: Build

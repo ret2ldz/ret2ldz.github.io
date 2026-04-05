@@ -2,80 +2,80 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on ldz&#39;s blog</title>
-    <link>http://localhost:1313/tags/</link>
+    <link>https://ret2ldz.github.io/tags/</link>
     <description>Recent content in Tags on ldz&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-cn</language>
     <lastBuildDate>Fri, 03 Apr 2026 15:53:49 +0000</lastBuildDate>
-    <atom:link href="http://localhost:1313/tags/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="https://ret2ldz.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Pwn</title>
-      <link>http://localhost:1313/tags/pwn/</link>
+      <link>https://ret2ldz.github.io/tags/pwn/</link>
       <pubDate>Mon, 09 Mar 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/pwn/</guid>
+      <guid>https://ret2ldz.github.io/tags/pwn/</guid>
       <description></description>
     </item>
     <item>
       <title>Cve</title>
-      <link>http://localhost:1313/tags/cve/</link>
+      <link>https://ret2ldz.github.io/tags/cve/</link>
       <pubDate>Thu, 08 Jan 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/cve/</guid>
+      <guid>https://ret2ldz.github.io/tags/cve/</guid>
       <description></description>
     </item>
     <item>
       <title>Vuln</title>
-      <link>http://localhost:1313/tags/vuln/</link>
+      <link>https://ret2ldz.github.io/tags/vuln/</link>
       <pubDate>Thu, 08 Jan 2026 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/vuln/</guid>
+      <guid>https://ret2ldz.github.io/tags/vuln/</guid>
       <description></description>
     </item>
     <item>
       <title>Ctf</title>
-      <link>http://localhost:1313/tags/ctf/</link>
+      <link>https://ret2ldz.github.io/tags/ctf/</link>
       <pubDate>Mon, 01 Dec 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/ctf/</guid>
+      <guid>https://ret2ldz.github.io/tags/ctf/</guid>
       <description></description>
     </item>
     <item>
       <title>Vm</title>
-      <link>http://localhost:1313/tags/vm/</link>
+      <link>https://ret2ldz.github.io/tags/vm/</link>
       <pubDate>Mon, 01 Dec 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/vm/</guid>
+      <guid>https://ret2ldz.github.io/tags/vm/</guid>
       <description></description>
     </item>
     <item>
       <title>Awd</title>
-      <link>http://localhost:1313/tags/awd/</link>
+      <link>https://ret2ldz.github.io/tags/awd/</link>
       <pubDate>Thu, 02 Oct 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/awd/</guid>
+      <guid>https://ret2ldz.github.io/tags/awd/</guid>
       <description></description>
     </item>
     <item>
       <title>Kernel</title>
-      <link>http://localhost:1313/tags/kernel/</link>
+      <link>https://ret2ldz.github.io/tags/kernel/</link>
       <pubDate>Wed, 01 Oct 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/kernel/</guid>
+      <guid>https://ret2ldz.github.io/tags/kernel/</guid>
       <description></description>
     </item>
     <item>
       <title>Life</title>
-      <link>http://localhost:1313/tags/life/</link>
+      <link>https://ret2ldz.github.io/tags/life/</link>
       <pubDate>Sun, 16 Feb 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/life/</guid>
+      <guid>https://ret2ldz.github.io/tags/life/</guid>
       <description></description>
     </item>
     <item>
       <title>Heap</title>
-      <link>http://localhost:1313/tags/heap/</link>
+      <link>https://ret2ldz.github.io/tags/heap/</link>
       <pubDate>Mon, 01 Jan 2024 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/heap/</guid>
+      <guid>https://ret2ldz.github.io/tags/heap/</guid>
       <description></description>
     </item>
     <item>
       <title>Ldz</title>
-      <link>http://localhost:1313/tags/ldz/</link>
+      <link>https://ret2ldz.github.io/tags/ldz/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      <guid>http://localhost:1313/tags/ldz/</guid>
+      <guid>https://ret2ldz.github.io/tags/ldz/</guid>
       <description></description>
     </item>
   </channel>

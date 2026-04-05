@@ -2,7 +2,7 @@
 <div class="home">
   <div class="profile">
     {{ with site.Params.avatar }}
-    <img src="{{ . | relURL }}" alt="Avatar" class="avatar">
+    <img src="{{ if findRE `^https?://` . }}{{ . }}{{ else }}{{ . | relURL }}{{ end }}" alt="Avatar" class="avatar">
     {{ end }}
     <h1 class="author-name">{{ site.Params.author }}</h1>
     {{ with site.Params.description }}<p class="bio">{{ . }}</p>{{ end }}
