@@ -820,15 +820,6 @@ io.interactive()
 </code></pre><p>我们不难想到，先让esi等于0x80，执行11 xor    DWORD PTR [ecx],esi，然后dec ecx 然后再xor    DWORD PTR [ecx],esi，然后esi再减至0x4d进行异或。这样是esi操作最少的方式。而且恰好在指定的地址之前完成操作。</p>
 <p>最后就是执行到那里，使用N（dec esi），因为其对程序不会有影响。最后需要sleep(1), 我因为没加sleep多调了一个多小时/(ㄒoㄒ)/~~。</p>
   </div>
-
-  <footer class="post-footer">
-    
-    <a href="http://localhost:1313/post/readme/" class="prev-post">&larr; README</a>
-    
-    
-    <a href="http://localhost:1313/post/heaphouse/" class="next-post">Heap &amp; House &rarr;</a>
-    
-  </footer>
 </article>
 
     </main>

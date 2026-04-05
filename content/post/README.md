@@ -15,11 +15,8 @@ tags: ["ldz"]
 ## friends
 
 [https:jarenl.com](https://jarenl.com/)
-
 [https://1mmey.github.io/](https://1mmey.github.io/)
-
 [https://zjw1nd.github.io/](https://zjw1nd.github.io/)
-
 [https://no-t1me.github.io/](https://no-t1me.github.io/)
 
 

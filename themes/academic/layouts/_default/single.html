@@ -29,14 +29,5 @@
   <div class="post-content">
     {{ .Content }}
   </div>
-
-  <footer class="post-footer">
-    {{ if .PrevInSection }}
-    <a href="{{ .PrevInSection.Permalink }}" class="prev-post">&larr; {{ .PrevInSection.Title }}</a>
-    {{ end }}
-    {{ if .NextInSection }}
-    <a href="{{ .NextInSection.Permalink }}" class="next-post">{{ .NextInSection.Title }} &rarr;</a>
-    {{ end }}
-  </footer>
 </article>
 {{ end }}
